@@ -1,0 +1,6 @@
+test-services:
+  skeleton:
+    url: 'http://localhost:8080'
+admin-account:
+  email: 'test@email.com'
+  password: 'testpassword'

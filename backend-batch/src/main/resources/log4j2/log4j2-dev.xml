@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+  <Properties>
+    <Property name="logNm">${spring:spring.application.name}</Property>
+    <Property name="layoutPattern">%d{yyyy/MM/dd HH:mm:ss.SSS} [%-5p] [%C] [%t] - %m%n</Property>
+  </Properties>
+
+  <Appenders>
+    <Console name="Console_Appender" target="SYSTEM_OUT">
+      <PatternLayout pattern="${layoutPattern}"/>
+    </Console>
+  </Appenders>
+
+  <Loggers>
+    <Root level="DEBUG" additivity="false">
+      <AppenderRef ref="Console_Appender"/>
+    </Root>
+
+    <Logger name="org.springframework" level="INFO" additivity="false">
+      <AppenderRef ref="Console_Appender"/>
+    </Logger>
+
+    <Logger name="org.springframework.batch" level="INFO" additivity="false">
+      <AppenderRef ref="Console_Appender"/>
+    </Logger>
+  </Loggers>
+</Configuration>

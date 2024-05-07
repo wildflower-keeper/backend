@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  mysql:
+    container_name: wildflower-gardening-mysql
+    image: mysql:8.0
+    volumes:
+      - ./mysql-init.d:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: wildflower_gardening
+      MYSQL_ROOT_PASSWORD: test
+      TZ: Asia/Seoul
+    restart: always
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci

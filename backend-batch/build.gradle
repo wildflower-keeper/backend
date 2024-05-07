@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '3.2.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-batch:3.2.2'
+    implementation 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation 'org.springframework.batch:spring-batch-test:5.1.0'
+}

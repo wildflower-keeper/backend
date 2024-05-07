@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: 'jdbc:mysql://localhost:3306/wildflower_gardening?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&zeroDateTimeBehavior=convertToNull&cacheDefaultTimezone=false'
+    username: root
+    password: test
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+logging:
+  config: classpath:log4j2/log4j2-dev.xml

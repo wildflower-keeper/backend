@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.wildflowergardening.backend.api.wildflowergardening.application.TestQueryService;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.TestResponse;
-import org.wildflowergardening.backend.core.wildflowergardening.application.WebclientTestService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CursorCreatedAtPageRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CursorPageResult;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.WebClientTestResponse;
 
 @Slf4j
 @RestController
@@ -24,7 +22,6 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.dto.
 public class TestQueryController {
 
   private final TestQueryService testQueryService;
-  private final WebclientTestService webclientTestService;
 
   @GetMapping("/test-db")
   public ResponseEntity<Boolean> testDB() {
@@ -46,10 +43,5 @@ public class TestQueryController {
         .build();
     return ResponseEntity.ok()
         .body(testQueryService.getPageInCreatedOrder(request));
-  }
-
-  @GetMapping("/test-web-client")
-  public ResponseEntity<CursorPageResult<WebClientTestResponse>> testWebClient() {
-    return ResponseEntity.ok(webclientTestService.callGetTwice());
   }
 }

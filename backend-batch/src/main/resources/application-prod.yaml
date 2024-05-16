@@ -1,0 +1,19 @@
+spring:
+  batch:
+    jdbc:
+      initialize-schema: always
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: 'jdbc:h2:~/test'
+    username: sa
+    password: sa
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+logging:
+  config: classpath:log4j2/log4j2-prod.xml

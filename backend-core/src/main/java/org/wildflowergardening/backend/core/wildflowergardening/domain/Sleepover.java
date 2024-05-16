@@ -3,49 +3,60 @@ package org.wildflowergardening.backend.core.wildflowergardening.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Entity(name = "session")
-@Table(name = "session")
+@Entity(name = "sleepover")
+@Table(name = "sleepover")
 @EntityListeners(AuditingEntityListener.class)
-public class Session {
+public class Sleepover {
 
-  // Todo 세션 ID 문자열로 바꾸기
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "user_role", nullable = false)
-  @Enumerated(EnumType.STRING)
-  private UserRole userRole;
+  @Column(name = "homeless_id", nullable = false)
+  @Comment("노숙인 id")
+  private Long homelessId;
 
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
+  @Column(name = "name", nullable = false)
+  @Comment("노숙인 성함")
+  private String homelessName;
 
-  @Column(name = "username", nullable = false)
-  private String username;
+  @Column(name = "shelter_id", nullable = false)
+  @Comment("센터 id")
+  private Long shelterId;
 
-  @Column(name = "expired_at", nullable = false)
-  private LocalDateTime expiredAt;
+  @Column(name = "start_date", nullable = false)
+  @Comment("외박 시작일")
+  private LocalDate startDate;
 
+  @Column(name = "end_date", nullable = false)
+  @Comment("외박 종료일")
+  private LocalDate endDate;
+
+  @CreatedDate
   @Column(name = "created_at", nullable = false)
   @Comment("생성일시")
   private LocalDateTime createdAt;
+
+  @Column(name = "deleted_at", nullable = true)
+  @Comment("삭제일시")
+  private LocalDateTime deletedAt;
 }

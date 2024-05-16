@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.wildflowergardening.backend.api.wildflowergardening.application.HomelessAppService;
 import org.wildflowergardening.backend.api.wildflowergardening.application.HomelessAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.HomelessIdNameResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.UserContext;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.HomelessUserContext;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,10 +44,26 @@ public class HomelessAppController {
   public ResponseEntity<HomelessIdNameResponse> getIdNameByDeviceId(
       @RequestHeader(value = "device-id", required = false) String deviceId
   ) {
-    UserContext userContext = userContextHolder.getUserContext();
+    HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+
     return ResponseEntity.ok(HomelessIdNameResponse.builder()
-        .id(userContext.getUserId())
-        .name(userContext.getUsername())
+        .id(homelessContext.getHomelessId())
+        .name(homelessContext.getHomelessName())
         .build());
+  }
+
+  @HomelessAuthorized
+  @Operation(summary = "외박 신청 by 디바이스 id")
+  @PostMapping("/api/v1/sleepover")
+  public ResponseEntity<Long> applyForSleepover(
+      @RequestHeader(value = "device-id", required = false) String deviceId,
+      @RequestBody @Valid CreateSleepoverRequest request
+  ) {
+    HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+
+    Long sleepoverId = homelessAppService.applyForSleepover(homelessContext, request);
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(sleepoverId);
   }
 }

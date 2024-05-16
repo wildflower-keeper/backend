@@ -16,9 +16,9 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.Sess
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.ShelterIdNameDto;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.ShelterIdPasswordDto;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.UserRole;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @Service
 @RequiredArgsConstructor

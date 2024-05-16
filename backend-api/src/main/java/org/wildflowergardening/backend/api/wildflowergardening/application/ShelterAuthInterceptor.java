@@ -12,8 +12,8 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.UserContext;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Session;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.ShelterUserContext;
 
 @Component
 @RequiredArgsConstructor
@@ -53,10 +53,9 @@ public class ShelterAuthInterceptor implements HandlerInterceptor {
       return false;
     }
     Session session = sessionOptional.get();
-    userContextHolder.setUserContext(UserContext.builder()
-        .userRole(session.getUserRole())
-        .userId(session.getUserId())
-        .username(session.getUsername())
+    userContextHolder.setUserContext(ShelterUserContext.builder()
+        .shelterId(session.getUserId())
+        .shelterName(session.getUsername())
         .build());
     return true;
   }

@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.core.wildflowergardening.domain;
+package org.wildflowergardening.backend.core.wildflowergardening.domain.auth;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

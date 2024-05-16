@@ -4,8 +4,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Session;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.SessionRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.SessionRepository;
 
 @Service
 @RequiredArgsConstructor

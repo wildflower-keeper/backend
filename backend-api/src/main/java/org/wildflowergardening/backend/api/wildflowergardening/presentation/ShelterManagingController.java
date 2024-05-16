@@ -18,7 +18,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.S
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.ShelterIdNameDto;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.UserContext;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.ShelterUserContext;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,10 +60,11 @@ public class ShelterManagingController {
   public ResponseEntity<ShelterIdNameDto> interceptorTest(
       @RequestHeader(value = "session-id", required = false) String sessionId
   ) {
-    UserContext userContext = userContextHolder.getUserContext();
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+
     return ResponseEntity.ok(ShelterIdNameDto.builder()
-        .shelterId(userContext.getUserId())
-        .shelterName(userContext.getUsername())
+        .shelterId(shelterContext.getShelterId())
+        .shelterName(shelterContext.getShelterName())
         .build());
   }
 }

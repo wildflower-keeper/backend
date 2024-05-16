@@ -11,9 +11,8 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.UserContext;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.UserRole;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.HomelessUserContext;
 
 @Component
 @RequiredArgsConstructor
@@ -53,10 +52,10 @@ public class HomelessAuthInterceptor implements HandlerInterceptor {
       return false;
     }
     Homeless homeless = homelessOptional.get();
-    userContextHolder.setUserContext(UserContext.builder()
-        .userRole(UserRole.HOMELESS)
-        .userId(homeless.getId())
-        .username(homeless.getName())
+    userContextHolder.setUserContext(HomelessUserContext.builder()
+        .homelessId(homeless.getId())
+        .homelessName(homeless.getName())
+        .shelterId(homeless.getShelterId())
         .build());
     return true;
   }

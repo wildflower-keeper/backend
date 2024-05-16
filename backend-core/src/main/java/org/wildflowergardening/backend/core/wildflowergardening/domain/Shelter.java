@@ -1,25 +1,31 @@
 package org.wildflowergardening.backend.core.wildflowergardening.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Entity(name = "account_shelter")
-@Table(name = "account_shelter")
-public class AccountShelter {
+@Entity(name = "shelter")
+@Table(name = "shelter")
+@EntityListeners(AuditingEntityListener.class)
+public class Shelter {
 
   @Id
   @Column(name = "id")
@@ -30,13 +36,9 @@ public class AccountShelter {
   @Comment("센터명")
   private String name;
 
-  @Column(name = "account_name", nullable = false)
-  @Comment("로그인을 위한 identifier")
-  private String accountName;
-
   // Todo encrypt
   @Column(name = "password", nullable = false)
-  @Comment("로그인을 위한 비밀번호 (encrypted)")
+  @Comment("비밀번호")
   private String password;
 
   @Column(name = "latitude", columnDefinition = "decimal(10,8)", nullable = false)
@@ -47,5 +49,13 @@ public class AccountShelter {
   @Comment("경도")
   private BigDecimal longitude;
 
-//  private LocalDateTime createdAt;
+  @CreatedDate
+  @Column(name = "created_at", nullable = false)
+  @Comment("생성일시")
+  private LocalDateTime createdAt;
+
+  @LastModifiedDate
+  @Column(name = "last_updated_at", nullable = false)
+  @Comment("마지막 수정일시")
+  private LocalDateTime lastUpdatedAt;
 }

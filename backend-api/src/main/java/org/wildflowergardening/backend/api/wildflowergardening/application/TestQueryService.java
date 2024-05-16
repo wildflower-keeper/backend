@@ -8,7 +8,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.
 import org.wildflowergardening.backend.core.wildflowergardening.application.TestObj1Service;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CursorCreatedAtPageRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CursorPageResult;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.AccountShelter;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterRepository;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.TestObj1;
 
@@ -20,7 +20,7 @@ public class TestQueryService {
   private final ShelterRepository shelterRepository;
 
   public boolean existTest() {
-    List<AccountShelter> all = shelterRepository.findAll();
+    List<Shelter> all = shelterRepository.findAll();
     return !all.isEmpty();
   }
 

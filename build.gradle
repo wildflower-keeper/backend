@@ -53,6 +53,7 @@ subprojects {
 }
 
 project(':backend-api') {
+    bootJar { enabled = true }
     jar { enabled = false }
     dependencies {
         implementation project(':backend-core')
@@ -60,6 +61,7 @@ project(':backend-api') {
 }
 
 project(':backend-batch') {
+    bootJar { enabled = false }    // Todo 나중에 배치 쓰려면 bootJar true 로 설정해야함
     jar { enabled = false }
     dependencies {
         implementation project(':backend-core')

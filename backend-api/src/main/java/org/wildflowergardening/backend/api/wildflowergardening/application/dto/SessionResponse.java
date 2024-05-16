@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class SessionDto {
+public class SessionResponse {
 
   private String sessionId;
   private LocalDateTime expiredAt;

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 
 @Getter
-public class CreateShelterDto {
+public class CreateShelterRequest {
 
   @NotBlank
   @Size(max = 255)

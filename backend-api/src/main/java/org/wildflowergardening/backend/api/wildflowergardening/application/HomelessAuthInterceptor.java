@@ -1,25 +1,25 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application;
 
-
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.UserContext;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Session;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.UserRole;
 
 @Component
 @RequiredArgsConstructor
-public class ShelterAuthInterceptor implements HandlerInterceptor {
+public class HomelessAuthInterceptor implements HandlerInterceptor {
 
-  private final SessionService sessionService;
+  private final HomelessService homelessService;
   private final UserContextHolder userContextHolder;
 
   /**
@@ -32,31 +32,31 @@ public class ShelterAuthInterceptor implements HandlerInterceptor {
     if (!(handler instanceof HandlerMethod handlerMethod)) {    // 언제 이런 경우가 되는지?
       return true;
     }
-    ShelterAuthorized shelterAuthAnnotation = handlerMethod.getMethodAnnotation(
-        ShelterAuthorized.class
+    HomelessAuthorized homelessAuthorized = handlerMethod.getMethodAnnotation(
+        HomelessAuthorized.class
     );
-    // 센터 auth 불필요
-    if (shelterAuthAnnotation == null) {
+    // 노숙인 auth 불필요
+    if (homelessAuthorized == null) {
       return true;
     }
-    // 센터 auth 필요 - session id header 검사
-    String sessionId = request.getHeader("session-id");
+    // 노숙인 auth 필요 - device id header 검사
+    String deviceId = request.getHeader("device-id");
 
-    if (!StringUtils.isNumeric(sessionId)) {
+    if (StringUtils.isEmpty(deviceId)) {
       response.setStatus(HttpStatus.FORBIDDEN.value());
       return false;
     }
-    Optional<Session> sessionOptional = sessionService.getSession(Long.parseLong(sessionId));
+    Optional<Homeless> homelessOptional = homelessService.getOneByDeviceId(deviceId);
 
-    if (sessionOptional.isEmpty()) {
+    if (homelessOptional.isEmpty()) {
       response.setStatus(HttpStatus.FORBIDDEN.value());
       return false;
     }
-    Session session = sessionOptional.get();
+    Homeless homeless = homelessOptional.get();
     userContextHolder.setUserContext(UserContext.builder()
-        .userRole(session.getUserRole())
-        .userId(session.getUserId())
-        .username(session.getUsername())
+        .userRole(UserRole.HOMELESS)
+        .userId(homeless.getId())
+        .username(homeless.getName())
         .build());
     return true;
   }

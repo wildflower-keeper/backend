@@ -13,6 +13,11 @@ public class SessionService {
 
   private final SessionRepository sessionRepository;
 
+  @Transactional
+  public Session save(Session session) {
+    return sessionRepository.save(session);
+  }
+
   @Transactional(readOnly = true)
   public Optional<Session> getSession(Long sessionId) {
     return sessionRepository.findById(sessionId);

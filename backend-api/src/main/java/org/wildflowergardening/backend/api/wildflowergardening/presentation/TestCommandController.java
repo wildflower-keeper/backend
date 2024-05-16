@@ -21,6 +21,7 @@ public class TestCommandController {
 
   private final TestCommandService service;
 
+  @Deprecated
   @PostMapping("/test")
   public ResponseEntity<TestObj1CreateResponse> createTestObj1(
       @RequestHeader @Parameter(example = "kiel0103@naver.com") String tester,

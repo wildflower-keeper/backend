@@ -6,9 +6,8 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.UserRole;
 
 @Getter
 @Builder
-public class SessionContext {
+public class UserContext {
 
-  private Long sessionId;
   private UserRole userRole;
   private Long userId;
   private String username;

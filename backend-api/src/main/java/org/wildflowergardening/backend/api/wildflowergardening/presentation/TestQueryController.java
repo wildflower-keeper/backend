@@ -23,11 +23,13 @@ public class TestQueryController {
 
   private final TestQueryService testQueryService;
 
+  @Deprecated
   @GetMapping("/test-db")
   public ResponseEntity<Boolean> testDB() {
     return ResponseEntity.ok(testQueryService.existTest());
   }
 
+  @Deprecated
   @GetMapping("/tests")
   public ResponseEntity<CursorPageResult<TestResponse>> test(
       @RequestHeader @Parameter(example = "kiel0103@naver.com") String tester,

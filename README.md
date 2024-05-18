@@ -20,6 +20,12 @@ java -Dspring.profiles.active="local" -DRDS_USERNAME="example" -DRDS_PW="example
 - spring.profiles.active : 1.1.의 SPRING_PROFILES_ACTIVE와 동일
 - RDS_USERNAME, RDS_PW : 1.1.의 RDS_USERNAME, RDS_PW와 동일
 
+### 1.3. swagger 접속
+로컬호스트 실행시
+```shell
+http://localhost:8080/swagger-ui/index.html
+```
+
 ## 2. 용어정의
 - 계정
   - Shelter : 센터 관리자 계정

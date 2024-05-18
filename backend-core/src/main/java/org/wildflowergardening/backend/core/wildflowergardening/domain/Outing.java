@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @Builder
 @NoArgsConstructor
@@ -37,6 +38,11 @@ public class Outing {
   @Enumerated(EnumType.STRING)
   @Comment("외출 외박 유형 (DAYTIME_OUTING:외출, SLEEPOVER:외박)")
   private Type outingType;
+
+  @Enumerated
+  @Column(name = "creator_type", nullable = false)
+  @Comment("외출/외박을 신청한 계정 유형 (HOMELESS:노숙인계정, SHELTER_PUBLIC:센터노숙인공용계정, SHELTER:센터관리자계정)")
+  private UserRole creatorType;
 
   @Column(name = "shelter_id", nullable = false)
   @Comment("센터 id")

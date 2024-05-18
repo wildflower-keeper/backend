@@ -6,6 +6,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.C
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Outing;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.HomelessUserContext;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +25,7 @@ public class SleepoverCommandService {
     }
     return sleepoverService.create(Outing.builder()
         .outingType(Outing.Type.SLEEPOVER)
+        .creatorType(UserRole.HOMELESS)
         .homelessId(homeless.getHomelessId())
         .homelessName(homeless.getHomelessName())
         .phoneNumber(homeless.getPhoneNumber())

@@ -17,7 +17,6 @@ public class HomelessManagingService {
   private final ShelterService shelterService;
   private final HomelessService homelessService;
 
-
   public Long createHomeless(CreateHomelessRequest request) {
     Optional<Shelter> shelterOptional = shelterService.getShelterByAuthInfo(
         ShelterIdPasswordDto.builder()

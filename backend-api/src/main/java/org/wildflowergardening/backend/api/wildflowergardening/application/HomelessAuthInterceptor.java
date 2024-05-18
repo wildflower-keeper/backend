@@ -52,14 +52,9 @@ public class HomelessAuthInterceptor implements HandlerInterceptor {
       return false;
     }
     Homeless homeless = homelessOptional.get();
-    userContextHolder.setUserContext(HomelessUserContext.builder()
-        .homelessId(homeless.getId())
-        .homelessName(homeless.getName())
-        .shelterId(homeless.getShelterId())
-        .phoneNumber(homeless.getPhoneNumber())
-        .birthDate(homeless.getBirthDate())
-        .room(homeless.getRoom())
-        .build());
+    userContextHolder.setUserContext(
+        HomelessUserContext.from(homeless)
+    );
     return true;
   }
 }

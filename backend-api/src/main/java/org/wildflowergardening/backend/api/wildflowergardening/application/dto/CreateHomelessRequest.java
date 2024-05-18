@@ -23,7 +23,7 @@ public class CreateHomelessRequest {
   @Schema(description = "센터 password", example = "password_example")
   private String shelterPw;
 
-  @Schema(description = "노숙인의 스마트폰 identifier")
+  @Schema(description = "노숙인의 스마트폰 identifier", example = "test_device_id")
   private String deviceId;
 
   @Schema(description = "노숙인 방번호 (선택사항)", example = "방번호 (선택사항)")

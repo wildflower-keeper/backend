@@ -1,5 +1,6 @@
 package org.wildflowergardening.backend.core.wildflowergardening.domain.auth;
 
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,6 +11,9 @@ public class HomelessUserContext implements UserContext {
   private Long homelessId;
   private String homelessName;
   private Long shelterId;
+  private String phoneNumber;
+  private LocalDate birthDate;
+  private String room;
 
   @Override
   public UserRole getUserRole() {

@@ -1,6 +1,7 @@
 package org.wildflowergardening.backend.api.wildflowergardening.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.wildflowergardening.backend.api.wildflowergardening.application.HomelessAppService;
 import org.wildflowergardening.backend.api.wildflowergardening.application.HomelessAuthorized;
+import org.wildflowergardening.backend.api.wildflowergardening.application.HomelessManagingService;
+import org.wildflowergardening.backend.api.wildflowergardening.application.SleepoverCommandService;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.HomelessIdNameResponse;
@@ -24,7 +26,8 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Home
 @Tag(name = "노숙인 스마트폰 앱에서 호출하는 API")
 public class HomelessAppController {
 
-  private final HomelessAppService homelessAppService;
+  private final HomelessManagingService homelessManagingService;
+  private final SleepoverCommandService sleepoverCommandService;
   private final UserContextHolder userContextHolder;
 
   @Operation(summary = "노숙인 계정 생성")
@@ -32,7 +35,7 @@ public class HomelessAppController {
   public ResponseEntity<Long> createHomeless(
       @RequestBody @Valid CreateHomelessRequest request
   ) {
-    Long homelessId = homelessAppService.createHomeless(request);
+    Long homelessId = homelessManagingService.createHomeless(request);
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(homelessId);
@@ -42,7 +45,7 @@ public class HomelessAppController {
   @Operation(summary = "노숙인 정보 조회 by 디바이스 id")
   @GetMapping("/api/v1/homeless")
   public ResponseEntity<HomelessIdNameResponse> getIdNameByDeviceId(
-      @RequestHeader(value = "device-id", required = false) String deviceId
+      @RequestHeader(value = "device-id", required = false) @Parameter(example = "test_device_id") String deviceId
   ) {
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
 
@@ -56,12 +59,12 @@ public class HomelessAppController {
   @Operation(summary = "외박 신청 by 디바이스 id")
   @PostMapping("/api/v1/sleepover")
   public ResponseEntity<Long> applyForSleepover(
-      @RequestHeader(value = "device-id", required = false) String deviceId,
+      @RequestHeader(value = "device-id", required = false) @Parameter(example = "test_device_id") String deviceId,
       @RequestBody @Valid CreateSleepoverRequest request
   ) {
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
 
-    Long sleepoverId = homelessAppService.applyForSleepover(homelessContext, request);
+    Long sleepoverId = sleepoverCommandService.createSleepover(homelessContext, request);
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(sleepoverId);

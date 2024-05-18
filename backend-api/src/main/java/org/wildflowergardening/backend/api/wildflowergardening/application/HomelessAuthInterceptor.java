@@ -56,6 +56,9 @@ public class HomelessAuthInterceptor implements HandlerInterceptor {
         .homelessId(homeless.getId())
         .homelessName(homeless.getName())
         .shelterId(homeless.getShelterId())
+        .phoneNumber(homeless.getPhoneNumber())
+        .birthDate(homeless.getBirthDate())
+        .room(homeless.getRoom())
         .build());
     return true;
   }

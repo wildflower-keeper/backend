@@ -3,6 +3,8 @@ package org.wildflowergardening.backend.core.wildflowergardening.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,17 +23,26 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Entity(name = "sleepover")
-@Table(name = "sleepover")
+@Entity(name = "outing")
+@Table(name = "outing")
 @EntityListeners(AuditingEntityListener.class)
-public class Sleepover {
+public class Outing {
 
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "homeless_id", nullable = false)
+  @Column(name = "outing_type", length = 20)
+  @Enumerated(EnumType.STRING)
+  @Comment("외출 외박 유형 (DAYTIME_OUTING:외출, SLEEPOVER:외박)")
+  private Type outingType;
+
+  @Column(name = "shelter_id", nullable = false)
+  @Comment("센터 id")
+  private Long shelterId;
+
+  @Column(name = "homeless_id", nullable = true)
   @Comment("노숙인 id")
   private Long homelessId;
 
@@ -39,16 +50,16 @@ public class Sleepover {
   @Comment("노숙인 성함")
   private String homelessName;
 
-  @Column(name = "shelter_id", nullable = false)
-  @Comment("센터 id")
-  private Long shelterId;
+  @Column(name = "phone_number", nullable = true)
+  @Comment("노숙인 전화번호")
+  private String phoneNumber;
 
   @Column(name = "start_date", nullable = false)
-  @Comment("외박 시작일")
+  @Comment("외박/외출 시작일")
   private LocalDate startDate;
 
   @Column(name = "end_date", nullable = false)
-  @Comment("외박 종료일")
+  @Comment("외박/외출 종료일")
   private LocalDate endDate;
 
   @CreatedDate
@@ -59,4 +70,9 @@ public class Sleepover {
   @Column(name = "deleted_at", nullable = true)
   @Comment("삭제일시")
   private LocalDateTime deletedAt;
+
+  public enum Type {
+    DAYTIME_OUTING,    // 외출
+    SLEEPOVER          // 외박
+  }
 }

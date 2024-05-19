@@ -36,7 +36,6 @@ public class Shelter {
   @Comment("센터명")
   private String name;
 
-  // Todo encrypt
   @Column(name = "password", nullable = false)
   @Comment("비밀번호")
   private String password;

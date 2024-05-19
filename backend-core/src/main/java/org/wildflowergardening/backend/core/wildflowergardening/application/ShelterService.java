@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.ShelterIdPasswordDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterRepository;
 
@@ -29,7 +28,7 @@ public class ShelterService {
    * @return 인증 성공 시 인증한 센터, 실패 시 null
    */
   @Transactional(readOnly = true)
-  public Optional<Shelter> getShelterByAuthInfo(ShelterIdPasswordDto dto) {
-    return shelterRepository.findByIdAndPassword(dto.getShelterId(), dto.getPassword());
+  public Optional<Shelter> getShelterById(Long id) {
+    return shelterRepository.findById(id);
   }
 }

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
@@ -19,7 +20,6 @@ import org.wildflowergardening.backend.core.kernel.config.YamlPropertySourceFact
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.ShelterIdNameDto;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.ShelterIdPasswordDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
@@ -34,6 +34,7 @@ public class ShelterManagingService {
 
   private final ShelterService shelterService;
   private final SessionService sessionService;
+  private final PasswordEncoder passwordEncoder;
 
   @Value("${admin.password}")
   private String adminPassword;
@@ -44,7 +45,7 @@ public class ShelterManagingService {
     }
     Shelter shelter = Shelter.builder()
         .name(dto.getName())
-        .password(dto.getPassword())
+        .password(passwordEncoder.encode(dto.getPassword()))
         .latitude(dto.getLatitude())
         .longitude(dto.getLongitude())
         .build();
@@ -61,13 +62,11 @@ public class ShelterManagingService {
   }
 
   public SessionResponse login(ShelterLoginRequest dto) {
-    Optional<Shelter> shelterOptional = shelterService.getShelterByAuthInfo(
-        ShelterIdPasswordDto.builder()
-            .shelterId(dto.getId())
-            .password(dto.getPw())    // Todo encrypt
-            .build());
+    Optional<Shelter> shelterOptional = shelterService.getShelterById(dto.getId());
 
-    if (shelterOptional.isEmpty()) {
+    if (shelterOptional.isEmpty() || !passwordEncoder.matches(
+        dto.getPw(), shelterOptional.get().getPassword()
+    )) {
       throw new ApplicationLogicException(SHELTER_LOGIN_ID_PASSWORD_INVALID);
     }
 

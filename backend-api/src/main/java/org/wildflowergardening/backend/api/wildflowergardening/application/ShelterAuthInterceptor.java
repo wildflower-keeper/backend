@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -41,12 +40,7 @@ public class ShelterAuthInterceptor implements HandlerInterceptor {
     }
     // 센터 auth 필요 - session id header 검사
     String sessionId = request.getHeader("session-id");
-
-    if (!StringUtils.isNumeric(sessionId)) {
-      response.setStatus(HttpStatus.FORBIDDEN.value());
-      return false;
-    }
-    Optional<Session> sessionOptional = sessionService.getSession(Long.parseLong(sessionId));
+    Optional<Session> sessionOptional = sessionService.getSession(sessionId);
 
     if (sessionOptional.isEmpty()) {
       response.setStatus(HttpStatus.FORBIDDEN.value());

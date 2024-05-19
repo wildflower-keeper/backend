@@ -5,6 +5,7 @@ import static org.wildflowergardening.backend.api.wildflowergardening.applicatio
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,6 +75,7 @@ public class ShelterManagingService {
     LocalDateTime now = LocalDateTime.now();
 
     Session session = sessionService.save(Session.builder()
+        .uuid(UUID.randomUUID().toString())
         .userRole(UserRole.SHELTER)
         .userId(shelter.getId())
         .username(shelter.getName())
@@ -82,7 +84,7 @@ public class ShelterManagingService {
         .build());
 
     return SessionResponse.builder()
-        .sessionId(String.valueOf(session.getId()))
+        .sessionId(session.getUuid())
         .expiredAt(session.getExpiredAt())
         .build();
   }

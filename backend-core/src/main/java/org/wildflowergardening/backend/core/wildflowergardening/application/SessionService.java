@@ -19,7 +19,7 @@ public class SessionService {
   }
 
   @Transactional(readOnly = true)
-  public Optional<Session> getSession(Long sessionId) {
-    return sessionRepository.findById(sessionId);
+  public Optional<Session> getSession(String sessionUuid) {
+    return sessionRepository.findById(sessionUuid);
   }
 }

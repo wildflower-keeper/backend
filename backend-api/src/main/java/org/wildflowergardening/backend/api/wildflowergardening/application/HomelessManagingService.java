@@ -3,6 +3,7 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
@@ -25,7 +26,7 @@ public class HomelessManagingService {
             .build());
 
     if (shelterOptional.isEmpty()) {
-      throw new IllegalArgumentException("계정 생성 권한 없음");
+      throw new ForbiddenException("권한이 없습니다.");
     }
     return homelessService.create(Homeless.builder()
         .name(request.getName())

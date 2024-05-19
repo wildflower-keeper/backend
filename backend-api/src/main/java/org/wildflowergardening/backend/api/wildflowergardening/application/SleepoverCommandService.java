@@ -2,6 +2,7 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Outing;
@@ -17,11 +18,12 @@ public class SleepoverCommandService {
   /*
    노숙인 스마트폰 앱에서 외박신청
    */
+  @Transactional
   public Long createSleepover(
       HomelessUserContext homeless, CreateSleepoverRequest request
   ) {
     if (!homeless.getHomelessId().equals(request.getHomelessId())) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("인가된 사용자와 외박 신청자 id가 맞지 않습니다.");
     }
     return sleepoverService.create(Outing.builder()
         .outingType(Outing.Type.SLEEPOVER)

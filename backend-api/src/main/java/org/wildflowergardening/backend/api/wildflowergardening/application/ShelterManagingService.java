@@ -1,5 +1,7 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application;
 
+import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_LOGIN_ID_PASSWORD_INVALID;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
+import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateShelterRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
@@ -36,7 +40,7 @@ public class ShelterManagingService {
 
   public Long createShelter(String adminPassword, CreateShelterRequest dto) {
     if (!this.adminPassword.equals(adminPassword)) {
-      throw new IllegalArgumentException("센터 생성 권한이 없습니다.");
+      throw new ForbiddenException("권한이 없습니다.");
     }
     Shelter shelter = Shelter.builder()
         .name(dto.getName())
@@ -64,7 +68,7 @@ public class ShelterManagingService {
             .build());
 
     if (shelterOptional.isEmpty()) {
-      throw new IllegalArgumentException("authentication failed");
+      throw new ApplicationLogicException(SHELTER_LOGIN_ID_PASSWORD_INVALID);
     }
 
     Shelter shelter = shelterOptional.get();

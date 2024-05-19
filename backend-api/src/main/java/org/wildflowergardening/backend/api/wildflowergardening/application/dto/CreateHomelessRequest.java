@@ -10,22 +10,24 @@ import lombok.Getter;
 @Getter
 public class CreateHomelessRequest {
 
-  @NotBlank
-  @Size(max = 255)
+  @NotBlank(message = "성함이 비어있습니다.")
+  @Size(max = 255, message = "성함은 255자 이내로 입력해야 합니다.")
   @Schema(description = "노숙인 성함", example = "홍길동")
   private String name;
 
-  @NotNull
+  @NotNull(message = "센터 id가 null 입니다.")
   @Schema(description = "센터 id", example = "1")
   private Long shelterId;
 
-  @NotNull
+  @NotNull(message = "센터 password가 null 입니다.")
   @Schema(description = "센터 password", example = "password_example")
   private String shelterPw;
 
+  @Size(max = 255, message = "디바이스 id는 255자 이내로 입력해주세요.")
   @Schema(description = "노숙인의 디바이스 id", example = "test_device_id")
   private String deviceId;
 
+  @Size(max = 255, message = "방번호는 255자 이내로 입력해주세요.")
   @Schema(description = "노숙인 방번호 (선택사항)", example = "방번호 (선택사항)")
   private String room;
 

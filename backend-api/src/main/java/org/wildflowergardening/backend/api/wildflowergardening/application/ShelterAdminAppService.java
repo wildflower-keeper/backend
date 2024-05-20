@@ -5,14 +5,19 @@ import static org.wildflowergardening.backend.api.wildflowergardening.applicatio
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
+import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
@@ -23,6 +28,7 @@ public class ShelterAdminAppService {
 
   private final ShelterService shelterService;
   private final SessionService sessionService;
+  private final HomelessService homelessService;
   private final PasswordEncoder passwordEncoder;
 
   public SessionResponse login(ShelterLoginRequest dto) {
@@ -49,6 +55,28 @@ public class ShelterAdminAppService {
     return SessionResponse.builder()
         .sessionId(session.getUuid())
         .expiredAt(session.getExpiredAt())
+        .build();
+  }
+
+  public NumberPageResult<HomelessResponse> getHomelessPage(
+      Long shelterId, int pageNumber, int pageSize
+  ) {
+    NumberPageResult<Homeless> result = homelessService.getPage(
+        shelterId, pageNumber, pageSize
+    );
+    return NumberPageResult.<HomelessResponse>builder()
+        .items(
+            result.getItems().stream()
+                .map(homeless -> HomelessResponse.builder()
+                    .id(homeless.getId())
+                    .name(homeless.getName())
+                    .room(homeless.getRoom())
+                    .birthDate(homeless.getBirthDate())
+                    .phoneNumber(homeless.getPhoneNumber())
+                    .build())
+                .collect(Collectors.toList())
+        )
+        .next(result.getNext())
         .build();
   }
 }

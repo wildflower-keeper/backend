@@ -11,13 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterAdminAppService;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterAuthorized;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.ShelterIdNameDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.ShelterUserContext;
 
@@ -53,5 +56,23 @@ public class ShelterAdminAppController {
         .shelterId(shelterContext.getShelterId())
         .shelterName(shelterContext.getShelterName())
         .build());
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-id-example"
+  ))
+  @GetMapping("/api/v1/shelter-admin/homeless-people")
+  @Operation(summary = "노숙인 목록 조회")
+  public ResponseEntity<NumberPageResult<HomelessResponse>> getHomelessPage(
+      @RequestParam(defaultValue = "1") int pageNumber,
+      @RequestParam(defaultValue = "20") int pageSize
+  ) {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    return ResponseEntity.ok(shelterAdminAppService.getHomelessPage(
+        shelterContext.getShelterId(), pageNumber, pageSize
+    ));
   }
 }

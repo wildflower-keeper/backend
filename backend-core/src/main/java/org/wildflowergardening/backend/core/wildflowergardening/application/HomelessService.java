@@ -2,8 +2,12 @@ package org.wildflowergardening.backend.core.wildflowergardening.application;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.NumberPageNext;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.HomelessRepository;
 
@@ -27,5 +31,24 @@ public class HomelessService {
   @Transactional(readOnly = true)
   public Optional<Homeless> getOneByDeviceId(String deviceId) {
     return homelessRepository.findByDeviceId(deviceId);
+  }
+
+  @Transactional(readOnly = true)
+  public NumberPageResult<Homeless> getPage(
+      Long shelterId, int pageNumber, int pageSize
+  ) {
+    Page<Homeless> homelessPage = homelessRepository.findAllByShelterId(
+        shelterId, PageRequest.of(pageNumber - 1, pageSize)
+    );
+    int totalPages = homelessPage.getTotalPages();
+
+    return NumberPageResult.<Homeless>builder()
+        .items(homelessPage.getContent())
+        .next(NumberPageNext.builder()
+            .nextPageNumber(pageNumber < totalPages ? pageNumber + 1 : null)
+            .nextPageSize(pageSize)
+            .lastPageNumber(totalPages)
+            .build())
+        .build();
   }
 }

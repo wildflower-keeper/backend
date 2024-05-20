@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.wildflowergardening.backend.api.wildflowergardening.application.HomelessAuthInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.HomelessAuthInterceptor;
 
 @Configuration
 @RequiredArgsConstructor

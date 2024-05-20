@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.wildflowergardening.backend.api.wildflowergardening.application.HomelessAuthorized;
-import org.wildflowergardening.backend.api.wildflowergardening.application.HomelessManagingService;
-import org.wildflowergardening.backend.api.wildflowergardening.application.SleepoverCommandService;
+import org.wildflowergardening.backend.api.wildflowergardening.application.HomelessAppService;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.HomelessAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.HomelessIdNameResponse;
@@ -23,11 +22,10 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Home
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "노숙인 스마트폰 앱에서 호출하는 API")
+@Tag(name = "5. 노숙인 서비스 API")
 public class HomelessAppController {
 
-  private final HomelessManagingService homelessManagingService;
-  private final SleepoverCommandService sleepoverCommandService;
+  private final HomelessAppService homelessAppService;
   private final UserContextHolder userContextHolder;
 
   @Operation(summary = "노숙인 계정 생성")
@@ -35,7 +33,7 @@ public class HomelessAppController {
   public ResponseEntity<Long> createHomeless(
       @RequestBody @Valid CreateHomelessRequest request
   ) {
-    Long homelessId = homelessManagingService.createHomeless(request);
+    Long homelessId = homelessAppService.createHomeless(request);
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(homelessId);
@@ -64,7 +62,7 @@ public class HomelessAppController {
   ) {
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
 
-    Long sleepoverId = sleepoverCommandService.createSleepover(homelessContext, request);
+    Long sleepoverId = homelessAppService.createSleepover(homelessContext, request);
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(sleepoverId);

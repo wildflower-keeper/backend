@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.api.wildflowergardening.application;
+package org.wildflowergardening.backend.api.wildflowergardening.application.auth;
 
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;

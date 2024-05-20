@@ -3,7 +3,6 @@ package org.wildflowergardening.backend.api.wildflowergardening.presentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterAuthorized;
-import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterManagingService;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateShelterRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterAdminAppService;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
@@ -22,35 +20,18 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Shel
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "센터 계정 관련 API")
-public class ShelterManagingController {
+@Tag(name = "3. 센터 admin API")
+public class ShelterAdminAppController {
 
-  private final ShelterManagingService shelterManagingService;
+  private final ShelterAdminAppService shelterAdminAppService;
   private final UserContextHolder userContextHolder;
-
-  @PostMapping("/admin/v1/shelter")
-  @Operation(summary = "센터 생성")
-  public ResponseEntity<Long> createShelter(
-      @RequestHeader(value = "ADMIN_AUTH") String adminAuth,
-      @RequestBody @Valid CreateShelterRequest request
-  ) {
-    Long shelterId = shelterManagingService.createShelter(adminAuth, request);
-
-    return ResponseEntity.ok(shelterId);
-  }
-
-  @GetMapping("/api/v1/shelters")
-  @Operation(summary = "센터 목록 조회")
-  public ResponseEntity<List<ShelterIdNameDto>> getAllIdName() {
-    return ResponseEntity.ok(shelterManagingService.getAllIdName());
-  }
 
   @PostMapping("/api/v1/shelter/login")
   @Operation(summary = "센터 관리자 로그인")
   public ResponseEntity<SessionResponse> login(
       @RequestBody @Valid ShelterLoginRequest shelterLoginRequest
   ) {
-    return ResponseEntity.ok(shelterManagingService.login(shelterLoginRequest));
+    return ResponseEntity.ok(shelterAdminAppService.login(shelterLoginRequest));
   }
 
   @ShelterAuthorized

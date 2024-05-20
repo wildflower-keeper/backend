@@ -45,6 +45,10 @@ public class ShelterPublic {
   @Comment("센터 공용 디바이스 id")
   private String deviceId;
 
+  @Column(name = "device_name", nullable = false)
+  @Comment("센터 공용 디바이스 별명")
+  private String deviceName;
+
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   @Comment("생성일시")

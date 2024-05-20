@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.api.wildflowergardening.application;
+package org.wildflowergardening.backend.api.wildflowergardening.application.auth;
 
 
 import jakarta.servlet.http.HttpServletRequest;

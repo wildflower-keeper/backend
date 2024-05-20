@@ -1,5 +1,6 @@
 package org.wildflowergardening.backend.core.wildflowergardening.application;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,8 @@ public class SessionService {
   }
 
   @Transactional(readOnly = true)
-  public Optional<Session> getSession(String sessionUuid) {
-    return sessionRepository.findById(sessionUuid);
+  public Optional<Session> getSession(String sessionUuid, LocalDateTime now) {
+    return sessionRepository.findById(sessionUuid)
+        .filter(session -> session.getExpiredAt().isAfter(now));
   }
 }

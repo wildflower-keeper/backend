@@ -3,6 +3,7 @@ package org.wildflowergardening.backend.api.wildflowergardening.application.auth
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Shel
 @Component
 @RequiredArgsConstructor
 public class ShelterAdminAuthInterceptor implements HandlerInterceptor {
+
+  public static final String AUTH_HEADER_NAME = "session-id";
 
   private final SessionService sessionService;
   private final UserContextHolder userContextHolder;
@@ -39,8 +42,8 @@ public class ShelterAdminAuthInterceptor implements HandlerInterceptor {
       return true;
     }
     // 센터 auth 필요 - session id header 검사
-    String sessionId = request.getHeader("session-id");
-    Optional<Session> sessionOptional = sessionService.getSession(sessionId);
+    String sessionId = request.getHeader(AUTH_HEADER_NAME);
+    Optional<Session> sessionOptional = sessionService.getSession(sessionId, LocalDateTime.now());
 
     if (sessionOptional.isEmpty()) {
       response.setStatus(HttpStatus.FORBIDDEN.value());

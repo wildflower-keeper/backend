@@ -18,6 +18,8 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Home
 @RequiredArgsConstructor
 public class HomelessAuthInterceptor implements HandlerInterceptor {
 
+  public static final String AUTH_HEADER_NAME = "device-id";
+
   private final HomelessService homelessService;
   private final UserContextHolder userContextHolder;
 
@@ -39,7 +41,7 @@ public class HomelessAuthInterceptor implements HandlerInterceptor {
       return true;
     }
     // 노숙인 auth 필요 - device id header 검사
-    String deviceId = request.getHeader("device-id");
+    String deviceId = request.getHeader(AUTH_HEADER_NAME);
 
     if (StringUtils.isEmpty(deviceId)) {
       response.setStatus(HttpStatus.FORBIDDEN.value());

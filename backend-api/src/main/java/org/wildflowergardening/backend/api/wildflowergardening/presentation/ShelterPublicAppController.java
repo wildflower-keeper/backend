@@ -1,6 +1,8 @@
 package org.wildflowergardening.backend.api.wildflowergardening.presentation;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterPublicAppService;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterPublicAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterPublicAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateShelterPublicRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterPublicResponse;
@@ -22,7 +25,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Shel
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "4. 센터 공용 노숙인 서비스 API")
+@Tag(name = "센터 공용 노숙인 서비스 API")
 public class ShelterPublicAppController {
 
   private final ShelterPublicAppService shelterPublicAppService;
@@ -53,9 +56,13 @@ public class ShelterPublicAppController {
   }
 
   @PatchMapping("/api/v1/shelter-public/device-name")
+  @Parameters(@Parameter(
+      name = ShelterPublicAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "test_shelter_device_id"
+  ))
   @ShelterPublicAuthorized
   public ResponseEntity<Void> updateShelterPublicDeviceName(
-      @RequestHeader(value = "device-id", required = false) @Parameter(example = "test_shelter_device_id") String deviceId,
       @RequestBody @Valid UpdateShelterPublicDeviceNameRequest request
   ) {
     ShelterPublicUserContext shelterPublic = (ShelterPublicUserContext) userContextHolder.getUserContext();

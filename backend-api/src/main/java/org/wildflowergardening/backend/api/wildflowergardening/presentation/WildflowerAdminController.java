@@ -14,15 +14,15 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.C
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "2. 들꽃지기 admin API")
+@Tag(name = "들꽃지기 admin API")
 public class WildflowerAdminController {
 
   private final WildflowerAdminService wildflowerAdminService;
 
-  @PostMapping("/api/v1/admin/shelter")
+  @PostMapping("/api/v1/wildflower-admin/shelter")
   @Operation(summary = "센터 생성")
   public ResponseEntity<Long> createShelter(
-      @RequestHeader(value = "ADMIN_AUTH") String adminAuth,
+      @RequestHeader(value = "admin-auth") String adminAuth,
       @RequestBody @Valid CreateShelterRequest request
   ) {
     Long shelterId = wildflowerAdminService.createShelter(adminAuth, request);

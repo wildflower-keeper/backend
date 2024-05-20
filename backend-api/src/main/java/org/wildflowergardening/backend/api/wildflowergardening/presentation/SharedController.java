@@ -12,12 +12,12 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.dto.
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "1. 여러 서비스에서 공통으로 사용하는 API")
+@Tag(name = "공통 API", description = "센터 admin, 센터 공용 노숙인 서비스, 노숙인 앱에서 사용하는 공통 API")
 public class SharedController {
 
   private final SharedService sharedService;
 
-  @GetMapping("/api/v1/shelters")
+  @GetMapping("/api/v1/shared/shelters")
   @Operation(summary = "센터 목록 조회")
   public ResponseEntity<List<ShelterIdNameDto>> getAllIdName() {
     return ResponseEntity.ok(sharedService.getAllIdName());

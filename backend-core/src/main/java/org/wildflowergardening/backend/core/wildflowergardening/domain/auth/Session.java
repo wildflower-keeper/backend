@@ -19,8 +19,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Entity(name = "session")
-@Table(name = "session")
+@Entity
+@Table
 @EntityListeners(AuditingEntityListener.class)
 public class Session {
 

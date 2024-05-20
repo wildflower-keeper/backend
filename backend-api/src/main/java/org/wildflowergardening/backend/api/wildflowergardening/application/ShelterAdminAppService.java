@@ -1,6 +1,6 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application;
 
-import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_LOGIN_ID_PASSWORD_INVALID;
+import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -31,7 +31,7 @@ public class ShelterAdminAppService {
     if (shelterOptional.isEmpty() || !passwordEncoder.matches(
         dto.getPw(), shelterOptional.get().getPassword()
     )) {
-      throw new ApplicationLogicException(SHELTER_LOGIN_ID_PASSWORD_INVALID);
+      throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
     }
 
     Shelter shelter = shelterOptional.get();

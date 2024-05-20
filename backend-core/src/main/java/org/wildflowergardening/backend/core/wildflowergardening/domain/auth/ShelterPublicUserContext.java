@@ -12,6 +12,7 @@ public class ShelterPublicUserContext implements UserContext {
   private Long shelterId;
   private String shelterName;
   private String deviceId;
+  private String deviceName;
 
   public static ShelterPublicUserContext from(ShelterPublic shelterPublic) {
     return ShelterPublicUserContext.builder()
@@ -19,6 +20,7 @@ public class ShelterPublicUserContext implements UserContext {
         .shelterId(shelterPublic.getShelter().getId())
         .shelterName(shelterPublic.getShelter().getName())
         .deviceId(shelterPublic.getDeviceId())
+        .deviceName(shelterPublic.getDeviceName())
         .build();
   }
 

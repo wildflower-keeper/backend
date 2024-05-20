@@ -22,8 +22,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Entity(name = "shelter")
-@Table(name = "shelter")
+@Entity
+@Table
 @EntityListeners(AuditingEntityListener.class)
 public class Shelter {
 

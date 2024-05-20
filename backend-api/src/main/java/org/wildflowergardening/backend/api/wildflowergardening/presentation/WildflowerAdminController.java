@@ -19,7 +19,7 @@ public class WildflowerAdminController {
 
   private final WildflowerAdminService wildflowerAdminService;
 
-  @PostMapping("/admin/v1/shelter")
+  @PostMapping("/api/v1/admin/shelter")
   @Operation(summary = "센터 생성")
   public ResponseEntity<Long> createShelter(
       @RequestHeader(value = "ADMIN_AUTH") String adminAuth,

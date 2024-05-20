@@ -26,7 +26,7 @@ public class ShelterAdminAppController {
   private final ShelterAdminAppService shelterAdminAppService;
   private final UserContextHolder userContextHolder;
 
-  @PostMapping("/api/v1/shelter/login")
+  @PostMapping("/api/v1/shelter-admin/login")
   @Operation(summary = "센터 관리자 로그인")
   public ResponseEntity<SessionResponse> login(
       @RequestBody @Valid ShelterLoginRequest shelterLoginRequest
@@ -36,7 +36,7 @@ public class ShelterAdminAppController {
 
   @ShelterAuthorized
   @Deprecated
-  @GetMapping("/api/v1/shelter/interceptor-test")
+  @GetMapping("/api/v1/shelter-admin/interceptor-test")
   @Operation(summary = "센터 authorization test")
   public ResponseEntity<ShelterIdNameDto> interceptorTest(
       @RequestHeader(value = "session-id", required = false) String sessionId

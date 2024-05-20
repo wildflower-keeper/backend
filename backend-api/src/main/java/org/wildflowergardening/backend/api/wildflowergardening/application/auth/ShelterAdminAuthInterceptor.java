@@ -16,7 +16,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Shel
 
 @Component
 @RequiredArgsConstructor
-public class ShelterAuthInterceptor implements HandlerInterceptor {
+public class ShelterAdminAuthInterceptor implements HandlerInterceptor {
 
   private final SessionService sessionService;
   private final UserContextHolder userContextHolder;

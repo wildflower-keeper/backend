@@ -24,8 +24,8 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.User
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Entity(name = "outing")
-@Table(name = "outing")
+@Entity
+@Table
 @EntityListeners(AuditingEntityListener.class)
 public class Outing {
 

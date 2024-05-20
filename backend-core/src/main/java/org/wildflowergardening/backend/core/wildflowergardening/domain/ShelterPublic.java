@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,8 +27,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Entity(name = "shelter_public")
-@Table(name = "shelter_public")
+@Entity
+@Table
 @EntityListeners(AuditingEntityListener.class)
 public class ShelterPublic {
 
@@ -41,12 +42,13 @@ public class ShelterPublic {
   @Comment("센터 id")
   private Shelter shelter;
 
-  @Column(name = "device_id", nullable = false)
+  @Column(name = "device_id", nullable = false, unique = true)
   @Comment("센터 공용 디바이스 id")
   private String deviceId;
 
-  @Column(name = "device_name", nullable = false)
+  @Column(name = "device_name", nullable = true)
   @Comment("센터 공용 디바이스 별명")
+  @Setter
   private String deviceName;
 
   @CreatedDate

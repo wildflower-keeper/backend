@@ -16,6 +16,11 @@ public class ShelterService {
 
   @Transactional
   public Long save(Shelter shelter) {
+    boolean isAlreadyExist = shelterRepository.findByName(shelter.getName())
+        .isPresent();
+    if (isAlreadyExist) {
+      throw new IllegalArgumentException("이름이 " + shelter.getName() + "인 센터가 이미 존재합니다.");
+    }
     return shelterRepository.save(shelter).getId();
   }
 

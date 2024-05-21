@@ -3,6 +3,8 @@ package org.wildflowergardening.backend.core.wildflowergardening.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -60,6 +62,15 @@ public class Homeless {
   @Comment("센터 입소일")
   private LocalDate admissionDate;
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "last_location_status", nullable = true)
+  @Comment("노숙인 마지막 위치 상태")
+  private LocationStatus lastLocationStatus;
+
+  @Column(name = "last_location_tracked_at", nullable = true)
+  @Comment("마지막 위치 확인 일시")
+  private LocalDateTime lastLocationTrackedAt;
+
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   @Comment("생성일시")
@@ -69,4 +80,8 @@ public class Homeless {
   @Column(name = "last_updated_at", nullable = false)
   @Comment("마지막 수정일시")
   private LocalDateTime lastUpdatedAt;
+
+  public enum LocationStatus {
+    IN_SHELTER, OUTING
+  }
 }

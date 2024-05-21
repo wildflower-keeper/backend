@@ -14,8 +14,8 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.Home
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Outing;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.HomelessUserContext;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
@@ -56,8 +56,7 @@ public class HomelessAppService {
     if (!homeless.getHomelessId().equals(request.getHomelessId())) {
       throw new IllegalArgumentException("인가된 사용자와 외박 신청자 id가 맞지 않습니다.");
     }
-    return sleepoverService.create(Outing.builder()
-        .outingType(Outing.Type.SLEEPOVER)
+    return sleepoverService.create(Sleepover.builder()
         .creatorType(UserRole.HOMELESS)
         .homelessId(homeless.getHomelessId())
         .homelessName(homeless.getHomelessName())

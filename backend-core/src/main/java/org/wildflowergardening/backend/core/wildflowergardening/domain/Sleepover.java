@@ -3,7 +3,6 @@ package org.wildflowergardening.backend.core.wildflowergardening.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,17 +26,12 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.User
 @Entity
 @Table
 @EntityListeners(AuditingEntityListener.class)
-public class Outing {
+public class Sleepover {
 
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Column(name = "outing_type", length = 20)
-  @Enumerated(EnumType.STRING)
-  @Comment("외출 외박 유형 (DAYTIME_OUTING:외출, SLEEPOVER:외박)")
-  private Type outingType;
 
   @Enumerated
   @Column(name = "creator_type", nullable = false)
@@ -76,9 +70,4 @@ public class Outing {
   @Column(name = "deleted_at", nullable = true)
   @Comment("삭제일시")
   private LocalDateTime deletedAt;
-
-  public enum Type {
-    DAYTIME_OUTING,    // 외출
-    SLEEPOVER          // 외박
-  }
 }

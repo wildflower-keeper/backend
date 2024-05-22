@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.HomelessAuthInterceptor;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterAdminAuthInterceptor;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterPublicAuthInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.HomelessAuthInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterPublicAuthInterceptor;
 
 @Configuration
 @RequiredArgsConstructor

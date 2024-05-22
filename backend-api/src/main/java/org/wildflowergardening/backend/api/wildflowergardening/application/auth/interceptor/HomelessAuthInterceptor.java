@@ -1,27 +1,26 @@
-package org.wildflowergardening.backend.api.wildflowergardening.application.auth;
+package org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor;
 
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.HomelessUserContext;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.HomelessAppJwtProvider;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.HomelessAuthorized;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 
 @Component
 @RequiredArgsConstructor
 public class HomelessAuthInterceptor implements HandlerInterceptor {
 
-  public static final String AUTH_HEADER_NAME = "device-id";
+  public static final String AUTH_HEADER_NAME = "access-token";
 
-  private final HomelessService homelessService;
   private final UserContextHolder userContextHolder;
+  private final HomelessAppJwtProvider homelessAppJwtProvider;
 
   /**
    * @return true: 다음 단계 진행 (요청 마저 처리), false: 다음단계 진행하지 않음 (요청 처리 종료)
@@ -40,23 +39,21 @@ public class HomelessAuthInterceptor implements HandlerInterceptor {
     if (homelessAuthorized == null) {
       return true;
     }
-    // 노숙인 auth 필요 - device id header 검사
-    String deviceId = request.getHeader(AUTH_HEADER_NAME);
+    // 노숙인 auth 필요
+    String jwt = request.getHeader(AUTH_HEADER_NAME);
 
-    if (StringUtils.isEmpty(deviceId)) {
+    if (StringUtils.isEmpty(jwt)) {
       response.setStatus(HttpStatus.FORBIDDEN.value());
       return false;
     }
-    Optional<Homeless> homelessOptional = homelessService.getOneByDeviceId(deviceId);
+    try {
+      HomelessUserContext userContext = homelessAppJwtProvider.getUserContextFrom(jwt);
+      userContextHolder.setUserContext(userContext);
+      return true;
 
-    if (homelessOptional.isEmpty()) {
+    } catch (Exception e) {
       response.setStatus(HttpStatus.FORBIDDEN.value());
       return false;
     }
-    Homeless homeless = homelessOptional.get();
-    userContextHolder.setUserContext(
-        HomelessUserContext.from(homeless)
-    );
-    return true;
   }
 }

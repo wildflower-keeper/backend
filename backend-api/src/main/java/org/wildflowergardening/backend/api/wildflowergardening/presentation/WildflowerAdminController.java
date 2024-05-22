@@ -1,6 +1,7 @@
 package org.wildflowergardening.backend.api.wildflowergardening.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class WildflowerAdminController {
   @PostMapping("/api/v1/wildflower-admin/shelter")
   @Operation(summary = "센터 생성")
   public ResponseEntity<Long> createShelter(
-      @RequestHeader(value = "admin-auth") String adminAuth,
+      @RequestHeader(value = "admin-auth") @Parameter(example = "test") String adminAuth,
       @RequestBody @Valid CreateShelterRequest request
   ) {
     Long shelterId = wildflowerAdminService.createShelter(adminAuth, request);

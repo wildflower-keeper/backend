@@ -1,9 +1,9 @@
-package org.wildflowergardening.backend.core.wildflowergardening.domain.auth;
+package org.wildflowergardening.backend.api.wildflowergardening.application.auth.user;
 
-import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @Getter
 @Builder
@@ -12,18 +12,12 @@ public class HomelessUserContext implements UserContext {
   private Long homelessId;
   private String homelessName;
   private Long shelterId;
-  private String phoneNumber;
-  private LocalDate birthDate;
-  private String room;
 
   public static HomelessUserContext from(Homeless homeless) {
     return HomelessUserContext.builder()
         .homelessId(homeless.getId())
         .homelessName(homeless.getName())
-        .shelterId(homeless.getShelterId())
-        .phoneNumber(homeless.getPhoneNumber())
-        .birthDate(homeless.getBirthDate())
-        .room(homeless.getRoom())
+        .shelterId(homeless.getShelter().getId())
         .build();
   }
 

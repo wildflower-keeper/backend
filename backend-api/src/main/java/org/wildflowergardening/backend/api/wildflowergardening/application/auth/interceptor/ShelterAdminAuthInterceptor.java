@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.api.wildflowergardening.application.auth;
+package org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor;
 
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,16 +10,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.ShelterUserContext;
 
 @Component
 @RequiredArgsConstructor
 public class ShelterAdminAuthInterceptor implements HandlerInterceptor {
 
-  public static final String AUTH_HEADER_NAME = "session-id";
+  public static final String AUTH_HEADER_NAME = "session-token";
 
   private final SessionService sessionService;
   private final UserContextHolder userContextHolder;
@@ -41,9 +42,9 @@ public class ShelterAdminAuthInterceptor implements HandlerInterceptor {
     if (shelterAuthAnnotation == null) {
       return true;
     }
-    // 센터 auth 필요 - session id header 검사
-    String sessionId = request.getHeader(AUTH_HEADER_NAME);
-    Optional<Session> sessionOptional = sessionService.getSession(sessionId, LocalDateTime.now());
+    // 센터 auth 필요
+    String sessionToken = request.getHeader(AUTH_HEADER_NAME);
+    Optional<Session> sessionOptional = sessionService.getSession(sessionToken, LocalDateTime.now());
 
     if (sessionOptional.isEmpty()) {
       response.setStatus(HttpStatus.FORBIDDEN.value());

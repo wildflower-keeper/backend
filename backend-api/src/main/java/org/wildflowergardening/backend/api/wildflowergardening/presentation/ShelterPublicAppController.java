@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterPublicAppService;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterPublicAuthInterceptor;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterPublicAuthorized;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterPublicAuthorized;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterPublicAuthInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterPublicUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateShelterPublicRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterPublicResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateShelterPublicDeviceNameRequest;
-import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.ShelterPublicUserContext;
 
 @RestController
 @RequiredArgsConstructor

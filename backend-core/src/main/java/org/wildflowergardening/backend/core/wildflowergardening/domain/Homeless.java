@@ -5,9 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,9 +42,10 @@ public class Homeless {
   @Comment("노숙인 성함")
   private String name;
 
-  @Column(name = "shelter_id", nullable = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(name = "shelter_id", nullable = false)
   @Comment("센터 id")
-  private Long shelterId;
+  private Shelter shelter;
 
   @Column(name = "device_id", nullable = true, unique = true)
   @Comment("노숙인의 디바이스 id")

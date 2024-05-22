@@ -36,6 +36,11 @@ public class HomelessService {
   }
 
   @Transactional(readOnly = true)
+  public Optional<Homeless> getOneById(Long id) {
+    return homelessRepository.findById(id);
+  }
+
+  @Transactional(readOnly = true)
   public NumberPageResult<Homeless> getPage(
       Long shelterId, int pageNumber, int pageSize
   ) {

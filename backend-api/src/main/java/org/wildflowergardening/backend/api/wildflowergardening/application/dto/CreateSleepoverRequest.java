@@ -11,10 +11,6 @@ import lombok.Getter;
 public class CreateSleepoverRequest {
 
   @NotNull
-  @Schema(description = "노숙인 id", example = "1")
-  private Long homelessId;
-
-  @NotNull
   @Schema(description = "외박 시작일", example = "2024-08-01")
   private LocalDate startDate;
 

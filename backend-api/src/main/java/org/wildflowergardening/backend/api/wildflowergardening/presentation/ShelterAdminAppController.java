@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterAdminAppService;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterAdminAuthInterceptor;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterAuthorized;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
-import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.ShelterIdNameDto;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.ShelterUserContext;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +44,7 @@ public class ShelterAdminAppController {
   @Parameters(@Parameter(
       name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
       in = ParameterIn.HEADER,
-      example = "session-id-example"
+      example = "session-token-example"
   ))
   @Deprecated
   @GetMapping("/api/v1/shelter-admin/interceptor-test")
@@ -62,7 +62,7 @@ public class ShelterAdminAppController {
   @Parameters(@Parameter(
       name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
       in = ParameterIn.HEADER,
-      example = "session-id-example"
+      example = "session-token-example"
   ))
   @GetMapping("/api/v1/shelter-admin/homeless-people")
   @Operation(summary = "노숙인 목록 조회")

@@ -1,7 +1,7 @@
-package org.wildflowergardening.backend.core.wildflowergardening.application;
+package org.wildflowergardening.backend.api.wildflowergardening.application.auth;
 
 import org.springframework.stereotype.Component;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserContext;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.UserContext;
 
 @Component
 public class UserContextHolder {

@@ -11,9 +11,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
-import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.HomelessAppJwtProvider;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
@@ -21,7 +24,6 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.HomelessUserContext;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @Service
@@ -32,8 +34,9 @@ public class HomelessAppService {
   private final ShelterService shelterService;
   private final HomelessService homelessService;
   private final SleepoverService sleepoverService;
+  private final HomelessAppJwtProvider homelessAppJwtProvider;
 
-  public Long createHomeless(CreateHomelessRequest request) {
+  public CreateHomelessResponse createHomeless(CreateHomelessRequest request) {
     Optional<Shelter> shelterOptional = shelterService.getShelterById(request.getShelterId());
 
     if (shelterOptional.isEmpty() || !passwordEncoder.matches(
@@ -41,30 +44,50 @@ public class HomelessAppService {
     )) {
       throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
     }
-    return homelessService.create(Homeless.builder()
+    Long homelessId = homelessService.create(Homeless.builder()
         .name(request.getName())
-        .shelterId(request.getShelterId())
+        .shelter(shelterOptional.get())
         .deviceId(request.getDeviceId())
         .room(request.getRoom())
         .birthDate(request.getBirthDate())
         .phoneNumber(request.getPhoneNumber())
         .admissionDate(request.getAdmissionDate())
         .build());
+
+    String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
+        .homelessId(homelessId)
+        .homelessName(request.getName())
+        .shelterId(request.getShelterId())
+        .build());
+
+    return CreateHomelessResponse.builder()
+        .homelessId(homelessId)
+        .accessToken(token)
+        .build();
+  }
+
+
+  public HomelessMainResponse getHomelessById(Long homelessId) {
+    return homelessService.getOneById(homelessId)
+        .map(homeless -> HomelessMainResponse.builder()
+            .id(homeless.getId())
+            .name(homeless.getName())
+            .shelterName(homeless.getShelter().getName())
+            .build())
+        .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
   }
 
   @Transactional
-  public Long createSleepover(
-      HomelessUserContext homeless, CreateSleepoverRequest request
-  ) {
-    if (!homeless.getHomelessId().equals(request.getHomelessId())) {
-      throw new ForbiddenException("인가된 사용자와 외박 신청자 id가 맞지 않습니다.");
-    }
+  public Long createSleepover(Long homelessId, CreateSleepoverRequest request) {
+    Homeless homeless = homelessService.getOneById(homelessId)
+        .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+
     return sleepoverService.create(Sleepover.builder()
         .creatorType(UserRole.HOMELESS)
-        .homelessId(homeless.getHomelessId())
-        .homelessName(homeless.getHomelessName())
+        .homelessId(homeless.getId())
+        .homelessName(homeless.getName())
         .phoneNumber(homeless.getPhoneNumber())
-        .shelterId(homeless.getShelterId())
+        .shelterId(homeless.getShelter().getId())
         .startDate(request.getStartDate())
         .endDate(request.getEndDate())
         .build());

@@ -61,7 +61,7 @@ public class ShelterAdminAppService {
         .build());
 
     return SessionResponse.builder()
-        .sessionId(session.getUuid())
+        .sessionToken(session.getUuid())
         .expiredAt(session.getExpiredAt())
         .build();
   }

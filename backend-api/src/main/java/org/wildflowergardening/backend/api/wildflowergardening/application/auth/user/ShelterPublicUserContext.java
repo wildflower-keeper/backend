@@ -1,8 +1,9 @@
-package org.wildflowergardening.backend.core.wildflowergardening.domain.auth;
+package org.wildflowergardening.backend.api.wildflowergardening.application.auth.user;
 
 import lombok.Builder;
 import lombok.Getter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterPublic;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @Getter
 @Builder

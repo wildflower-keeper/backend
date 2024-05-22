@@ -1,13 +1,13 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application.dto;
 
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class SessionResponse {
+public class HomelessMainResponse {
 
-  private String sessionToken;
-  private LocalDateTime expiredAt;
+  private Long id;
+  private String name;
+  private String shelterName;
 }

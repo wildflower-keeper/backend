@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.api.wildflowergardening.application.auth;
+package org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation;
 
 import static java.lang.annotation.ElementType.METHOD;
 

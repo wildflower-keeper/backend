@@ -14,7 +14,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 @Service
 @RequiredArgsConstructor
 @PropertySource(
-    value = "classpath:application-core-${spring.profiles.active:dev}.yaml",
+    value = "classpath:application-${spring.profiles.active:dev}.yaml",
     factory = YamlPropertySourceFactory.class
 )
 public class WildflowerAdminService {

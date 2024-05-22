@@ -1,15 +1,15 @@
 # ☘ 들꽃가드닝 Backend
-## 1. API 실행가이드
+## 1. local profile API 실행가이드
 ### 1.1. build
 ```shell
-SPRING_PROFILES_ACTIVE=local ADMIN_PASSWORD=example RDS_USERNAME=example RDS_PW=example ./gradlew clean build
+SPRING_PROFILES_ACTIVE=local RDS_USERNAME=root RDS_PW=test ./gradlew clean build
 ```
-- SPRING_PROFILES_ACTIVE : local, prod; 로컬에서 실행 시 local 로 지정
-- ADMIN_PASSWORD : 들꽃지기 관리자 계정 비밀번호; 로컬에서 실행시 임의로 지정
-- RDS_USERNAME : DB username; 로컬에서 실행시 로컬 RDS username 입력
-- RDS_PW : DB password; 로컬에서 실행시 로컬 RDS password 입력
-
-`/backend-api/build/libs`에 backend-api-1.0.0.jar 생성되었으면 성공  
+- environment variables (local)
+  - SPRING_PROFILES_ACTIVE : local, prod; 로컬에서 실행 시 local 로 지정
+  - RDS_USERNAME : DB username; 로컬에서 실행시 로컬 RDS username 입력
+  - RDS_PW : DB password; 로컬에서 실행시 로컬 RDS password 입력
+- prod profile 은 ADMIN_PASSWORD 도 지정이 필요함
+- `/backend-api/build/libs`에 backend-api-1.0.0.jar 생성되었으면 성공  
 
 ### 1.2. 실행
 프로젝트 루트 경로에서 아래 명령 실행

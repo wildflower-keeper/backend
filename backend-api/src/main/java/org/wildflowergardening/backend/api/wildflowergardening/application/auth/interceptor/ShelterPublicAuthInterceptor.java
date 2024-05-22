@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.api.wildflowergardening.application.auth;
+package org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor;
 
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,10 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterPublicAuthorized;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterPublicUserContext;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterPublicService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterPublic;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.ShelterPublicUserContext;
 
 @Component
 @RequiredArgsConstructor

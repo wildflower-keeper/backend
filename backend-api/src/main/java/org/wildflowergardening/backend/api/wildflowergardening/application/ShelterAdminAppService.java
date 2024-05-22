@@ -2,8 +2,11 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.S
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
@@ -26,9 +30,10 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.User
 @RequiredArgsConstructor
 public class ShelterAdminAppService {
 
-  private final ShelterService shelterService;
   private final SessionService sessionService;
+  private final ShelterService shelterService;
   private final HomelessService homelessService;
+  private final SleepoverService sleepoverService;
   private final PasswordEncoder passwordEncoder;
 
   public SessionResponse login(ShelterLoginRequest dto) {
@@ -64,6 +69,12 @@ public class ShelterAdminAppService {
     NumberPageResult<Homeless> result = homelessService.getPage(
         shelterId, pageNumber, pageSize
     );
+    List<Long> homelessIds = result.getItems().stream()
+        .map(Homeless::getId)
+        .toList();
+    Set<Long> sleepoverHomelessIds = sleepoverService.filterSleepoverHomelessIds(
+        homelessIds, LocalDate.now()
+    );
     return NumberPageResult.<HomelessResponse>builder()
         .items(
             result.getItems().stream()
@@ -71,6 +82,7 @@ public class ShelterAdminAppService {
                     .id(homeless.getId())
                     .name(homeless.getName())
                     .room(homeless.getRoom())
+                    .todaySleepover(sleepoverHomelessIds.contains(homeless.getId()))
                     .birthDate(homeless.getBirthDate())
                     .phoneNumber(homeless.getPhoneNumber())
                     .build())

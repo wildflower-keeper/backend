@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,6 +72,7 @@ public class ShelterAdminAppController {
       @RequestParam(defaultValue = "20") int pageSize
   ) {
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    LocalDate now = LocalDate.now();
     return ResponseEntity.ok(shelterAdminAppService.getHomelessPage(
         shelterContext.getShelterId(), pageNumber, pageSize
     ));

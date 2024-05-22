@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
+import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
@@ -54,7 +55,7 @@ public class HomelessAppService {
       HomelessUserContext homeless, CreateSleepoverRequest request
   ) {
     if (!homeless.getHomelessId().equals(request.getHomelessId())) {
-      throw new IllegalArgumentException("인가된 사용자와 외박 신청자 id가 맞지 않습니다.");
+      throw new ForbiddenException("인가된 사용자와 외박 신청자 id가 맞지 않습니다.");
     }
     return sleepoverService.create(Sleepover.builder()
         .creatorType(UserRole.HOMELESS)

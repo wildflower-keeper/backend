@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.HomelessIdNameResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.HomelessUserContext;
 
@@ -59,7 +61,7 @@ public class HomelessAppController {
   }
 
   @HomelessAuthorized
-  @Operation(summary = "외박 신청 by 디바이스 id")
+  @Operation(summary = "외박 신청")
   @Parameters(@Parameter(
       name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
       in = ParameterIn.HEADER,
@@ -75,5 +77,24 @@ public class HomelessAppController {
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(sleepoverId);
+  }
+
+  @HomelessAuthorized
+  @Operation(summary = "위치 상태 update")
+  @Parameters(@Parameter(
+      name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "test_device_id"
+  ))
+  @PostMapping("/api/v1/homeless-app/location")
+  public ResponseEntity<Void> updateLocationStatus(
+      @RequestBody @Valid UpdateLocationRequest request
+  ) {
+    HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+
+    homelessAppService.updateLocationStatus(
+        homelessContext.getHomelessId(), request.getLocationStatus(), LocalDateTime.now()
+    );
+    return ResponseEntity.ok().build();
   }
 }

@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -65,10 +66,12 @@ public class Homeless {
   @Enumerated(EnumType.STRING)
   @Column(name = "last_location_status", nullable = true)
   @Comment("노숙인 마지막 위치 상태")
+  @Setter
   private LocationStatus lastLocationStatus;
 
   @Column(name = "last_location_tracked_at", nullable = true)
   @Comment("마지막 위치 확인 일시")
+  @Setter
   private LocalDateTime lastLocationTrackedAt;
 
   @CreatedDate

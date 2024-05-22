@@ -2,6 +2,7 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.Home
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.HomelessUserContext;
@@ -46,9 +48,7 @@ public class HomelessAppService {
         .admissionDate(request.getAdmissionDate())
         .build());
   }
-  /*
-   노숙인 스마트폰 앱에서 외박신청
-   */
+
   @Transactional
   public Long createSleepover(
       HomelessUserContext homeless, CreateSleepoverRequest request
@@ -65,5 +65,11 @@ public class HomelessAppService {
         .startDate(request.getStartDate())
         .endDate(request.getEndDate())
         .build());
+  }
+
+  public void updateLocationStatus(
+      Long homelessId, LocationStatus lastLocationStatus, LocalDateTime lastLocationTrackedAt
+  ) {
+    homelessService.updateLocationStatus(homelessId, lastLocationStatus, lastLocationTrackedAt);
   }
 }

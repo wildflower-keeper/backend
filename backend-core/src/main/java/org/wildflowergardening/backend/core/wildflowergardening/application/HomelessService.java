@@ -1,5 +1,6 @@
 package org.wildflowergardening.backend.core.wildflowergardening.application;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.NumberPageNext;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.HomelessRepository;
 
 @Service
@@ -50,5 +52,16 @@ public class HomelessService {
             .lastPageNumber(totalPages)
             .build())
         .build();
+  }
+
+  @Transactional
+  public void updateLocationStatus(
+      Long homelessId, LocationStatus lastLocationStatus, LocalDateTime lastLocationTrackedAt
+  ) {
+    Homeless homeless = homelessRepository.findById(homelessId)
+        .orElseThrow(() -> new IllegalArgumentException("Homeless not found"));
+
+    homeless.setLastLocationStatus(lastLocationStatus);
+    homeless.setLastLocationTrackedAt(lastLocationTrackedAt);
   }
 }

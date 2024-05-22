@@ -97,4 +97,21 @@ public class HomelessAppController {
     );
     return ResponseEntity.ok().build();
   }
+
+  @HomelessAuthorized
+  @Operation(summary = "금일 외박 신청 상태 여부 조회")
+  @Parameters(@Parameter(
+      name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "test_device_id"
+  ))
+  @GetMapping("/api/v1/homeless-app/is-sleepover-tonight")
+  public ResponseEntity<Boolean> isSleepoverTonight() {
+    HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+
+    boolean isSleepoverTonight = homelessAppService.isSleepoverTonight(
+        homelessContext.getHomelessId()
+    );
+    return ResponseEntity.ok(isSleepoverTonight);
+  }
 }

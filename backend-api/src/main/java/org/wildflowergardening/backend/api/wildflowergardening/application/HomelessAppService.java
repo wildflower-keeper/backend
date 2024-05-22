@@ -2,7 +2,9 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -72,5 +74,11 @@ public class HomelessAppService {
       Long homelessId, LocationStatus lastLocationStatus, LocalDateTime lastLocationTrackedAt
   ) {
     homelessService.updateLocationStatus(homelessId, lastLocationStatus, lastLocationTrackedAt);
+  }
+
+  @Transactional(readOnly = true)
+  public boolean isSleepoverTonight(Long homelessId) {
+    return !sleepoverService.filterSleepoverHomelessIds(List.of(homelessId), LocalDate.now())
+        .isEmpty();
   }
 }

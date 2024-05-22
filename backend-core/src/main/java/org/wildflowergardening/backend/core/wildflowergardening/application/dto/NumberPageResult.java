@@ -9,14 +9,15 @@ import lombok.Getter;
 public class NumberPageResult<T> {
 
   private List<T> items;
-  private NumberPageNext next;
+  private PageInfoResult pagination;
 
   @Builder
   @Getter
-  public static class NumberPageNext {
+  public static class PageInfoResult {
 
+    private int currentPageNumber;
     private Integer nextPageNumber;
-    private int nextPageSize;
+    private int pageSize;
     private long lastPageNumber;
   }
 }

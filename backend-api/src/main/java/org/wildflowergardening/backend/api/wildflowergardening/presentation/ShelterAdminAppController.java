@@ -17,10 +17,10 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.Shelt
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.UserContextHolder;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.ShelterIdNameDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.ShelterUserContext;
 
@@ -66,9 +66,9 @@ public class ShelterAdminAppController {
   ))
   @GetMapping("/api/v1/shelter-admin/homeless-people")
   @Operation(summary = "노숙인 목록 조회")
-  public ResponseEntity<NumberPageResult<HomelessResponse>> getHomelessPage(
-      @RequestParam(defaultValue = "1") int pageNumber,
-      @RequestParam(defaultValue = "20") int pageSize
+  public ResponseEntity<NumberPageResponse<HomelessResponse>> getHomelessPage(
+      @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
+      @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
   ) {
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
     return ResponseEntity.ok(shelterAdminAppService.getHomelessPage(

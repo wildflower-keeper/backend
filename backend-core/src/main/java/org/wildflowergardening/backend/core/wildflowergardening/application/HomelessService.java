@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.NumberPageNext;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.PageInfoResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.HomelessRepository;
@@ -46,9 +46,10 @@ public class HomelessService {
 
     return NumberPageResult.<Homeless>builder()
         .items(homelessPage.getContent())
-        .next(NumberPageNext.builder()
+        .pagination(PageInfoResult.builder()
+            .currentPageNumber(pageNumber)
             .nextPageNumber(pageNumber < totalPages ? pageNumber + 1 : null)
-            .nextPageSize(pageSize)
+            .pageSize(pageSize)
             .lastPageNumber(totalPages)
             .build())
         .build();

@@ -19,7 +19,8 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 
@@ -47,14 +48,17 @@ public class ShelterAdminAppController {
   ))
   @GetMapping("/api/v1/shelter-admin/homeless-people")
   @Operation(summary = "노숙인 목록 조회")
-  public ResponseEntity<HomelessPageResponse> getHomelessPage(
+  public ResponseEntity<NumberPageResponse<HomelessResponse>> getHomelessPage(
       @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
-      @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
+      @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize,
+      @RequestParam(required = false) @Parameter(description = "조회 날짜 (for 외박신청 기준일)") LocalDate targetDay
   ) {
+    if (targetDay == null) {
+      targetDay = LocalDate.now();
+    }
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
-    LocalDate today = LocalDate.now();
     return ResponseEntity.ok(shelterAdminAppService.getHomelessPage(
-        shelterContext.getShelterId(), pageNumber, pageSize, today
+        shelterContext.getShelterId(), pageNumber, pageSize, targetDay
     ));
   }
 }

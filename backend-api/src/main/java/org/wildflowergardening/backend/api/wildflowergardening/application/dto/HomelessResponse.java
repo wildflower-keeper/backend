@@ -22,8 +22,8 @@ public class HomelessResponse {
   @Schema(description = "노숙인 생년월일", example = "1970-01-01")
   private LocalDate birthDate;
 
-  @Schema(description = "금일 외박 신청 여부", example = "false")
-  private Boolean todaySleepover;
+  @Schema(description = "targetDay 외박 신청 여부", example = "false")
+  private Boolean targetDaySleepover;
 
   @Schema(description = "마지막 위치 상태")
   private LocationStatus lastLocationStatus;

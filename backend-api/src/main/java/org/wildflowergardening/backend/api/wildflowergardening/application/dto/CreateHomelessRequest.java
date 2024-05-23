@@ -2,6 +2,7 @@ package org.wildflowergardening.backend.api.wildflowergardening.application.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ public class CreateHomelessRequest {
   @Schema(description = "센터 password", example = "password_example")
   private String shelterPw;
 
+  @NotEmpty
   @Size(max = 255, message = "디바이스 id는 255자 이내로 입력해주세요.")
   @Schema(description = "노숙인의 디바이스 id", example = "test_device_id")
   private String deviceId;

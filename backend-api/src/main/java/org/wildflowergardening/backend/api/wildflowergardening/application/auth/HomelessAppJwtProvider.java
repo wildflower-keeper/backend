@@ -22,6 +22,10 @@ import org.wildflowergardening.backend.core.kernel.config.YamlPropertySourceFact
 )
 public class HomelessAppJwtProvider {
 
+  private static final String HOMELESS_ID_CLAIM_NAME = "homelessId";
+  private static final String HOMELESS_NAME_CLAIM_NAME = "homelessName";
+  private static final String SHELTER_ID_CLAIM_NAME = "shelterId";
+
   private final SecretKey key;
 
   public HomelessAppJwtProvider(
@@ -33,9 +37,9 @@ public class HomelessAppJwtProvider {
   public String createToken(HomelessUserContext homelessUserContext) {
     Map<String, String> claims = new HashMap<>();
 
-    claims.put("homelessId", String.valueOf(homelessUserContext.getHomelessId()));
-    claims.put("homelessName", homelessUserContext.getHomelessName());
-    claims.put("shelterId", String.valueOf(homelessUserContext.getShelterId()));
+    claims.put(HOMELESS_ID_CLAIM_NAME, String.valueOf(homelessUserContext.getHomelessId()));
+    claims.put(HOMELESS_NAME_CLAIM_NAME, homelessUserContext.getHomelessName());
+    claims.put(SHELTER_ID_CLAIM_NAME, String.valueOf(homelessUserContext.getShelterId()));
 
     return Jwts.builder()
         .subject(String.valueOf(homelessUserContext.getUserId()))
@@ -53,9 +57,9 @@ public class HomelessAppJwtProvider {
     Claims claims = jwtParser.parseSignedClaims(token)
         .getPayload();
 
-    Long homelessId = Long.parseLong((String) claims.get("homelessId"));
-    Long shelterId = Long.parseLong((String) claims.get("shelterId"));
-    String homelessName = (String) claims.get("homelessName");
+    Long homelessId = Long.parseLong((String) claims.get(HOMELESS_ID_CLAIM_NAME));
+    String homelessName = (String) claims.get(HOMELESS_NAME_CLAIM_NAME);
+    Long shelterId = Long.parseLong((String) claims.get(SHELTER_ID_CLAIM_NAME));
 
     return HomelessUserContext.builder()
         .homelessId(homelessId)

@@ -22,7 +22,6 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.ShelterIdNameDto;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,24 +37,6 @@ public class ShelterAdminAppController {
       @RequestBody @Valid ShelterLoginRequest shelterLoginRequest
   ) {
     return ResponseEntity.ok(shelterAdminAppService.login(shelterLoginRequest));
-  }
-
-  @ShelterAuthorized
-  @Parameters(@Parameter(
-      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
-      in = ParameterIn.HEADER,
-      example = "session-token-example"
-  ))
-  @Deprecated
-  @GetMapping("/api/v1/shelter-admin/interceptor-test")
-  @Operation(summary = "센터 authorization test")
-  public ResponseEntity<ShelterIdNameDto> interceptorTest() {
-    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
-
-    return ResponseEntity.ok(ShelterIdNameDto.builder()
-        .shelterId(shelterContext.getShelterId())
-        .shelterName(shelterContext.getShelterName())
-        .build());
   }
 
   @ShelterAuthorized

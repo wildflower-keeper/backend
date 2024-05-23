@@ -13,9 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageResponse.PageInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
@@ -66,8 +66,8 @@ public class ShelterAdminAppService {
         .build();
   }
 
-  public NumberPageResponse<HomelessResponse> getHomelessPage(
-      Long shelterId, int pageNumber, int pageSize
+  public HomelessPageResponse getHomelessPage(
+      Long shelterId, int pageNumber, int pageSize, LocalDate today
   ) {
     NumberPageResult<Homeless> result = homelessService.getPage(
         shelterId, pageNumber, pageSize
@@ -76,12 +76,11 @@ public class ShelterAdminAppService {
         .map(Homeless::getId)
         .toList();
     Set<Long> sleepoverHomelessIds = sleepoverService.filterSleepoverHomelessIds(
-        homelessIds,
-        LocalDate.now()
+        homelessIds, today
     );
     PageInfoResult resultNext = result.getPagination();
 
-    return NumberPageResponse.<HomelessResponse>builder()
+    return HomelessPageResponse.builder()
         .items(
             result.getItems().stream()
                 .map(homeless -> HomelessResponse.builder()
@@ -103,6 +102,7 @@ public class ShelterAdminAppService {
             .pageSize(resultNext.getPageSize())
             .lastPageNumber(resultNext.getLastPageNumber())
             .build())
+        .today(today)
         .build();
   }
 }

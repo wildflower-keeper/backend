@@ -23,13 +23,20 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
       @Param("targetDate") LocalDate targetDate
   );
 
-  @Query("select s from Sleepover s join fetch s.homeless "
+  @Query(" select s from Sleepover s join fetch s.homeless "
       + " where s.shelterId = :shelterId "
       + " and "
       + " s.startDate <= :targetDate and s.endDate > :targetDate ")
   Page<Sleepover> findAllByShelterIdAndTargetDate(
-      @Param("shelterId") Long shelterId,
-      @Param("targetDate") LocalDate targetDate,
+      @Param("shelterId") Long shelterId, @Param("targetDate") LocalDate targetDate,
       Pageable pageable
+  );
+
+  @Query(" select count(s) from Sleepover s "
+      + " where s.shelterId = :shelterId"
+      + " and "
+      + " s.startDate <= :targetDate and s.endDate > :targetDate ")
+  Long countByTargetDate(
+      @Param("shelterId") Long shelterId, @Param("targetDate") LocalDate targetDate
   );
 }

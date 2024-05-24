@@ -19,7 +19,7 @@ public class HomelessSleepoverFilterPager implements HomelessFilterPager {
   @Override
   public NumberPageResponse<HomelessResponse> getPage(HomelessPageRequest pageRequest) {
     NumberPageResult<Sleepover> result = sleepoverService.getPage(
-        pageRequest.getShelterId(), pageRequest.getTargetDate(),
+        pageRequest.getShelterId(), pageRequest.getSleepoverTargetDate(),
         pageRequest.getPageNumber(), pageRequest.getPageSize()
     );
     return NumberPageResponse.<HomelessResponse>builder()

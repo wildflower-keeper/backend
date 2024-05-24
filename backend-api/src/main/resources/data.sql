@@ -16,4 +16,4 @@ INSERT INTO wildflower_gardening.homeless (admission_date, birth_date, created_a
 -- 3. 외박 신청 장부
 INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id) VALUES (2, '2024-09-01', '2024-05-24', '2024-05-24 13:07:02.277768', null, 2, 1, 1);
 INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id) VALUES (2, '2024-09-01', '2024-05-24', '2024-05-24 13:09:43.303959', null, 4, 2, 1);
-INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id) VALUES (2, '2024-05-24', '2024-05-24', '2024-05-24 13:10:36.950112', null, 5, 3, 1);
+INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id) VALUES (2, '2024-05-25', '2024-05-24', '2024-05-24 13:10:36.950112', null, 5, 3, 1);

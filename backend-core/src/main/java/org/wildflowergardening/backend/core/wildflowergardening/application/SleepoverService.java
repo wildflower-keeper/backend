@@ -28,31 +28,37 @@ public class SleepoverService {
 
   /**
    * @param candidateHomelessIds targetDate 에 외박신청했는지 알고싶은 노숙인 ids
-   * @param targetDate           대상 날짜
+   * @param sleepoverTargetDate 외박 신청 확인 기준일
    * @return candidateHomelessIds 중에서 오늘 외박 신청한 노숙인 ids
    */
   @Transactional(readOnly = true)
   public Set<Long> filterSleepoverHomelessIds(
-      List<Long> candidateHomelessIds, LocalDate targetDate
+      List<Long> candidateHomelessIds, LocalDate sleepoverTargetDate
   ) {
     return sleepOverRepository.filterSleepoverHomeless(
-        candidateHomelessIds, targetDate
+        candidateHomelessIds, sleepoverTargetDate
     );
   }
 
   @Transactional(readOnly = true)
   public NumberPageResult<Sleepover> getPage(
-      Long shelterId, LocalDate targetDate, int pageNumber, int pageSize
+      Long shelterId, LocalDate sleepoverTargetDate, int pageNumber, int pageSize
   ) {
     PageRequest pageRequest = PageRequest.of(
         pageNumber - 1, pageSize, Sort.by(Direction.DESC, "id")
     );
     Page<Sleepover> sleepoverPage = sleepOverRepository.findAllByShelterIdAndTargetDate(
-        shelterId, targetDate, pageRequest
+        shelterId, sleepoverTargetDate, pageRequest
     );
     return NumberPageResult.<Sleepover>builder()
         .items(sleepoverPage.getContent())
         .pagination(PageInfoResult.of(sleepoverPage))
         .build();
+  }
+
+  @Transactional(readOnly = true)
+  public long count(Long shelterId, LocalDate sleepoverTargetDate) {
+    Long count = sleepOverRepository.countByTargetDate(shelterId, sleepoverTargetDate);
+    return count != null ? count : 0;
   }
 }

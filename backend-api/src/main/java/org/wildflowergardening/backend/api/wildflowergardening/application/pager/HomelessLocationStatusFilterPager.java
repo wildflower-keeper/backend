@@ -34,7 +34,7 @@ public class HomelessLocationStatusFilterPager implements HomelessFilterPager {
         .map(Homeless::getId)
         .toList();
     Set<Long> sleepoverHomelessIds = sleepoverService.filterSleepoverHomelessIds(
-        homelessIds, pageRequest.getTargetDate()
+        homelessIds, pageRequest.getSleepoverTargetDate()
     );
     return NumberPageResponse.<HomelessResponse>builder()
         .items(

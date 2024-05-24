@@ -19,6 +19,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessFilterType;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
@@ -53,22 +54,42 @@ public class ShelterAdminAppController {
   public ResponseEntity<NumberPageResponse<HomelessResponse>> getHomelessPage(
       @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "LOCATION_STATUS") HomelessFilterType filterType,
       @RequestParam(required = false) @Parameter(description = "필터 값", example = "IN_SHELTER") String filterValue,
-      @RequestParam(required = false) @Parameter(description = "조회 날짜 (for 외박신청 기준일)", example = "2024-05-24") LocalDate targetDate,
+      @RequestParam(required = false) @Parameter(description = "외박신청 확인 기준일", example = "2024-05-24") LocalDate sleepoverTargetDate,
       @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
       @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
   ) {
-    if (targetDate == null) {
-      targetDate = LocalDate.now();
+    if (sleepoverTargetDate == null) {
+      sleepoverTargetDate = LocalDate.now();
     }
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
     HomelessPageRequest pageRequest = HomelessPageRequest.builder()
         .shelterId(shelterContext.getShelterId())
         .filterType(filterType)
         .filterValue(filterValue)
-        .targetDate(targetDate)
+        .sleepoverTargetDate(sleepoverTargetDate)
         .pageNumber(pageNumber)
         .pageSize(pageSize)
         .build();
     return ResponseEntity.ok(shelterAdminAppService.getHomelessPage(pageRequest));
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @GetMapping("/api/v1/shelter-admin/homeless-people/count")
+  @Operation(summary = "노숙인 인원수 조회")
+  public ResponseEntity<HomelessCountResponse> getHomelessCount(
+      @RequestParam(required = false) @Parameter(description = "외박신청 확인 기준일", example = "2024-05-24") LocalDate sleepoverTargetDate
+  ) {
+    if (sleepoverTargetDate == null) {
+      sleepoverTargetDate = LocalDate.now();
+    }
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    return ResponseEntity.ok(shelterAdminAppService.countHomeless(
+        shelterContext.getShelterId(), sleepoverTargetDate
+    ));
   }
 }

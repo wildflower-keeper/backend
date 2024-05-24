@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 
 @Getter
@@ -36,4 +37,18 @@ public class HomelessResponse {
 
   @Schema(description = "센터 입소일", example = "2023-01-01")
   private LocalDate admissionDate;
+
+  public static HomelessResponse from(Homeless homeless, boolean targetDateSleepover) {
+    return HomelessResponse.builder()
+        .id(homeless.getId())
+        .name(homeless.getName())
+        .room(homeless.getRoom())
+        .targetDateSleepover(targetDateSleepover)
+        .birthDate(homeless.getBirthDate())
+        .phoneNumber(homeless.getPhoneNumber())
+        .admissionDate(homeless.getAdmissionDate())
+        .lastLocationStatus(homeless.getLastLocationStatus())
+        .lastLocationTrackedAt(homeless.getLastLocationTrackedAt())
+        .build();
+  }
 }

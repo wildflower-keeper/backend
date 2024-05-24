@@ -8,7 +8,6 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.N
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 
 @Component
@@ -26,25 +25,10 @@ public class HomelessSleepoverFilterPager implements HomelessFilterPager {
     return NumberPageResponse.<HomelessResponse>builder()
         .items(
             result.getItems().stream()
-                .map(sleepover -> {
-                  Homeless homeless = sleepover.getHomeless();
-
-                  return HomelessResponse.builder()
-                      .id(homeless.getId())
-                      .name(homeless.getName())
-                      .room(homeless.getRoom())
-                      .targetDateSleepover(true)
-                      .birthDate(homeless.getBirthDate())
-                      .phoneNumber(homeless.getPhoneNumber())
-                      .admissionDate(homeless.getAdmissionDate())
-                      .lastLocationStatus(homeless.getLastLocationStatus())
-                      .lastLocationTrackedAt(homeless.getLastLocationTrackedAt())
-                      .build();
-                })
+                .map(sleepover -> HomelessResponse.from(sleepover.getHomeless(), true))
                 .toList()
         )
         .pagination(PageInfoResponse.of(result.getPagination()))
         .build();
-
   }
 }

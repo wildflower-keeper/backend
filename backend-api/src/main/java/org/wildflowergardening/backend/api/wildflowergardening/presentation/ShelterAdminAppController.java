@@ -19,6 +19,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
@@ -57,8 +58,12 @@ public class ShelterAdminAppController {
       targetDay = LocalDate.now();
     }
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
-    return ResponseEntity.ok(shelterAdminAppService.getHomelessPage(
-        shelterContext.getShelterId(), pageNumber, pageSize, targetDay
-    ));
+    HomelessPageRequest pageRequest = HomelessPageRequest.builder()
+        .shelterId(shelterContext.getShelterId())
+        .targetDay(targetDay)
+        .pageNumber(pageNumber)
+        .pageSize(pageSize)
+        .build();
+    return ResponseEntity.ok(shelterAdminAppService.getHomelessPage(pageRequest));
   }
 }

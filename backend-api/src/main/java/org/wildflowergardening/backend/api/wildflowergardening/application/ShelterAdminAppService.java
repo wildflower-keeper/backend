@@ -2,7 +2,6 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
@@ -66,17 +66,15 @@ public class ShelterAdminAppService {
         .build();
   }
 
-  public NumberPageResponse<HomelessResponse> getHomelessPage(
-      Long shelterId, int pageNumber, int pageSize, LocalDate targetDay
-  ) {
+  public NumberPageResponse<HomelessResponse> getHomelessPage(HomelessPageRequest pageRequest) {
     NumberPageResult<Homeless> result = homelessService.getPage(
-        shelterId, pageNumber, pageSize
+        pageRequest.getShelterId(), pageRequest.getPageNumber(), pageRequest.getPageSize()
     );
     List<Long> homelessIds = result.getItems().stream()
         .map(Homeless::getId)
         .toList();
     Set<Long> sleepoverHomelessIds = sleepoverService.filterSleepoverHomelessIds(
-        homelessIds, targetDay
+        homelessIds, pageRequest.getTargetDay()
     );
     PageInfoResult resultNext = result.getPagination();
 

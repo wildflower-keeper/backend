@@ -2,8 +2,10 @@ package org.wildflowergardening.backend.api.wildflowergardening.application.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 
 @Builder
 @Getter
@@ -14,7 +16,7 @@ public class NumberPageResponse<T> {
   @Schema(description = "페이지네이션 정보")
   private PageInfoResponse pagination;
 
-  @Builder
+  @Builder(access = AccessLevel.PRIVATE)
   @Getter
   public static class PageInfoResponse {
 
@@ -29,5 +31,14 @@ public class NumberPageResponse<T> {
 
     @Schema(description = "마지막 페이지 번호")
     private long lastPageNumber;
+
+    public static PageInfoResponse of(NumberPageResult.PageInfoResult pageInfoResult) {
+      return PageInfoResponse.builder()
+          .currentPageNumber(pageInfoResult.getCurrentPageNumber())
+          .nextPageNumber(pageInfoResult.getNextPageNumber())
+          .pageSize(pageInfoResult.getPageSize())
+          .lastPageNumber(pageInfoResult.getLastPageNumber())
+          .build();
+    }
   }
 }

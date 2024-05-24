@@ -12,7 +12,6 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.N
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.PageInfoResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 
@@ -35,10 +34,8 @@ public class HomelessLocationStatusFilterPager implements HomelessFilterPager {
         .map(Homeless::getId)
         .toList();
     Set<Long> sleepoverHomelessIds = sleepoverService.filterSleepoverHomelessIds(
-        homelessIds, pageRequest.getTargetDay()
+        homelessIds, pageRequest.getTargetDate()
     );
-    PageInfoResult resultNext = result.getPagination();
-
     return NumberPageResponse.<HomelessResponse>builder()
         .items(
             result.getItems().stream()
@@ -46,7 +43,7 @@ public class HomelessLocationStatusFilterPager implements HomelessFilterPager {
                     .id(homeless.getId())
                     .name(homeless.getName())
                     .room(homeless.getRoom())
-                    .targetDaySleepover(sleepoverHomelessIds.contains(homeless.getId()))
+                    .targetDateSleepover(sleepoverHomelessIds.contains(homeless.getId()))
                     .birthDate(homeless.getBirthDate())
                     .phoneNumber(homeless.getPhoneNumber())
                     .admissionDate(homeless.getAdmissionDate())
@@ -55,12 +52,7 @@ public class HomelessLocationStatusFilterPager implements HomelessFilterPager {
                     .build())
                 .collect(Collectors.toList())
         )
-        .pagination(PageInfoResponse.builder()
-            .currentPageNumber(resultNext.getCurrentPageNumber())
-            .nextPageNumber(resultNext.getNextPageNumber())
-            .pageSize(resultNext.getPageSize())
-            .lastPageNumber(resultNext.getLastPageNumber())
-            .build())
+        .pagination(PageInfoResponse.of(result.getPagination()))
         .build();
   }
 }

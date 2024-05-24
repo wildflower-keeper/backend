@@ -49,23 +49,23 @@ public class ShelterAdminAppController {
       example = "session-token-example"
   ))
   @GetMapping("/api/v1/shelter-admin/homeless-people")
-  @Operation(summary = "노숙인 목록 조회", description = "필터유형(필터값) NONE() LOCATION_STATUS(IN_SHELTER,OUTING) SLEEPOVER(true,false) NAME(노숙인성함)")
+  @Operation(summary = "노숙인 목록 조회", description = "필터유형(필터값) NONE() LOCATION_STATUS(IN_SHELTER,OUTING) SLEEPOVER() NAME(노숙인성함)")
   public ResponseEntity<NumberPageResponse<HomelessResponse>> getHomelessPage(
       @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "LOCATION_STATUS") HomelessFilterType filterType,
       @RequestParam(required = false) @Parameter(description = "필터 값", example = "IN_SHELTER") String filterValue,
-      @RequestParam(required = false) @Parameter(description = "조회 날짜 (for 외박신청 기준일)", example = "2024-05-24") LocalDate targetDay,
+      @RequestParam(required = false) @Parameter(description = "조회 날짜 (for 외박신청 기준일)", example = "2024-05-24") LocalDate targetDate,
       @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
       @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
   ) {
-    if (targetDay == null) {
-      targetDay = LocalDate.now();
+    if (targetDate == null) {
+      targetDate = LocalDate.now();
     }
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
     HomelessPageRequest pageRequest = HomelessPageRequest.builder()
         .shelterId(shelterContext.getShelterId())
         .filterType(filterType)
         .filterValue(filterValue)
-        .targetDay(targetDay)
+        .targetDate(targetDate)
         .pageNumber(pageNumber)
         .pageSize(pageSize)
         .build();

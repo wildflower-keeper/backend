@@ -37,7 +37,10 @@ public class HomelessQueryService {
     Page<Homeless> homelessPage = homelessRepository.findAllByShelterId(
         shelterId, pageRequest
     );
-    return toResult(homelessPage);
+    return NumberPageResult.<Homeless>builder()
+        .items(homelessPage.getContent())
+        .pagination(PageInfoResult.of(homelessPage))
+        .build();
   }
 
   @Transactional(readOnly = true)
@@ -48,21 +51,9 @@ public class HomelessQueryService {
     Page<Homeless> homelessPage = homelessRepository.findAllByShelterIdAndLastLocationStatus(
         shelterId, lastLocationStatus, pageRequest
     );
-    return toResult(homelessPage);
-  }
-
-  private NumberPageResult<Homeless> toResult(Page<Homeless> homelessPage) {
-    int currentPageNumber = homelessPage.getNumber() + 1;
-    int totalPages = homelessPage.getTotalPages();
-
     return NumberPageResult.<Homeless>builder()
         .items(homelessPage.getContent())
-        .pagination(PageInfoResult.builder()
-            .currentPageNumber(currentPageNumber)
-            .nextPageNumber(currentPageNumber < totalPages ? currentPageNumber + 1 : null)
-            .pageSize(homelessPage.getSize())
-            .lastPageNumber(totalPages)
-            .build())
+        .pagination(PageInfoResult.of(homelessPage))
         .build();
   }
 }

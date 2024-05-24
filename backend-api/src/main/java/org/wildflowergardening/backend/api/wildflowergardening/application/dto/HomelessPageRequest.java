@@ -13,5 +13,5 @@ public class HomelessPageRequest {
   private Long shelterId;
   private int pageNumber;
   private int pageSize;
-  private LocalDate targetDay;
+  private LocalDate targetDate;
 }

@@ -17,7 +17,8 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.C
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
-import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
@@ -32,7 +33,8 @@ public class HomelessAppService {
 
   private final PasswordEncoder passwordEncoder;
   private final ShelterService shelterService;
-  private final HomelessService homelessService;
+  private final HomelessCommandService homelessCommandService;
+  private final HomelessQueryService homelessQueryService;
   private final SleepoverService sleepoverService;
   private final HomelessAppJwtProvider homelessAppJwtProvider;
 
@@ -44,7 +46,7 @@ public class HomelessAppService {
     )) {
       throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
     }
-    Long homelessId = homelessService.create(Homeless.builder()
+    Long homelessId = homelessCommandService.create(Homeless.builder()
         .name(request.getName())
         .shelter(shelterOptional.get())
         .deviceId(request.getDeviceId())
@@ -68,7 +70,7 @@ public class HomelessAppService {
 
 
   public HomelessMainResponse getHomelessById(Long homelessId) {
-    return homelessService.getOneById(homelessId)
+    return homelessQueryService.getOneById(homelessId)
         .map(homeless -> HomelessMainResponse.builder()
             .id(homeless.getId())
             .name(homeless.getName())
@@ -79,7 +81,7 @@ public class HomelessAppService {
 
   @Transactional
   public Long createSleepover(Long homelessId, CreateSleepoverRequest request) {
-    Homeless homeless = homelessService.getOneById(homelessId)
+    Homeless homeless = homelessQueryService.getOneById(homelessId)
         .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
 
     return sleepoverService.create(Sleepover.builder()
@@ -96,7 +98,7 @@ public class HomelessAppService {
   public void updateLocationStatus(
       Long homelessId, LocationStatus lastLocationStatus, LocalDateTime lastLocationTrackedAt
   ) {
-    homelessService.updateLocationStatus(homelessId, lastLocationStatus, lastLocationTrackedAt);
+    homelessCommandService.updateLocationStatus(homelessId, lastLocationStatus, lastLocationTrackedAt);
   }
 
   @Transactional(readOnly = true)

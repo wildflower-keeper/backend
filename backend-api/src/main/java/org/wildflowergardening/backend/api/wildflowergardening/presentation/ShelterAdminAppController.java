@@ -53,7 +53,7 @@ public class ShelterAdminAppController {
   public ResponseEntity<NumberPageResponse<HomelessResponse>> getHomelessPage(
       @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "LOCATION_STATUS") HomelessFilterType filterType,
       @RequestParam(required = false) @Parameter(description = "필터 값", example = "IN_SHELTER") String filterValue,
-      @RequestParam(required = false) @Parameter(description = "조회 날짜 (for 외박신청 기준일)") LocalDate targetDay,
+      @RequestParam(required = false) @Parameter(description = "조회 날짜 (for 외박신청 기준일)", example = "2024-05-24") LocalDate targetDay,
       @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
       @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
   ) {

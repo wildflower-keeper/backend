@@ -14,18 +14,22 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.Slee
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.PageInfoResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 
 @Component
 @RequiredArgsConstructor
-public class HomelessNoFilterPager implements HomelessFilterPager {
+public class HomelessLocationStatusFilterPager implements HomelessFilterPager {
 
   private final HomelessQueryService homelessQueryService;
   private final SleepoverService sleepoverService;
 
   @Override
   public NumberPageResponse<HomelessResponse> getPage(HomelessPageRequest pageRequest) {
+    LocationStatus locationStatus = LocationStatus.valueOf(pageRequest.getFilterValue());
+
     NumberPageResult<Homeless> result = homelessQueryService.getPage(
-        pageRequest.getShelterId(), pageRequest.getPageNumber(), pageRequest.getPageSize()
+        pageRequest.getShelterId(), locationStatus,
+        pageRequest.getPageNumber(), pageRequest.getPageSize()
     );
     List<Long> homelessIds = result.getItems().stream()
         .map(Homeless::getId)

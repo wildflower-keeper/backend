@@ -3,11 +3,8 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,16 +12,11 @@ import org.wildflowergardening.backend.api.kernel.application.exception.Applicat
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
-import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessService;
+import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.PageInfoResult;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
@@ -35,9 +27,8 @@ public class ShelterAdminAppService {
 
   private final SessionService sessionService;
   private final ShelterService shelterService;
-  private final HomelessService homelessService;
-  private final SleepoverService sleepoverService;
   private final PasswordEncoder passwordEncoder;
+  private final HomelessFilterPagerProvider homelessFilterPagerProvider;
 
   public SessionResponse login(ShelterLoginRequest dto) {
     Optional<Shelter> shelterOptional = shelterService.getShelterById(dto.getId());
@@ -67,39 +58,7 @@ public class ShelterAdminAppService {
   }
 
   public NumberPageResponse<HomelessResponse> getHomelessPage(HomelessPageRequest pageRequest) {
-    NumberPageResult<Homeless> result = homelessService.getPage(
-        pageRequest.getShelterId(), pageRequest.getPageNumber(), pageRequest.getPageSize()
-    );
-    List<Long> homelessIds = result.getItems().stream()
-        .map(Homeless::getId)
-        .toList();
-    Set<Long> sleepoverHomelessIds = sleepoverService.filterSleepoverHomelessIds(
-        homelessIds, pageRequest.getTargetDay()
-    );
-    PageInfoResult resultNext = result.getPagination();
-
-    return NumberPageResponse.<HomelessResponse>builder()
-        .items(
-            result.getItems().stream()
-                .map(homeless -> HomelessResponse.builder()
-                    .id(homeless.getId())
-                    .name(homeless.getName())
-                    .room(homeless.getRoom())
-                    .targetDaySleepover(sleepoverHomelessIds.contains(homeless.getId()))
-                    .birthDate(homeless.getBirthDate())
-                    .phoneNumber(homeless.getPhoneNumber())
-                    .admissionDate(homeless.getAdmissionDate())
-                    .lastLocationStatus(homeless.getLastLocationStatus())
-                    .lastLocationTrackedAt(homeless.getLastLocationTrackedAt())
-                    .build())
-                .collect(Collectors.toList())
-        )
-        .pagination(PageInfoResponse.builder()
-            .currentPageNumber(resultNext.getCurrentPageNumber())
-            .nextPageNumber(resultNext.getNextPageNumber())
-            .pageSize(resultNext.getPageSize())
-            .lastPageNumber(resultNext.getLastPageNumber())
-            .build())
-        .build();
+    return homelessFilterPagerProvider.from(pageRequest.getFilterType())
+        .getPage(pageRequest);
   }
 }

@@ -8,6 +8,8 @@ import lombok.Getter;
 @Builder
 public class HomelessPageRequest {
 
+  private HomelessFilterType filterType;
+  private String filterValue;
   private Long shelterId;
   private int pageNumber;
   private int pageSize;

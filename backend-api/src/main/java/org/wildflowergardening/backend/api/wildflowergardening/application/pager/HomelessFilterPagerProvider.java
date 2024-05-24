@@ -10,14 +10,15 @@ public class HomelessFilterPagerProvider {
   private final Map<HomelessFilterType, HomelessFilterPager> filterPagers;
 
   public HomelessFilterPagerProvider(
-      HomelessNoFilterPager homelessNoFilterPager,
-      HomelessLocationStatusFilterPager homelessLocationStatusFilterPager,
-      HomelessSleepoverFilterPager homelessSleepoverFilterPager
+      HomelessNoFilterPager noFilterPager,
+      HomelessLocationStatusFilterPager locationStatusFilterPager,
+      HomelessSleepoverFilterPager sleepoverFilterPager, HomelessNameFilterPager nameFilterPager
   ) {
     this.filterPagers = Map.of(
-        HomelessFilterType.NONE, homelessNoFilterPager,
-        HomelessFilterType.LOCATION_STATUS, homelessLocationStatusFilterPager,
-        HomelessFilterType.SLEEPOVER, homelessSleepoverFilterPager
+        HomelessFilterType.NONE, noFilterPager,
+        HomelessFilterType.LOCATION_STATUS, locationStatusFilterPager,
+        HomelessFilterType.SLEEPOVER, sleepoverFilterPager,
+        HomelessFilterType.NAME, nameFilterPager
     );
   }
 

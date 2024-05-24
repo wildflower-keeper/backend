@@ -5,6 +5,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
@@ -44,9 +46,12 @@ public class HomelessService {
   public NumberPageResult<Homeless> getPage(
       Long shelterId, int pageNumber, int pageSize
   ) {
-    Page<Homeless> homelessPage = homelessRepository.findAllByShelterId(
-        shelterId, PageRequest.of(pageNumber - 1, pageSize)
+    PageRequest pageRequest = PageRequest.of(
+        pageNumber - 1,
+        pageSize,
+        Sort.by(Order.asc("name"), Order.desc("id"))
     );
+    Page<Homeless> homelessPage = homelessRepository.findAllByShelterId(shelterId, pageRequest);
     int totalPages = homelessPage.getTotalPages();
 
     return NumberPageResult.<Homeless>builder()

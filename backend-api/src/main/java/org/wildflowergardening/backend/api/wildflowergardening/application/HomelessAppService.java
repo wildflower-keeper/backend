@@ -86,9 +86,7 @@ public class HomelessAppService {
 
     return sleepoverService.create(Sleepover.builder()
         .creatorType(UserRole.HOMELESS)
-        .homelessId(homeless.getId())
-        .homelessName(homeless.getName())
-        .phoneNumber(homeless.getPhoneNumber())
+        .homeless(homeless)
         .shelterId(homeless.getShelter().getId())
         .startDate(request.getStartDate())
         .endDate(request.getEndDate())

@@ -12,8 +12,8 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
   /*
    외박 신청 시작일이 targetDate 이하 AND 외박 신청 종료일이 targetDate 초과
    */
-  @Query(" select s.homelessId from Sleepover s "
-      + " where s.homelessId in :candidateHomelessIds "
+  @Query(" select s.homeless.id from Sleepover s "
+      + " where s.homeless.id in :candidateHomelessIds "
       + " and "
       + " s.startDate <= :targetDate and s.endDate > :targetDate")
   Set<Long> filterSleepoverHomeless(

@@ -14,6 +14,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+  sql:
+    init:
+      mode: never    # DB에 테스트데이터 셋팅하지 않음
 springdoc:
   swagger-ui:
     path: '/swagger-ui.html'

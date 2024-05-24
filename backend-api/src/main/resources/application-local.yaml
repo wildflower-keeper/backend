@@ -7,6 +7,10 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always    # DB에 테스트데이터 셋팅
 logging:
   config: classpath:log4j2/log4j2-prod.xml
 admin:

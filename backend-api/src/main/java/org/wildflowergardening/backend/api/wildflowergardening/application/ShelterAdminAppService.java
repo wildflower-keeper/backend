@@ -17,9 +17,11 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.N
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
+import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
@@ -33,6 +35,7 @@ public class ShelterAdminAppService {
   private final PasswordEncoder passwordEncoder;
   private final HomelessFilterPagerProvider homelessFilterPagerProvider;
   private final SleepoverService sleepoverService;
+  private final HomelessQueryService homelessQueryService;
 
   public SessionResponse login(ShelterLoginRequest dto) {
     Optional<Shelter> shelterOptional = shelterService.getShelterById(dto.getId());
@@ -67,10 +70,14 @@ public class ShelterAdminAppService {
   }
 
   public HomelessCountResponse countHomeless(Long shelterId, LocalDate sleepoverTargetDate) {
-    long count = sleepoverService.count(shelterId, sleepoverTargetDate);
+    long sleepoverCount = sleepoverService.count(shelterId, sleepoverTargetDate);
+    long totalCount = homelessQueryService.count(shelterId);
+    long outingCount = homelessQueryService.countByLocationStatus(shelterId, LocationStatus.OUTING);
 
     return HomelessCountResponse.builder()
-        .sleepoverCount(count)
+        .sleepoverCount(sleepoverCount)
+        .outingCount(outingCount)
+        .totalCount(totalCount)
         .build();
   }
 }

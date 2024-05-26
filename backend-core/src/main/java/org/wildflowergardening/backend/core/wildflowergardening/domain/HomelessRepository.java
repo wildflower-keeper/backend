@@ -22,4 +22,8 @@ public interface HomelessRepository extends JpaRepository<Homeless, Long> {
   Page<Homeless> findAllByShelterIdAndNameLike(
       @Param("shelterId") Long shelterId, @Param("name") String name, Pageable pageable
   );
+
+  long countByShelterIdAndLastLocationStatus(Long shelter_id, LocationStatus lastLocationStatus);
+
+  long countByShelterId(Long shelter_id);
 }

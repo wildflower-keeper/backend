@@ -72,4 +72,14 @@ public class HomelessQueryService {
         .pagination(PageInfoResult.of(homelessPage))
         .build();
   }
+
+  @Transactional(readOnly = true)
+  public long countByLocationStatus(Long shelterId, LocationStatus lastLocationStatus) {
+    return homelessRepository.countByShelterIdAndLastLocationStatus(shelterId, lastLocationStatus);
+  }
+
+  @Transactional(readOnly = true)
+  public long count(Long shelterId) {
+    return homelessRepository.countByShelterId(shelterId);
+  }
 }

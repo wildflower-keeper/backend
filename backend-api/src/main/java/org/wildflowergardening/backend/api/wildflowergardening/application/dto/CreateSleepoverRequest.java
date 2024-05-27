@@ -11,10 +11,10 @@ import lombok.Getter;
 public class CreateSleepoverRequest {
 
   @NotNull
-  @Schema(description = "외박 시작일", example = "2024-08-01")
+  @Schema(description = "외박 시작일", example = "2024-06-29")
   private LocalDate startDate;
 
   @NotNull
-  @Schema(description = "외박 종료일", example = "2024-08-02")
+  @Schema(description = "외박 종료일", example = "2024-06-30")
   private LocalDate endDate;
 }

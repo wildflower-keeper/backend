@@ -15,17 +15,15 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @Service
 @RequiredArgsConstructor
@@ -68,7 +66,6 @@ public class HomelessAppService {
         .build();
   }
 
-
   public HomelessMainResponse getHomelessById(Long homelessId) {
     return homelessQueryService.getOneById(homelessId)
         .map(homeless -> HomelessMainResponse.builder()
@@ -79,24 +76,24 @@ public class HomelessAppService {
         .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
   }
 
-  @Transactional
-  public Long createSleepover(Long homelessId, CreateSleepoverRequest request) {
-    Homeless homeless = homelessQueryService.getOneById(homelessId)
-        .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
-
-    return sleepoverService.create(Sleepover.builder()
-        .creatorType(UserRole.HOMELESS)
-        .homeless(homeless)
-        .shelterId(homeless.getShelter().getId())
-        .startDate(request.getStartDate())
-        .endDate(request.getEndDate())
-        .build());
+  public Long createSleepover(CreateSleepoverDto dto) {
+    if (!dto.getEndDate().isAfter(dto.getStartDate())) {
+      throw new IllegalArgumentException("외박신청 종료일은 시작일의 다음날 이후여야 합니다.");
+    }
+    // 외박 기간 허용 범위 (임시) : 어제 이후 ~ 한달 뒤
+    LocalDate now = LocalDate.now();
+    if (dto.getStartDate().isBefore(now.minusDays(1))
+        || dto.getEndDate().isAfter(now.plusMonths(1))) {
+      throw new IllegalArgumentException("외박 신청 가능한 일자 범위를 벗어났습니다.");
+    }
+    return sleepoverService.create(dto);
   }
 
   public void updateLocationStatus(
       Long homelessId, LocationStatus lastLocationStatus, LocalDateTime lastLocationTrackedAt
   ) {
-    homelessCommandService.updateLocationStatus(homelessId, lastLocationStatus, lastLocationTrackedAt);
+    homelessCommandService.updateLocationStatus(homelessId, lastLocationStatus,
+        lastLocationTrackedAt);
   }
 
   @Transactional(readOnly = true)

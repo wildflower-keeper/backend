@@ -24,6 +24,8 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.C
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateLocationRequest;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @RestController
 @RequiredArgsConstructor
@@ -69,7 +71,13 @@ public class HomelessAppController {
       @RequestBody @Valid CreateSleepoverRequest request
   ) {
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
-    Long sleepoverId = homelessAppService.createSleepover(homelessContext.getHomelessId(), request);
+    Long sleepoverId = homelessAppService.createSleepover(CreateSleepoverDto.builder()
+        .homelessId(homelessContext.getHomelessId())
+        .creatorType(UserRole.HOMELESS)
+        .shelterId(homelessContext.getShelterId())
+        .startDate(request.getStartDate())
+        .endDate(request.getEndDate())
+        .build());
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(sleepoverId);
   }

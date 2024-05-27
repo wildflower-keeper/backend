@@ -10,8 +10,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.PageInfoResult;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.HomelessRepository;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.SleepoverRepository;
 
@@ -19,16 +22,28 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover
 @RequiredArgsConstructor
 public class SleepoverService {
 
+  private final HomelessRepository homelessRepository;
   private final SleepoverRepository sleepOverRepository;
 
   @Transactional
-  public Long create(Sleepover sleepover) {
+  public Long create(CreateSleepoverDto dto) {
+    Homeless homeless = homelessRepository.findById(dto.getHomelessId())
+        .orElseThrow(() -> new IllegalArgumentException(
+            "사용자가 존재하지 않습니다."));    // 토큰 발급 이후 사용자가 탈퇴한, 아주 예외적인 case
+
+    Sleepover sleepover = Sleepover.builder()
+        .creatorType(dto.getCreatorType())
+        .shelterId(dto.getShelterId())
+        .homeless(homeless)
+        .startDate(dto.getStartDate())
+        .endDate(dto.getEndDate())
+        .build();
     return sleepOverRepository.save(sleepover).getId();
   }
 
   /**
    * @param candidateHomelessIds targetDate 에 외박신청했는지 알고싶은 노숙인 ids
-   * @param sleepoverTargetDate 외박 신청 확인 기준일
+   * @param sleepoverTargetDate  외박 신청 확인 기준일
    * @return candidateHomelessIds 중에서 오늘 외박 신청한 노숙인 ids
    */
   @Transactional(readOnly = true)

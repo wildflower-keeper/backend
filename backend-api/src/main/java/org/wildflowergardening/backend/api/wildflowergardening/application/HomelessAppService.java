@@ -4,8 +4,11 @@ import static org.wildflowergardening.backend.api.wildflowergardening.applicatio
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -82,12 +85,40 @@ public class HomelessAppService {
       throw new IllegalArgumentException("외박신청 종료일은 시작일의 다음날 이후여야 합니다.");
     }
     // 외박 기간 허용 범위 검사
+    // Sleepover.calcMinStartDate(now) 이상, Sleepover.calcMaxEndDate(now) 이하 기간동안 외박 신청 가능
     LocalDate now = LocalDate.now();
     if (dto.getStartDate().isBefore(Sleepover.calcMinStartDate(now))
         || dto.getEndDate().isAfter(Sleepover.calcMaxEndDate(now))) {
       throw new IllegalArgumentException("외박 신청 가능한 일자 범위를 벗어났습니다.");
     }
     return sleepoverService.create(dto);
+  }
+
+  public List<LocalDate> getAvailableSleepoverDates(Long homelessId) {
+    LocalDate now = LocalDate.now();
+
+    LocalDate periodStart = Sleepover.calcMinStartDate(now).plusDays(1);
+    LocalDate periodEnd = Sleepover.calcMaxEndDate(now).minusDays(1);
+
+    Set<LocalDate> exclusiveDates = new HashSet<>();
+
+    List<Sleepover> alreadyExistSleepovers = sleepoverService.getSleepoversForPeriod(
+        homelessId, periodStart, periodEnd
+    );
+    for (Sleepover sleepover : alreadyExistSleepovers) {
+      for (LocalDate date = sleepover.getStartDate()
+          ; !date.isAfter(sleepover.getEndDate())
+          ; date = date.plusDays(1)) {
+        exclusiveDates.add(date);
+      }
+    }
+    List<LocalDate> resultDates = new ArrayList<>();
+
+    for (LocalDate date = periodStart; !date.isAfter(periodEnd); date = date.plusDays(1)) {
+      if (exclusiveDates.contains(date)) continue;
+      resultDates.add(date);
+    }
+    return resultDates;
   }
 
   public void updateLocationStatus(

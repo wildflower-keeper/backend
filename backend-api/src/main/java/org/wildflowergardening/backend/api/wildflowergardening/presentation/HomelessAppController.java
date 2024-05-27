@@ -6,7 +6,9 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,6 +82,20 @@ public class HomelessAppController {
         .build());
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(sleepoverId);
+  }
+
+  @HomelessAuthorized
+  @Operation(summary = "외박 신청 가능한 날짜 목록 조회")
+  @Parameters(@Parameter(
+      name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "access-token-example"
+  ))
+  @GetMapping("/api/v1/homeless-app/available-sleepover-dates")
+  public ResponseEntity<List<LocalDate>> getAvailableSleepoverDates() {
+    HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+    return ResponseEntity.ok(homelessAppService.getAvailableSleepoverDates(
+        homelessContext.getHomelessId()));
   }
 
   @HomelessAuthorized

@@ -28,7 +28,7 @@ public class SleepoverService {
   @Transactional
   public Long create(CreateSleepoverDto dto) {
     // 외박 기간 중복 검사
-    List<Sleepover> overlapped = sleepOverRepository.findAllByHomelessAndDuration(
+    List<Sleepover> overlapped = sleepOverRepository.findAllByHomelessAndPeriod(
         dto.getHomelessId(), dto.getEndDate(), dto.getStartDate()
     );
     if (!overlapped.isEmpty()) {
@@ -46,6 +46,14 @@ public class SleepoverService {
         .endDate(dto.getEndDate())
         .build();
     return sleepOverRepository.save(sleepover).getId();
+  }
+
+  @Transactional(readOnly = true)
+  public List<Sleepover> getSleepoversForPeriod(
+      Long homelessId, LocalDate periodStart, LocalDate periodEnd
+  ) {
+    return sleepOverRepository.findAllByHomelessAndPeriod(
+        homelessId, periodEnd, periodStart);
   }
 
   /**

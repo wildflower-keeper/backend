@@ -68,10 +68,10 @@ public class Sleepover {
   private LocalDateTime deletedAt;
 
   public static LocalDate calcMinStartDate(LocalDate now) {
-    return now.minusDays(1);
+    return now.minusDays(2);
   }
 
   public static LocalDate calcMaxEndDate(LocalDate now) {
-    return now.plusMonths(1);
+    return now.plusDays(32);
   }
 }

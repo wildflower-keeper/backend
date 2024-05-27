@@ -66,4 +66,12 @@ public class Sleepover {
   @Column(name = "deleted_at", nullable = true)
   @Comment("삭제일시")
   private LocalDateTime deletedAt;
+
+  public static LocalDate calcMinStartDate(LocalDate now) {
+    return now.minusDays(1);
+  }
+
+  public static LocalDate calcMaxEndDate(LocalDate now) {
+    return now.plusMonths(1);
+  }
 }

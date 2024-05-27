@@ -11,13 +11,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
 
-  /*
-   외박 신청 시작일이 targetDate 이하 AND 외박 신청 종료일이 targetDate 초과
-   */
   @Query(" select s.homeless.id from Sleepover s "
       + " where s.homeless.id in :candidateHomelessIds "
       + " and "
-      + " s.startDate <= :targetDate and s.endDate > :targetDate ")
+      + " s.startDate <= :targetDate and s.endDate > :targetDate "
+      + " and s.deletedAt is null ")
   Set<Long> filterSleepoverHomeless(
       @Param("candidateHomelessIds") List<Long> candidateHomelessIds,
       @Param("targetDate") LocalDate targetDate
@@ -26,7 +24,8 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
   @Query(" select s from Sleepover s join fetch s.homeless "
       + " where s.shelterId = :shelterId "
       + " and "
-      + " s.startDate <= :targetDate and s.endDate > :targetDate ")
+      + " s.startDate <= :targetDate and s.endDate > :targetDate "
+      + " and s.deletedAt is null ")
   Page<Sleepover> findAllByShelterIdAndTargetDate(
       @Param("shelterId") Long shelterId, @Param("targetDate") LocalDate targetDate,
       Pageable pageable
@@ -35,8 +34,21 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
   @Query(" select count(s) from Sleepover s "
       + " where s.shelterId = :shelterId"
       + " and "
-      + " s.startDate <= :targetDate and s.endDate > :targetDate ")
+      + " s.startDate <= :targetDate and s.endDate > :targetDate "
+      + " and s.deletedAt is null ")
   Long countByTargetDate(
       @Param("shelterId") Long shelterId, @Param("targetDate") LocalDate targetDate
+  );
+
+  @Query(" select s from Sleepover s "
+      + " where s.homeless.id = :homelessId "
+      + " and "
+      + " s.startDate < :startDateBefore "
+      + " and "
+      + " s.endDate > :endDateAfter "
+      + " and s.deletedAt is null ")
+  List<Sleepover> findAllByHomelessAndDuration(
+      @Param("homelessId") Long homelessId,
+      @Param("startDateBefore") LocalDate startDateBefore, @Param("endDateAfter") LocalDate endDateAfter
   );
 }

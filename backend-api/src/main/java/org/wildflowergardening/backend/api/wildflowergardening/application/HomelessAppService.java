@@ -24,6 +24,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.dto.
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 
 @Service
 @RequiredArgsConstructor
@@ -80,10 +81,10 @@ public class HomelessAppService {
     if (!dto.getEndDate().isAfter(dto.getStartDate())) {
       throw new IllegalArgumentException("외박신청 종료일은 시작일의 다음날 이후여야 합니다.");
     }
-    // 외박 기간 허용 범위 (임시) : 어제 이후 ~ 한달 뒤
+    // 외박 기간 허용 범위 검사
     LocalDate now = LocalDate.now();
-    if (dto.getStartDate().isBefore(now.minusDays(1))
-        || dto.getEndDate().isAfter(now.plusMonths(1))) {
+    if (dto.getStartDate().isBefore(Sleepover.calcMinStartDate(now))
+        || dto.getEndDate().isAfter(Sleepover.calcMaxEndDate(now))) {
       throw new IllegalArgumentException("외박 신청 가능한 일자 범위를 벗어났습니다.");
     }
     return sleepoverService.create(dto);

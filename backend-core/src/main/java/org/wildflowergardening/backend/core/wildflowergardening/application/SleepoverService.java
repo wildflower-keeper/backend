@@ -27,9 +27,16 @@ public class SleepoverService {
 
   @Transactional
   public Long create(CreateSleepoverDto dto) {
+    // 외박 기간 중복 검사
+    List<Sleepover> overlapped = sleepOverRepository.findAllByHomelessAndDuration(
+        dto.getHomelessId(), dto.getEndDate(), dto.getStartDate()
+    );
+    if (!overlapped.isEmpty()) {
+      throw new IllegalArgumentException("기간이 중복되는 외박 신청 내역이 있습니다.");
+    }
+    // 외박 신청 create
     Homeless homeless = homelessRepository.findById(dto.getHomelessId())
-        .orElseThrow(() -> new IllegalArgumentException(
-            "사용자가 존재하지 않습니다."));    // 토큰 발급 이후 사용자가 탈퇴한, 아주 예외적인 case
+        .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
 
     Sleepover sleepover = Sleepover.builder()
         .creatorType(dto.getCreatorType())

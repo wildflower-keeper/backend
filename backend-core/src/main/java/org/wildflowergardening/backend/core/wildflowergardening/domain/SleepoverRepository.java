@@ -2,6 +2,7 @@ package org.wildflowergardening.backend.core.wildflowergardening.domain;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
+
+  Optional<Sleepover> findByIdAndHomelessId(Long id, Long homelessId);
 
   @Query(" select s.homeless.id from Sleepover s "
       + " where s.homeless.id in :candidateHomelessIds "

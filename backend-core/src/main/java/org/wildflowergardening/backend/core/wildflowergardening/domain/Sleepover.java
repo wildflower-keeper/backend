@@ -74,4 +74,8 @@ public class Sleepover {
   public static LocalDate calcMaxEndDate(LocalDate now) {
     return now.plusDays(32);
   }
+
+  public void toSoftDeleted() {
+    this.deletedAt = LocalDateTime.now();
+  }
 }

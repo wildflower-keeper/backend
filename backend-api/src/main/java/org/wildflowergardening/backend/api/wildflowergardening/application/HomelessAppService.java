@@ -12,7 +12,6 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.HomelessAppJwtProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
@@ -128,9 +127,12 @@ public class HomelessAppService {
         lastLocationTrackedAt);
   }
 
-  @Transactional(readOnly = true)
   public boolean isSleepoverTonight(Long homelessId) {
     return !sleepoverService.filterSleepoverHomelessIds(List.of(homelessId), LocalDate.now())
         .isEmpty();
+  }
+
+  public void deleteSleepover(Long homelessId, Long sleepoverId) {
+    sleepoverService.delete(homelessId, sleepoverId);
   }
 }

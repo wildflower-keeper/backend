@@ -23,12 +23,12 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover
 public class SleepoverService {
 
   private final HomelessRepository homelessRepository;
-  private final SleepoverRepository sleepOverRepository;
+  private final SleepoverRepository sleepoverRepository;
 
   @Transactional
   public Long create(CreateSleepoverDto dto) {
     // 외박 기간 중복 검사
-    List<Sleepover> overlapped = sleepOverRepository.findAllByHomelessAndPeriod(
+    List<Sleepover> overlapped = sleepoverRepository.findAllByHomelessAndPeriod(
         dto.getHomelessId(), dto.getEndDate(), dto.getStartDate()
     );
     if (!overlapped.isEmpty()) {
@@ -45,14 +45,14 @@ public class SleepoverService {
         .startDate(dto.getStartDate())
         .endDate(dto.getEndDate())
         .build();
-    return sleepOverRepository.save(sleepover).getId();
+    return sleepoverRepository.save(sleepover).getId();
   }
 
   @Transactional(readOnly = true)
   public List<Sleepover> getSleepoversForPeriod(
       Long homelessId, LocalDate periodStart, LocalDate periodEnd
   ) {
-    return sleepOverRepository.findAllByHomelessAndPeriod(
+    return sleepoverRepository.findAllByHomelessAndPeriod(
         homelessId, periodEnd, periodStart);
   }
 
@@ -65,7 +65,7 @@ public class SleepoverService {
   public Set<Long> filterSleepoverHomelessIds(
       List<Long> candidateHomelessIds, LocalDate sleepoverTargetDate
   ) {
-    return sleepOverRepository.filterSleepoverHomeless(
+    return sleepoverRepository.filterSleepoverHomeless(
         candidateHomelessIds, sleepoverTargetDate
     );
   }
@@ -77,7 +77,7 @@ public class SleepoverService {
     PageRequest pageRequest = PageRequest.of(
         pageNumber - 1, pageSize, Sort.by(Direction.DESC, "id")
     );
-    Page<Sleepover> sleepoverPage = sleepOverRepository.findAllByShelterIdAndTargetDate(
+    Page<Sleepover> sleepoverPage = sleepoverRepository.findAllByShelterIdAndTargetDate(
         shelterId, sleepoverTargetDate, pageRequest
     );
     return NumberPageResult.<Sleepover>builder()
@@ -88,7 +88,15 @@ public class SleepoverService {
 
   @Transactional(readOnly = true)
   public long count(Long shelterId, LocalDate sleepoverTargetDate) {
-    Long count = sleepOverRepository.countByTargetDate(shelterId, sleepoverTargetDate);
+    Long count = sleepoverRepository.countByTargetDate(shelterId, sleepoverTargetDate);
     return count != null ? count : 0;
+  }
+
+  @Transactional
+  public void delete(Long homelessId, Long sleepoverId) {
+    Sleepover sleepover = sleepoverRepository.findByIdAndHomelessId(sleepoverId, homelessId)
+        .orElseThrow(() -> new IllegalArgumentException(
+            "id=" + sleepoverId + "인 외박신청 내역이 존재하지 않습니다."));
+    sleepover.toSoftDeleted();
   }
 }

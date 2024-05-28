@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,15 +15,19 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterAdminSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
@@ -78,6 +83,25 @@ public class ShelterAdminAppService {
         .sleepoverCount(sleepoverCount)
         .outingCount(outingCount)
         .totalCount(totalCount)
+        .build();
+  }
+
+  public NumberPageResponse<ShelterAdminSleepoverResponse> getPage(
+      Long shelterId, int pageNumber, int pageSize
+  ) {
+    NumberPageResult<Sleepover> result = sleepoverService.getPage(shelterId, pageNumber, pageSize);
+
+    return NumberPageResponse.<ShelterAdminSleepoverResponse>builder()
+        .items(result.getItems().stream()
+            .map(sleepover -> ShelterAdminSleepoverResponse.builder()
+                .sleepoverId(sleepover.getId())
+                .homelessId(sleepover.getHomeless().getId())
+                .homelessName(sleepover.getHomeless().getName())
+                .startDate(sleepover.getStartDate())
+                .endDate(sleepover.getEndDate())
+                .build())
+            .collect(Collectors.toList()))
+        .pagination(PageInfoResponse.of(result.getPagination()))
         .build();
   }
 }

@@ -71,6 +71,27 @@ public class SleepoverService {
     );
   }
 
+  /*
+   외박신청 전체 목록 조회 (최신순)
+   */
+  @Transactional(readOnly = true)
+  public NumberPageResult<Sleepover> getPage(
+      Long shelterId, int pageNumber, int pageSize
+  ) {
+    PageRequest pageRequest = PageRequest.of(
+        pageNumber - 1, pageSize, Sort.by(Direction.DESC, "id")
+    );
+    Page<Sleepover> sleepoverPage = sleepoverRepository.findAllByShelterId(shelterId, pageRequest);
+
+    return NumberPageResult.<Sleepover>builder()
+        .items(sleepoverPage.getContent())
+        .pagination(PageInfoResult.of(sleepoverPage))
+        .build();
+  }
+
+  /*
+   특정 날짜에 외박하겠다고 되어있는 외박신청 목록 조회
+   */
   @Transactional(readOnly = true)
   public NumberPageResult<Sleepover> getPage(
       Long shelterId, LocalDate sleepoverTargetDate, int pageNumber, int pageSize

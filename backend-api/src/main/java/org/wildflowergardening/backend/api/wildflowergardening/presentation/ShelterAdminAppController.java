@@ -25,6 +25,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterAdminSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 
 @RestController
@@ -90,6 +91,24 @@ public class ShelterAdminAppController {
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
     return ResponseEntity.ok(shelterAdminAppService.countHomeless(
         shelterContext.getShelterId(), sleepoverTargetDate
+    ));
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @GetMapping("/api/v1/shelter-admin/sleepovers")
+  @Operation(summary = "외박 신청 목록 조회")
+  public ResponseEntity<NumberPageResponse<ShelterAdminSleepoverResponse>> getSleepovers(
+      @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
+      @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
+  ) {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    return ResponseEntity.ok(shelterAdminAppService.getPage(
+        shelterContext.getShelterId(), pageNumber, pageSize
     ));
   }
 }

@@ -10,4 +10,5 @@ public class HomelessMainResponse {
   private Long id;
   private String name;
   private String shelterName;
+  private HomelessAppSleepoverResponse planedSleepover;
 }

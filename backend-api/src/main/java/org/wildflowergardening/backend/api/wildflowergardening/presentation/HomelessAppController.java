@@ -59,7 +59,7 @@ public class HomelessAppController {
   public ResponseEntity<HomelessMainResponse> getIdNameByDeviceId() {
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
     return ResponseEntity.ok(
-        homelessAppService.getHomelessById(homelessContext.getUserId())
+        homelessAppService.getHomelessMainInfo(homelessContext.getUserId(), LocalDate.now())
     );
   }
 

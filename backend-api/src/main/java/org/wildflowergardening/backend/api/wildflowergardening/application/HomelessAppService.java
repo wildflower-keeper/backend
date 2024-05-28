@@ -17,7 +17,9 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse.HomelessMainResponseBuilder;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
@@ -69,14 +71,26 @@ public class HomelessAppService {
         .build();
   }
 
-  public HomelessMainResponse getHomelessById(Long homelessId) {
-    return homelessQueryService.getOneById(homelessId)
-        .map(homeless -> HomelessMainResponse.builder()
-            .id(homeless.getId())
-            .name(homeless.getName())
-            .shelterName(homeless.getShelter().getName())
-            .build())
+  public HomelessMainResponse getHomelessMainInfo(Long homelessId, LocalDate targetDate) {
+    Homeless homeless = homelessQueryService.getOneById(homelessId)
         .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
+
+    Optional<Sleepover> sleepoverOptional = sleepoverService.getFirstAfter(homelessId, targetDate);
+
+    HomelessMainResponseBuilder builder = HomelessMainResponse.builder()
+        .id(homeless.getId())
+        .name(homeless.getName())
+        .shelterName(homeless.getShelter().getName());
+
+    if (sleepoverOptional.isPresent()) {
+      Sleepover sleepover = sleepoverOptional.get();
+      builder.planedSleepover(HomelessAppSleepoverResponse.builder()
+              .sleepoverId(sleepover.getId())
+              .startDate(sleepover.getStartDate())
+              .endDate(sleepover.getEndDate())
+              .build());
+    }
+    return builder.build();
   }
 
   public Long createSleepover(CreateSleepoverDto dto) {

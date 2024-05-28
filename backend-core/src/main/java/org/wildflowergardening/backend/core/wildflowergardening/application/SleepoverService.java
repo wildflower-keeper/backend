@@ -2,6 +2,7 @@ package org.wildflowergardening.backend.core.wildflowergardening.application;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -90,6 +91,13 @@ public class SleepoverService {
   public long count(Long shelterId, LocalDate sleepoverTargetDate) {
     Long count = sleepoverRepository.countByTargetDate(shelterId, sleepoverTargetDate);
     return count != null ? count : 0;
+  }
+
+  // targetDate 보다 미래에 종료되는 가장 최근의 외박 신청 내역 조회
+  @Transactional(readOnly = true)
+  public Optional<Sleepover> getFirstAfter(Long homelessId, LocalDate targetDate) {
+    return sleepoverRepository.findTopByHomelessIdAndDeletedAtIsNullAndEndDateAfterOrderByEndDateAsc(
+        homelessId, targetDate);
   }
 
   @Transactional

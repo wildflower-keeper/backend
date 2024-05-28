@@ -54,4 +54,7 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
       @Param("homelessId") Long homelessId,
       @Param("startDateBefore") LocalDate startDateBefore, @Param("endDateAfter") LocalDate endDateAfter
   );
+
+  Optional<Sleepover> findTopByHomelessIdAndDeletedAtIsNullAndEndDateAfterOrderByEndDateAsc(
+      Long homelessId, LocalDate endDate);
 }

@@ -99,6 +99,7 @@ public class ShelterAdminAppService {
                 .homelessName(sleepover.getHomeless().getName())
                 .startDate(sleepover.getStartDate())
                 .endDate(sleepover.getEndDate())
+                .createdAt(sleepover.getCreatedAt())
                 .build())
             .collect(Collectors.toList()))
         .pagination(PageInfoResponse.of(result.getPagination()))

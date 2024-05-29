@@ -58,6 +58,14 @@ public class Sleepover {
   @Comment("외박/외출 종료일")
   private LocalDate endDate;
 
+  @Column(name = "reason", nullable = true)
+  @Comment("외박사유")
+  private String reason;
+
+  @Column(name = "emergency_contact", nullable = true)
+  @Comment("비상연락처")
+  private String emergencyContact;
+
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   @Comment("생성일시")

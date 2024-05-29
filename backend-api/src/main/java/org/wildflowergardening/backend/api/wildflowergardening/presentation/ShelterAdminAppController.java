@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -133,8 +134,8 @@ public class ShelterAdminAppController {
   @Operation(summary = "외박신청내역 엑셀 다운로드")
   @GetMapping("/api/v1/shelter-admin/sleepover-xlsx")
   public void downloadSleepoverExcel(
-      @RequestParam LocalDate createdAtStart,
-      @RequestParam LocalDate createdAtEnd,
+      @RequestParam @Parameter(example = "2024-05-01") LocalDate createdAtStart,
+      @RequestParam @Parameter(example = "2024-05-31") LocalDate createdAtEnd,
       HttpServletResponse response
   ) {
     try {
@@ -144,7 +145,7 @@ public class ShelterAdminAppController {
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
       ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
-          .filename("filename.xlsx", StandardCharsets.UTF_8)
+          .filename(createdAtStart.format(DateTimeFormatter.ofPattern("yy_MM_dd")) + ".xlsx", StandardCharsets.UTF_8)
           .build();
       response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
 

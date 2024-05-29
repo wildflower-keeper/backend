@@ -27,6 +27,8 @@ public class SleepoverExcelService {
             .homelessName(sleepover.getHomeless().getName())
             .startDate(sleepover.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
             .endDate(sleepover.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+            .reason(sleepover.getReason())
+            .emergencyContact(sleepover.getEmergencyContact())
             .createdAt(sleepover.getCreatedAt()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
             .build())

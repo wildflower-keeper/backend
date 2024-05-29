@@ -14,4 +14,6 @@ public class CreateSleepoverDto {
   private Long homelessId;
   private LocalDate startDate;
   private LocalDate endDate;
+  private String reason;
+  private String emergencyContact;
 }

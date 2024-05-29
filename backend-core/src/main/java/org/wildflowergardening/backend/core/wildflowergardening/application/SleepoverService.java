@@ -46,6 +46,8 @@ public class SleepoverService {
         .homeless(homeless)
         .startDate(dto.getStartDate())
         .endDate(dto.getEndDate())
+        .reason(dto.getReason())
+        .emergencyContact(dto.getEmergencyContact())
         .build();
     return sleepoverRepository.save(sleepover).getId();
   }

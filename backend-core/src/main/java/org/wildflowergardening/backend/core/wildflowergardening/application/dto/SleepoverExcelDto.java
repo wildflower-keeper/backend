@@ -10,5 +10,7 @@ public class SleepoverExcelDto {
   private String homelessName;
   private String startDate;
   private String endDate;
+  private String reason;
+  private String emergencyContact;
   private String createdAt;
 }

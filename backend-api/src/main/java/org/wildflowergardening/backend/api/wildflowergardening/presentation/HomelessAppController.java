@@ -81,6 +81,8 @@ public class HomelessAppController {
         .shelterId(homelessContext.getShelterId())
         .startDate(request.getStartDate())
         .endDate(request.getEndDate())
+        .reason(request.getReason())
+        .emergencyContact(request.getEmergencyContact())
         .build());
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(sleepoverId);

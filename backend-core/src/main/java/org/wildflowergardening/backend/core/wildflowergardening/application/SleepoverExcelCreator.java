@@ -30,7 +30,9 @@ class SleepoverExcelCreator {
       headerRow.createCell(0, CellType.STRING).setCellValue("성함");
       headerRow.createCell(1, CellType.STRING).setCellValue("외박시작일");
       headerRow.createCell(2, CellType.STRING).setCellValue("외박종료일");
-      headerRow.createCell(3, CellType.STRING).setCellValue("외박신청일시");
+      headerRow.createCell(3, CellType.STRING).setCellValue("외박사유");
+      headerRow.createCell(4, CellType.STRING).setCellValue("비상연락처");
+      headerRow.createCell(5, CellType.STRING).setCellValue("외박신청일시");
       rowNum++;
 
       // data
@@ -39,7 +41,9 @@ class SleepoverExcelCreator {
         row.createCell(0, CellType.STRING).setCellValue(dto.getHomelessName());
         row.createCell(1, CellType.STRING).setCellValue(dto.getStartDate());
         row.createCell(2, CellType.STRING).setCellValue(dto.getEndDate());
-        row.createCell(3, CellType.STRING).setCellValue(dto.getCreatedAt());
+        row.createCell(3, CellType.STRING).setCellValue(dto.getReason());
+        row.createCell(4, CellType.STRING).setCellValue(dto.getEmergencyContact());
+        row.createCell(5, CellType.STRING).setCellValue(dto.getCreatedAt());
         rowNum++;
       }
       workbook.write(outputStream);

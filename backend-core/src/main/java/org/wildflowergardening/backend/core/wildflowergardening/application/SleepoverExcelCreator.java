@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Component;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.SleepoverExcelDto;
@@ -20,10 +19,14 @@ class SleepoverExcelCreator {
 
   public void writeOnOutputStream(List<SleepoverExcelDto> dtoList, OutputStream outputStream)
       throws IOException {
-    try (Workbook workbook = new SXSSFWorkbook()) {
-      Sheet sheet = workbook.createSheet("외박신청내역");
+    try (SXSSFWorkbook workbook = new SXSSFWorkbook()) {
+      SXSSFSheet sheet = workbook.createSheet("외박신청내역");
 
       int rowNum = 0;
+
+      for (int columnNum = 0; columnNum < 10; columnNum++) {
+        sheet.setColumnWidth(columnNum, 256 * 23);
+      }
 
       // header
       Row headerRow = sheet.createRow(0);

@@ -25,12 +25,12 @@ public class SleepoverExcelService {
             shelterId, createdAtStart, createdAtEnd
         ).stream().map(sleepover -> SleepoverExcelDto.builder()
             .homelessName(sleepover.getHomeless().getName())
-            .startDate(sleepover.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-            .endDate(sleepover.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+            .startDate(sleepover.getStartDate().format(DateTimeFormatter.ofPattern("yy년 MM월 dd일")))
+            .endDate(sleepover.getEndDate().format(DateTimeFormatter.ofPattern("yy년 MM월 dd일")))
             .reason(sleepover.getReason())
             .emergencyContact(sleepover.getEmergencyContact())
             .createdAt(sleepover.getCreatedAt()
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .format(DateTimeFormatter.ofPattern("yy년 MM월 dd일 HH시 mm분")))
             .build())
         .toList();
     sleepoverExcelCreator.writeOnOutputStream(dtoList, outputStream);

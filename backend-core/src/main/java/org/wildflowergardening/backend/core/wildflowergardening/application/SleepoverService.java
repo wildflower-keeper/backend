@@ -1,6 +1,7 @@
 package org.wildflowergardening.backend.core.wildflowergardening.application;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -127,5 +128,12 @@ public class SleepoverService {
         .orElseThrow(() -> new IllegalArgumentException(
             "id=" + sleepoverId + "인 외박신청 내역이 존재하지 않습니다."));
     sleepover.toSoftDeleted();
+  }
+
+  @Transactional(readOnly = true)
+  public List<Sleepover> findAllByCreatedAtIn(
+      Long shelterId, LocalDateTime createdAtStart, LocalDateTime createdAtEnd
+  ) {
+    return sleepoverRepository.findAllByCreatedAtIn(shelterId, createdAtStart, createdAtEnd);
   }
 }

@@ -5,9 +5,18 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,14 +36,17 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.N
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterAdminSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
+import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
 
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "센터 admin API")
+@Slf4j
 public class ShelterAdminAppController {
 
   private final ShelterAdminAppService shelterAdminAppService;
   private final UserContextHolder userContextHolder;
+  private final SleepoverExcelService sleepoverExcelService;
 
   @PostMapping("/api/v1/shelter-admin/login")
   @Operation(summary = "센터 관리자 로그인")
@@ -110,5 +122,42 @@ public class ShelterAdminAppController {
     return ResponseEntity.ok(shelterAdminAppService.getPage(
         shelterContext.getShelterId(), pageNumber, pageSize
     ));
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @Operation(summary = "외박신청내역 엑셀 다운로드")
+  @GetMapping("/api/v1/shelter-admin/sleepover-xlsx")
+  public void downloadSleepoverExcel(
+      @RequestParam LocalDate createdAtStart,
+      @RequestParam LocalDate createdAtEnd,
+      HttpServletResponse response
+  ) {
+    try {
+      ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+
+      response.setHeader(HttpHeaders.CONTENT_TYPE,
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+      ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
+          .filename("filename.xlsx", StandardCharsets.UTF_8)
+          .build();
+      response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+
+      sleepoverExcelService.create(
+          shelterContext.getShelterId(),
+          createdAtStart.atTime(0, 0),
+          createdAtEnd.atTime(LocalTime.MAX.truncatedTo(ChronoUnit.NANOS)),
+          response.getOutputStream()
+      );
+
+    } catch (IOException e) {
+      response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+      log.error("엑셀 생성 실패", e);
+    }
   }
 }

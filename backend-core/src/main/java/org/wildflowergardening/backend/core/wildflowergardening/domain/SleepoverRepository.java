@@ -1,6 +1,7 @@
 package org.wildflowergardening.backend.core.wildflowergardening.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -63,4 +64,14 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
 
   Optional<Sleepover> findTopByHomelessIdAndDeletedAtIsNullAndEndDateAfterOrderByEndDateAsc(
       Long homelessId, LocalDate endDate);
+
+  @Query(" select s from Sleepover s join fetch s.homeless "
+      + " where s.shelterId = :shelterId "
+      + " and "
+      + " s.createdAt between :createdAtStart and :createdAtEnd ")
+  List<Sleepover> findAllByCreatedAtIn(
+      @Param("shelterId") Long shelterId,
+      @Param("createdAtStart") LocalDateTime createdAtStart,
+      @Param("createdAtEnd") LocalDateTime createdAtEnd
+  );
 }

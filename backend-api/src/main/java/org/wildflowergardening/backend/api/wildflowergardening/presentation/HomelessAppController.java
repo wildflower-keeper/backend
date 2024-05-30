@@ -55,7 +55,7 @@ public class HomelessAppController {
   public ResponseEntity<HomelessTokenResponse> getHomelessToken(
       @RequestBody @Valid HomelessTokenRequest request
   ) {
-return ResponseEntity.ok(homelessAppService.getToken(request));
+    return ResponseEntity.ok(homelessAppService.getToken(request));
   }
 
   @HomelessAuthorized

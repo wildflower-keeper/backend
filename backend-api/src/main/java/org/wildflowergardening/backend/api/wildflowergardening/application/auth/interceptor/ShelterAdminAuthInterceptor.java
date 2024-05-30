@@ -20,7 +20,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Sess
 @RequiredArgsConstructor
 public class ShelterAdminAuthInterceptor implements HandlerInterceptor {
 
-  public static final String AUTH_HEADER_NAME = "session-token";
+  public static final String AUTH_HEADER_NAME = "auth-token";
 
   private final SessionService sessionService;
   private final UserContextHolder userContextHolder;

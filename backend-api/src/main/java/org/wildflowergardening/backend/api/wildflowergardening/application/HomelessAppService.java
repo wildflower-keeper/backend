@@ -12,13 +12,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
+import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.HomelessAppJwtProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse.HomelessMainResponseBuilder;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
@@ -42,7 +44,7 @@ public class HomelessAppService {
   private final HomelessAppJwtProvider homelessAppJwtProvider;
   private final LocationTrackingService locationTrackingService;
 
-  public CreateHomelessResponse createHomeless(CreateHomelessRequest request) {
+  public HomelessTokenResponse createHomeless(CreateHomelessRequest request) {
     Optional<Shelter> shelterOptional = shelterService.getShelterById(request.getShelterId());
 
     if (shelterOptional.isEmpty() || !passwordEncoder.matches(
@@ -66,10 +68,31 @@ public class HomelessAppService {
         .shelterId(request.getShelterId())
         .build());
 
-    return CreateHomelessResponse.builder()
+    return HomelessTokenResponse.builder()
         .homelessId(homelessId)
         .accessToken(token)
         .build();
+  }
+
+  public HomelessTokenResponse getToken(HomelessTokenRequest request) {
+    Homeless homeless = homelessQueryService.getOneById(request.getHomelessId())
+        .orElseThrow(() -> new ForbiddenException(""));
+
+    if (homeless.getShelter().getId().equals(request.getShelterId())
+        && homeless.getName().equals(request.getHomelessName())
+        && homeless.getDeviceId().equals(request.getDeviceId())
+    ) {
+      String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
+          .homelessId(homeless.getId())
+          .homelessName(homeless.getName())
+          .shelterId(homeless.getShelter().getId())
+          .build());
+      return HomelessTokenResponse.builder()
+          .homelessId(homeless.getId())
+          .accessToken(token)
+          .build();
+    }
+    throw new ForbiddenException("");
   }
 
   public HomelessMainResponse getHomelessMainInfo(Long homelessId, LocalDate targetDate) {
@@ -86,10 +109,10 @@ public class HomelessAppService {
     if (sleepoverOptional.isPresent()) {
       Sleepover sleepover = sleepoverOptional.get();
       builder.planedSleepover(HomelessAppSleepoverResponse.builder()
-              .sleepoverId(sleepover.getId())
-              .startDate(sleepover.getStartDate())
-              .endDate(sleepover.getEndDate())
-              .build());
+          .sleepoverId(sleepover.getId())
+          .startDate(sleepover.getStartDate())
+          .endDate(sleepover.getEndDate())
+          .build());
     }
     return builder.build();
   }
@@ -129,7 +152,9 @@ public class HomelessAppService {
     List<LocalDate> resultDates = new ArrayList<>();
 
     for (LocalDate date = periodStart; !date.isAfter(periodEnd); date = date.plusDays(1)) {
-      if (exclusiveDates.contains(date)) continue;
+      if (exclusiveDates.contains(date)) {
+        continue;
+      }
       resultDates.add(date);
     }
     return resultDates;

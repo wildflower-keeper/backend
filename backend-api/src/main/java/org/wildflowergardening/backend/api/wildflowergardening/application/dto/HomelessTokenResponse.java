@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CreateHomelessResponse {
+public class HomelessTokenResponse {
 
   private Long homelessId;
   private String accessToken;

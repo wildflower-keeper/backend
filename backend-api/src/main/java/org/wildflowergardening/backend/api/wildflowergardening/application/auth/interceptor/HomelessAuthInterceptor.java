@@ -17,7 +17,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 @RequiredArgsConstructor
 public class HomelessAuthInterceptor implements HandlerInterceptor {
 
-  public static final String AUTH_HEADER_NAME = "access-token";
+  public static final String AUTH_HEADER_NAME = "auth-token";
 
   private final UserContextHolder userContextHolder;
   private final HomelessAppJwtProvider homelessAppJwtProvider;

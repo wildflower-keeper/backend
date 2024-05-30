@@ -24,9 +24,10 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.HomelessAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateOrUpdateLocationTrackingDto;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
@@ -42,11 +43,19 @@ public class HomelessAppController {
 
   @Operation(summary = "노숙인 계정 생성")
   @PostMapping("/api/v1/homeless-app/homeless")
-  public ResponseEntity<CreateHomelessResponse> createHomeless(
+  public ResponseEntity<HomelessTokenResponse> createHomeless(
       @RequestBody @Valid CreateHomelessRequest request
   ) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(homelessAppService.createHomeless(request));
+  }
+
+  @Operation(summary = "기존 계정 토큰 (재)획득")
+  @PostMapping("/api/v1/homeless-app/token-get")
+  public ResponseEntity<HomelessTokenResponse> getHomelessToken(
+      @RequestBody @Valid HomelessTokenRequest request
+  ) {
+return ResponseEntity.ok(homelessAppService.getToken(request));
   }
 
   @HomelessAuthorized

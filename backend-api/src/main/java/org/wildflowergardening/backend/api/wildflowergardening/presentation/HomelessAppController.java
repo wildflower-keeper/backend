@@ -25,6 +25,8 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
@@ -40,6 +42,14 @@ public class HomelessAppController {
 
   private final HomelessAppService homelessAppService;
   private final UserContextHolder userContextHolder;
+
+  @Operation(summary = "기존 계정 존재 여부 확인")
+  @PostMapping("/api/v1/homeless-app/user-existence")
+  public ResponseEntity<HomelessExistenceResponse> isHomelessUserAlreadyExist(
+      @RequestBody @Valid HomelessExistenceRequest request
+  ) {
+    return ResponseEntity.ok(homelessAppService.getHomelessExistence(request));
+  }
 
   @Operation(summary = "노숙인 계정 생성")
   @PostMapping("/api/v1/homeless-app/homeless")

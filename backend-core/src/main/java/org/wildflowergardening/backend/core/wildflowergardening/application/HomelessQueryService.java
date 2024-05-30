@@ -30,6 +30,11 @@ public class HomelessQueryService {
   }
 
   @Transactional(readOnly = true)
+  public Optional<Homeless> getOneByDeviceId(String deviceId) {
+    return homelessRepository.findByDeviceId(deviceId);
+  }
+
+  @Transactional(readOnly = true)
   public NumberPageResult<Homeless> getPage(
       Long shelterId, int pageNumber, int pageSize
   ) {

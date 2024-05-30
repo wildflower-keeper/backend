@@ -17,6 +17,8 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppSleepoverResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse.HomelessMainResponseBuilder;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
@@ -71,6 +73,27 @@ public class HomelessAppService {
     return HomelessTokenResponse.builder()
         .homelessId(homelessId)
         .accessToken(token)
+        .build();
+  }
+
+  public HomelessExistenceResponse getHomelessExistence(HomelessExistenceRequest request) {
+    Optional<Homeless> homelessOptional = homelessQueryService.getOneByDeviceId(
+        request.getDeviceId()
+    );
+    if (homelessOptional.isPresent()) {
+      Homeless homeless = homelessOptional.get();
+
+      if (homeless.getName().equals(request.getHomelessName())
+          && homeless.getShelter().getId().equals(request.getShelterId())) {
+        return HomelessExistenceResponse.builder()
+            .exist(true)
+            .homelessId(homeless.getId())
+            .build();
+      }
+    }
+    return HomelessExistenceResponse.builder()
+        .exist(false)
+        .homelessId(null)
         .build();
   }
 

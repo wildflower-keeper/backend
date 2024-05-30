@@ -3,8 +3,6 @@ package org.wildflowergardening.backend.core.wildflowergardening.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -67,17 +64,6 @@ public class Homeless {
   @Comment("센터 입소일")
   private LocalDate admissionDate;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "last_location_status", nullable = true)
-  @Comment("노숙인 마지막 위치 상태")
-  @Setter
-  private LocationStatus lastLocationStatus;
-
-  @Column(name = "last_location_tracked_at", nullable = true)
-  @Comment("마지막 위치 확인 일시")
-  @Setter
-  private LocalDateTime lastLocationTrackedAt;
-
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   @Comment("생성일시")
@@ -87,16 +73,4 @@ public class Homeless {
   @Column(name = "last_updated_at", nullable = false)
   @Comment("마지막 수정일시")
   private LocalDateTime lastUpdatedAt;
-
-  public enum LocationStatus {
-    IN_SHELTER, OUTING;
-
-    public static LocationStatus from(String value) {
-      try {
-        return valueOf(value);
-      } catch (Exception e) {
-        throw new IllegalArgumentException("LocationStatus 에 " + value + "가 존재하지 않습니다.");
-      }
-    }
-  }
 }

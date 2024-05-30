@@ -4,6 +4,7 @@ import static org.wildflowergardening.backend.api.wildflowergardening.applicatio
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,11 +22,13 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.S
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationStatus;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
@@ -41,6 +44,7 @@ public class ShelterAdminAppService {
   private final HomelessFilterPagerProvider homelessFilterPagerProvider;
   private final SleepoverService sleepoverService;
   private final HomelessQueryService homelessQueryService;
+  private final LocationTrackingService locationTrackingService;
 
   public SessionResponse login(ShelterLoginRequest dto) {
     Optional<Shelter> shelterOptional = shelterService.getShelterById(dto.getId());
@@ -74,15 +78,37 @@ public class ShelterAdminAppService {
         .getPage(pageRequest);
   }
 
-  public HomelessCountResponse countHomeless(Long shelterId, LocalDate sleepoverTargetDate) {
+  public HomelessCountResponse countHomeless(Long shelterId, LocalDateTime targetDateTime) {
+    long totalHomelessCount = homelessQueryService.count(shelterId);
+
+    // 외박
+    LocalDate sleepoverTargetDate = targetDateTime.toLocalDate();
     long sleepoverCount = sleepoverService.count(shelterId, sleepoverTargetDate);
-    long totalCount = homelessQueryService.count(shelterId);
-    long outingCount = homelessQueryService.countByLocationStatus(shelterId, LocationStatus.OUTING);
+
+    // 외출
+    LocalDateTime lastLocationTrackedAfter = targetDateTime.minusHours(1);
+    Map<Long, LocationTracking> lastLocationMap =
+        locationTrackingService.getAllLastByLastTrackedAfter(
+            shelterId, lastLocationTrackedAfter
+        );
+    long trackedCount = lastLocationMap.size();
+    long inShelterCount = lastLocationMap.values().stream()
+        .filter(locationTracking ->
+            locationTracking.getLocationStatus() == LocationStatus.IN_SHELTER)
+        .count();
+    long outingCount = lastLocationMap.values().stream()
+        .filter(locationTracking ->
+            locationTracking.getLocationStatus() == LocationStatus.OUTING)
+        .count();
 
     return HomelessCountResponse.builder()
+        .totalHomelessCount(totalHomelessCount)
+        .sleepoverTargetDate(sleepoverTargetDate)
         .sleepoverCount(sleepoverCount)
+        .locationTrackedHomelessCount(trackedCount)
+        .locationTrackedAfter(lastLocationTrackedAfter)
         .outingCount(outingCount)
-        .totalCount(totalCount)
+        .inShelterCount(inShelterCount)
         .build();
   }
 

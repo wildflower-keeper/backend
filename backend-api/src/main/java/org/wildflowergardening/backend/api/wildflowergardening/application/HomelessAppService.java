@@ -3,7 +3,6 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,11 +21,12 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse.HomelessMainResponseBuilder;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateOrUpdateLocationTrackingDto;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 
@@ -40,6 +40,7 @@ public class HomelessAppService {
   private final HomelessQueryService homelessQueryService;
   private final SleepoverService sleepoverService;
   private final HomelessAppJwtProvider homelessAppJwtProvider;
+  private final LocationTrackingService locationTrackingService;
 
   public CreateHomelessResponse createHomeless(CreateHomelessRequest request) {
     Optional<Shelter> shelterOptional = shelterService.getShelterById(request.getShelterId());
@@ -134,11 +135,8 @@ public class HomelessAppService {
     return resultDates;
   }
 
-  public void updateLocationStatus(
-      Long homelessId, LocationStatus lastLocationStatus, LocalDateTime lastLocationTrackedAt
-  ) {
-    homelessCommandService.updateLocationStatus(homelessId, lastLocationStatus,
-        lastLocationTrackedAt);
+  public void updateLocationStatus(CreateOrUpdateLocationTrackingDto dto) {
+    locationTrackingService.createOrUpdate(dto);
   }
 
   public boolean isSleepoverTonight(Long homelessId) {

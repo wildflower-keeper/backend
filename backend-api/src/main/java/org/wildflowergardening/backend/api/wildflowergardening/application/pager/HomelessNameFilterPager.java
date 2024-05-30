@@ -1,6 +1,7 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application.pager;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +11,11 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ public class HomelessNameFilterPager implements HomelessFilterPager {
 
   private final HomelessQueryService homelessQueryService;
   private final SleepoverService sleepoverService;
+  private final LocationTrackingService locationTrackingService;
 
   @Override
   public NumberPageResponse<HomelessResponse> getPage(HomelessPageRequest pageRequest) {
@@ -34,11 +38,16 @@ public class HomelessNameFilterPager implements HomelessFilterPager {
     Set<Long> sleepoverHomelessIds = sleepoverService.filterSleepoverHomelessIds(
         homelessIds, pageRequest.getSleepoverTargetDate()
     );
+    Map<Long, LocationTracking> lastTrackingMap = locationTrackingService.getAllLast(homelessIds);
+
     return NumberPageResponse.<HomelessResponse>builder()
         .items(
             result.getItems().stream()
-                .map(homeless -> HomelessResponse.from(homeless,
-                    sleepoverHomelessIds.contains(homeless.getId())))
+                .map(homeless -> HomelessResponse.from(
+                    homeless,
+                    lastTrackingMap.getOrDefault(homeless.getId(), null),
+                    sleepoverHomelessIds.contains(homeless.getId()))
+                )
                 .collect(Collectors.toList())
         )
         .pagination(PageInfoResponse.of(result.getPagination()))

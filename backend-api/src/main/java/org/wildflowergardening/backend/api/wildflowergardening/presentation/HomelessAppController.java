@@ -28,6 +28,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.C
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateLocationRequest;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateOrUpdateLocationTrackingDto;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
@@ -115,7 +116,14 @@ public class HomelessAppController {
   ) {
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
     homelessAppService.updateLocationStatus(
-        homelessContext.getHomelessId(), request.getLocationStatus(), LocalDateTime.now()
+        CreateOrUpdateLocationTrackingDto.builder()
+            .homelessId(homelessContext.getHomelessId())
+            .shelterId(homelessContext.getShelterId())
+            .locationStatus(request.getLocationStatus())
+            .latitude(request.getLatitude())
+            .longitude(request.getLongitude())
+            .lastTrackedAt(LocalDateTime.now())
+            .build()
     );
     return ResponseEntity.ok().build();
   }

@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -66,8 +67,8 @@ public class ShelterAdminAppController {
   @GetMapping("/api/v1/shelter-admin/homeless-people")
   @Operation(summary = "노숙인 목록 조회", description = "필터유형(필터값) NONE() LOCATION_STATUS(IN_SHELTER,OUTING) SLEEPOVER() NAME(노숙인성함)")
   public ResponseEntity<NumberPageResponse<HomelessResponse>> getHomelessPage(
-      @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "LOCATION_STATUS") HomelessFilterType filterType,
-      @RequestParam(required = false) @Parameter(description = "필터 값", example = "IN_SHELTER") String filterValue,
+      @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "NAME") HomelessFilterType filterType,
+      @RequestParam(required = false) @Parameter(description = "필터 값", example = "민수") String filterValue,
       @RequestParam(required = false) @Parameter(description = "외박신청 확인 기준일", example = "2024-05-24") LocalDate sleepoverTargetDate,
       @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
       @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
@@ -96,14 +97,14 @@ public class ShelterAdminAppController {
   @GetMapping("/api/v1/shelter-admin/homeless-people/count")
   @Operation(summary = "노숙인 인원수 조회")
   public ResponseEntity<HomelessCountResponse> getHomelessCount(
-      @RequestParam(required = false) @Parameter(description = "외박신청 확인 기준일", example = "2024-05-24") LocalDate sleepoverTargetDate
+      @RequestParam(required = false) @Parameter(description = "외박신청 및 위치 확인 기준일시", example = "2024-05-24 18:00:00") LocalDateTime targetDateTime
   ) {
-    if (sleepoverTargetDate == null) {
-      sleepoverTargetDate = LocalDate.now();
+    if (targetDateTime == null) {
+      targetDateTime = LocalDateTime.now();
     }
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
     return ResponseEntity.ok(shelterAdminAppService.countHomeless(
-        shelterContext.getShelterId(), sleepoverTargetDate
+        shelterContext.getShelterId(), targetDateTime
     ));
   }
 

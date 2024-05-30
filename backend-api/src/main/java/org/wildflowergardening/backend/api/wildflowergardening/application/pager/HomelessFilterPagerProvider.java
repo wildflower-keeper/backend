@@ -11,12 +11,11 @@ public class HomelessFilterPagerProvider {
 
   public HomelessFilterPagerProvider(
       HomelessNoFilterPager noFilterPager,
-      HomelessLocationStatusFilterPager locationStatusFilterPager,
-      HomelessSleepoverFilterPager sleepoverFilterPager, HomelessNameFilterPager nameFilterPager
+      HomelessSleepoverFilterPager sleepoverFilterPager,
+      HomelessNameFilterPager nameFilterPager
   ) {
     this.filterPagers = Map.of(
         HomelessFilterType.NONE, noFilterPager,
-        HomelessFilterType.LOCATION_STATUS, locationStatusFilterPager,
         HomelessFilterType.SLEEPOVER, sleepoverFilterPager,
         HomelessFilterType.NAME, nameFilterPager
     );

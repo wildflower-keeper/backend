@@ -8,6 +8,6 @@ import lombok.Getter;
 @Builder
 public class SessionResponse {
 
-  private String sessionToken;
+  private String authToken;
   private LocalDateTime expiredAt;
 }

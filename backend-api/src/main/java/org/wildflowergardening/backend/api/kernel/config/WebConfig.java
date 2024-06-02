@@ -1,7 +1,8 @@
-package org.wildflowergardening.backend.api.wildflowergardening.config;
+package org.wildflowergardening.backend.api.kernel.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.HomelessAuthInterceptor;
@@ -15,6 +16,17 @@ public class WebConfig implements WebMvcConfigurer {
   private final ShelterAdminAuthInterceptor shelterAdminAuthInterceptor;
   private final HomelessAuthInterceptor homelessAuthInterceptor;
   private final ShelterPublicAuthInterceptor shelterPublicAuthInterceptor;
+
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/**")
+        .allowedOrigins(
+            "http://localhost:3000", "http://localhost:80",
+            "http://127.0.0.1:3000", "http://127.0.0.1:80"
+        )
+        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+        .maxAge(3_600);
+  }
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {

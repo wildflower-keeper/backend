@@ -48,7 +48,7 @@ public class LocationTracking {
   private Long shelterId;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "last_location_status", nullable = false)
+  @Column(name = "location_status", nullable = false)
   @Comment("위치 상태")
   @Setter
   private LocationStatus locationStatus;

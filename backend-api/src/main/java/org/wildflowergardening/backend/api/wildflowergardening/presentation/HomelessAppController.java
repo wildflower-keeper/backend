@@ -6,12 +6,15 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,14 +33,14 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateLocationRequest;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateOrUpdateLocationTrackingDto;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "노숙인 앱 API")
+@Validated
 public class HomelessAppController {
 
   private final HomelessAppService homelessAppService;
@@ -131,18 +134,15 @@ public class HomelessAppController {
   ))
   @PostMapping("/api/v1/homeless-app/location")
   public ResponseEntity<Void> updateLocationStatus(
-      @RequestBody @Valid UpdateLocationRequest request
+      @RequestBody @Valid @NotEmpty @Size(max = 10) List<UpdateLocationRequest> requests
   ) {
+    List<UpdateLocationRequest> dtoList = requests.stream()
+        .sorted(Comparator.comparing(UpdateLocationRequest::getFirstTrackedAt))
+        .toList();
+
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
     homelessAppService.updateLocationStatus(
-        CreateOrUpdateLocationTrackingDto.builder()
-            .homelessId(homelessContext.getHomelessId())
-            .shelterId(homelessContext.getShelterId())
-            .locationStatus(request.getLocationStatus())
-            .latitude(request.getLatitude())
-            .longitude(request.getLongitude())
-            .lastTrackedAt(LocalDateTime.now())
-            .build()
+        homelessContext.getHomelessId(), homelessContext.getShelterId(), dtoList
     );
     return ResponseEntity.ok().build();
   }

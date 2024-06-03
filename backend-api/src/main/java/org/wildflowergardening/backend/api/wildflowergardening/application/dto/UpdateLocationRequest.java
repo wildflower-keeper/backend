@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.api.wildflowergardening.presentation.dto;
+package org.wildflowergardening.backend.api.wildflowergardening.application.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMax;
@@ -6,6 +6,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationStatus;
 
@@ -20,11 +21,17 @@ public class UpdateLocationRequest {
   @DecimalMin(value = "-90", message = "위도 최솟값은 -90 입니다.")
   @Digits(integer = 2, fraction = 6, message = "위도는 정수 두자리 이하, 소수점 6자리 이하로 지정 가능합니다.")
   @Schema(description = "위도")
-  private BigDecimal latitude;
+  private BigDecimal lastLatitude;
 
   @DecimalMax(value = "180", message = "경도 최댓값은 180 입니다.")
   @DecimalMin(value = "-180", message = "경도 최솟값은 -180 입니다.")
   @Digits(integer = 3, fraction = 6, message = "경도는 정수 세자리 이하, 소수점 6자리 이하로 지정 가능합니다.")
   @Schema(description = "경도")
-  private BigDecimal longitude;
+  private BigDecimal lastLongitude;
+
+  @Schema(description = "처음 위치 확인 일시", example = "2024-06-03 00:00:01.123123", type = "string")
+  private LocalDateTime firstTrackedAt;
+
+  @Schema(description = "마지막 위치 확인 일시", example = "2024-06-03 00:00:01.123123", type = "string")
+  private LocalDateTime lastTrackedAt;
 }

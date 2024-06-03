@@ -17,8 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
@@ -63,13 +61,11 @@ public class LocationTracking {
   @Comment("마지막 경도")
   private BigDecimal lastLongitude;
 
-  @CreatedDate
   @Column(name = "first_tracked_at", nullable = false)
   @Comment("최초 위치 확인 일시 (=생성일시)")
   private LocalDateTime firstTrackedAt;
 
   @Setter
-  @LastModifiedDate
   @Column(name = "last_tracked_at", nullable = false)
   @Comment("마지막 위치 확인 일시")
   private LocalDateTime lastTrackedAt;

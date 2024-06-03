@@ -10,10 +10,9 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationS
 @Builder
 public class CreateOrUpdateLocationTrackingDto {
 
-  private Long homelessId;
-  private Long shelterId;
   private LocationStatus locationStatus;
   private BigDecimal latitude;
   private BigDecimal longitude;
+  private LocalDateTime firstTrackedAt;
   private LocalDateTime lastTrackedAt;
 }

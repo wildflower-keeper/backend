@@ -3,8 +3,10 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -23,14 +25,15 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse.HomelessMainResponseBuilder;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateOrUpdateLocationTrackingDto;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 
@@ -183,8 +186,49 @@ public class HomelessAppService {
     return resultDates;
   }
 
-  public void updateLocationStatus(CreateOrUpdateLocationTrackingDto dto) {
-    locationTrackingService.createOrUpdate(dto);
+  public void updateLocationStatus(
+      Long homelessId, Long shelterId, List<UpdateLocationRequest> dtoList
+  ) {
+    if (dtoList.isEmpty()) {
+      return;
+    }
+    // 위치 확인 일시 유효성검사
+    LocalDateTime beforeLast = LocalDateTime.MIN;
+    for (UpdateLocationRequest dto : dtoList) {
+      if (dto.getFirstTrackedAt().isAfter(dto.getLastTrackedAt())) {
+        throw new IllegalArgumentException("firstTrackedAt 이 lastTrackedAt 보다 큰 위치 정보가 있습니다.");
+      }
+      if (dto.getFirstTrackedAt().isBefore(beforeLast)) {
+        throw new IllegalArgumentException("요청 목록에 위치 확인 기간 중복이 있습니다.");
+      }
+      beforeLast = dto.getLastTrackedAt();
+    }
+
+    // List<LocationTracking> 만들기
+    LinkedList<LocationTracking> newLocations = new LinkedList<>();
+
+    for (UpdateLocationRequest dto : dtoList) {
+      if (newLocations.isEmpty()) {
+        newLocations.add(LocationTracking.builder()
+            .homelessId(homelessId)
+            .shelterId(shelterId)
+            .locationStatus(dto.getLocationStatus())
+            .lastLatitude(dto.getLastLatitude())
+            .lastLongitude(dto.getLastLongitude())
+            .firstTrackedAt(dto.getFirstTrackedAt())
+            .lastTrackedAt(dto.getLastTrackedAt())
+            .build());
+        continue;
+      }
+      LocationTracking last = newLocations.get(newLocations.size() - 1);
+
+      if (last.getLocationStatus() == dto.getLocationStatus()) {
+        last.setLastTrackedAt(dto.getLastTrackedAt());
+        last.setLastLatitude(dto.getLastLatitude());
+        last.setLastLongitude(dto.getLastLongitude());
+      }
+    }
+    locationTrackingService.createOrUpdate(newLocations);
   }
 
   public boolean isSleepoverTonight(Long homelessId) {

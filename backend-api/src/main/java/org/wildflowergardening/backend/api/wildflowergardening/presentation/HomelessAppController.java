@@ -134,7 +134,7 @@ public class HomelessAppController {
   ))
   @PostMapping("/api/v1/homeless-app/location")
   public ResponseEntity<Void> updateLocationStatus(
-      @RequestBody @Valid @NotEmpty @Size(max = 10) List<UpdateLocationRequest> requests
+      @RequestBody @Valid @NotEmpty @Size(max = 100) List<UpdateLocationRequest> requests
   ) {
     List<UpdateLocationRequest> dtoList = requests.stream()
         .sorted(Comparator.comparing(UpdateLocationRequest::getFirstTrackedAt))

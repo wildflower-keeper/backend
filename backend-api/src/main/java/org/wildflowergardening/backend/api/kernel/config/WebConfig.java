@@ -26,6 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
             "http://localhost:8081", "http://127.0.0.1:8081"
         )
         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+        .allowedHeaders("auth-token")
         .maxAge(3_600);
   }
 

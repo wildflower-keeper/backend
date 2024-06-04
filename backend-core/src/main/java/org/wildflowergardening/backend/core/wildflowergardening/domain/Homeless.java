@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -37,6 +38,7 @@ public class Homeless {
 
   @Column(name = "name", nullable = false)
   @Comment("노숙인 성함")
+  @Setter
   private String name;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -50,18 +52,22 @@ public class Homeless {
 
   @Column(name = "room", nullable = true)
   @Comment("방번호")
+  @Setter
   private String room;
 
   @Column(name = "birth_date", nullable = true)
   @Comment("생년월일")
+  @Setter
   private LocalDate birthDate;
 
   @Column(name = "phone_number", nullable = true)
   @Comment("노숙인 휴대폰번호")
+  @Setter
   private String phoneNumber;
 
   @Column(name = "admission_date", nullable = true)
   @Comment("센터 입소일")
+  @Setter
   private LocalDate admissionDate;
 
   @CreatedDate

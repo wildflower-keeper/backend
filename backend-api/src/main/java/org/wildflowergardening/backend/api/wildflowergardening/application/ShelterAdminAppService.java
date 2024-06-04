@@ -2,6 +2,7 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
+import io.micrometer.common.util.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -11,7 +12,9 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
+import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
@@ -20,6 +23,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.N
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterAdminSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
@@ -27,6 +31,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.Sess
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
@@ -130,5 +135,42 @@ public class ShelterAdminAppService {
             .collect(Collectors.toList()))
         .pagination(PageInfoResponse.of(result.getPagination()))
         .build();
+  }
+
+  @Transactional
+  public void updateHomelessInfo(
+      Long shelterId, Long homelessId, UpdateHomelessRequest request
+  ) {
+    Homeless homeless = homelessQueryService.getOneById(homelessId)
+        .orElseThrow(() -> new IllegalArgumentException("not exist homeless"));
+
+    if (!homeless.getShelter().getId().equals(shelterId)) {
+      throw new ForbiddenException("");
+    }
+    homeless.setName(
+        StringUtils.isBlank(request.getName())
+            ? homeless.getName()
+            : request.getName()
+    );
+    homeless.setRoom(
+        StringUtils.isBlank(request.getRoom())
+            ? homeless.getRoom()
+            : request.getRoom()
+    );
+    homeless.setPhoneNumber(
+        StringUtils.isBlank(request.getPhoneNumber())
+            ? homeless.getPhoneNumber()
+            : request.getPhoneNumber()
+    );
+    homeless.setBirthDate(
+        request.getBirthDate() == null
+            ? homeless.getBirthDate()
+            : request.getBirthDate()
+    );
+    homeless.setAdmissionDate(
+        request.getAdmissionDate() == null
+            ? homeless.getAdmissionDate()
+            : request.getAdmissionDate()
+    );
   }
 }

@@ -21,7 +21,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +40,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.N
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterAdminSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
 
 @RestController
@@ -106,6 +109,23 @@ public class ShelterAdminAppController {
     return ResponseEntity.ok(shelterAdminAppService.countHomeless(
         shelterContext.getShelterId(), targetDateTime
     ));
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @PutMapping("/api/v1/shelter-admin/homeless/{homelessId}")
+  @Operation(summary = "노숙인 정보 수정", description = "수정하고싶은 프로퍼티만 채워서 보내시면 됩니다.")
+  public ResponseEntity<Void> updateHomelessInfo(
+      @PathVariable Long homelessId,
+      @RequestBody @Valid UpdateHomelessRequest request
+  ) {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    shelterAdminAppService.updateHomelessInfo(shelterContext.getShelterId(), homelessId, request);
+    return ResponseEntity.ok().build();
   }
 
   @ShelterAuthorized

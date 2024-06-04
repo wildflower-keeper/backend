@@ -6,9 +6,12 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessTermsRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateShelterRequest;
 import org.wildflowergardening.backend.core.kernel.config.YamlPropertySourceFactory;
+import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessTermsService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.HomelessTerms;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 
 @Service
@@ -19,8 +22,8 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 )
 public class WildflowerAdminService {
 
-
   private final ShelterService shelterService;
+  private final HomelessTermsService homelessTermsService;
   private final PasswordEncoder passwordEncoder;
 
   @Value("${admin.password}")
@@ -37,5 +40,18 @@ public class WildflowerAdminService {
         .longitude(dto.getLongitude())
         .build();
     return shelterService.save(shelter);
+  }
+
+  public Long createHomelessTerms(String adminPassword, CreateHomelessTermsRequest dto) {
+    if (!this.adminPassword.equals(adminPassword)) {
+      throw new ForbiddenException("권한이 없습니다.");
+    }
+    HomelessTerms homelessTerms = HomelessTerms.builder()
+        .title(dto.getTitle())
+        .detail(dto.getDetail())
+        .isEssential(dto.getIsEssential())
+        .build();
+
+    return homelessTermsService.create(homelessTerms);
   }
 }

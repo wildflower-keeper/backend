@@ -34,6 +34,7 @@ public class HomelessTermsAgree {
   private Long homelessId;
 
   @Column(name = "homeless_terms_id", nullable = false)
+  @Comment("노숙인 앱 약관 id")
   private Long homelessTermsId;
 
   @CreatedDate

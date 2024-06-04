@@ -1,5 +1,6 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application;
 
+import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.HOMELESS_APP_ESSENTIAL_TERMS_NOT_AGREED;
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import java.time.LocalDate;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessTermsAgreeService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessTermsService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
@@ -45,6 +48,7 @@ public class HomelessAppService {
 
   private final PasswordEncoder passwordEncoder;
   private final HomelessTermsService homelessTermsService;
+  private final HomelessTermsAgreeService homelessTermsAgreeService;
   private final ShelterService shelterService;
   private final HomelessCommandService homelessCommandService;
   private final HomelessQueryService homelessQueryService;
@@ -71,6 +75,30 @@ public class HomelessAppService {
     )) {
       throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
     }
+    Map<Long, Boolean> termsIdAndEssential = homelessTermsService.findAllIdEssential(
+        LocalDate.now()
+    );
+    Set<Long> allTermsId = termsIdAndEssential.keySet();
+    List<Long> essentialTermsIds = allTermsId.stream()
+        .filter(termsId -> termsIdAndEssential.get(termsId).equals(Boolean.TRUE))
+        .toList();
+    HashSet<Long> termsIdsToAgree = request.getTermsIdsToAgree();
+
+    // 약관동의 요청 validation
+    for (Long termsIdToAgree : termsIdsToAgree) {
+      if (!allTermsId.contains(termsIdToAgree)) {
+        throw new IllegalArgumentException("존재하지 않는 약관에 동의하였습니다.");
+      }
+    }
+
+    // 필수 약관에 모두 동의했는지 검사
+    for (Long essentialId : essentialTermsIds) {
+      if (!termsIdsToAgree.contains(essentialId)) {
+        throw new ApplicationLogicException(HOMELESS_APP_ESSENTIAL_TERMS_NOT_AGREED);
+      }
+    }
+
+    // 계정 생성
     Long homelessId = homelessCommandService.create(Homeless.builder()
         .name(request.getName())
         .shelter(shelterOptional.get())

@@ -23,11 +23,13 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse.HomelessMainResponseBuilder;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTermsResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessTermsService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
@@ -42,12 +44,24 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover
 public class HomelessAppService {
 
   private final PasswordEncoder passwordEncoder;
+  private final HomelessTermsService homelessTermsService;
   private final ShelterService shelterService;
   private final HomelessCommandService homelessCommandService;
   private final HomelessQueryService homelessQueryService;
   private final SleepoverService sleepoverService;
   private final HomelessAppJwtProvider homelessAppJwtProvider;
   private final LocationTrackingService locationTrackingService;
+
+  public List<HomelessTermsResponse> getAllTerms() {
+    return homelessTermsService.findAll(LocalDate.now()).stream()
+        .map(homelessTerms -> HomelessTermsResponse.builder()
+            .id(homelessTerms.getId())
+            .title(homelessTerms.getTitle())
+            .detail(homelessTerms.getDetail())
+            .isEssential(homelessTerms.getIsEssential())
+            .build())
+        .toList();
+  }
 
   public HomelessTokenResponse createHomeless(CreateHomelessRequest request) {
     Optional<Shelter> shelterOptional = shelterService.getShelterById(request.getShelterId());

@@ -50,6 +50,7 @@ public class WildflowerAdminService {
         .title(dto.getTitle())
         .detail(dto.getDetail())
         .isEssential(dto.getIsEssential())
+        .startDate(dto.getStartDate())
         .build();
 
     return homelessTermsService.create(homelessTerms);

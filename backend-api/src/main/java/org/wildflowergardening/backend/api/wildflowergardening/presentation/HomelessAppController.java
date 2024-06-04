@@ -31,6 +31,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.C
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTermsResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
@@ -52,6 +53,12 @@ public class HomelessAppController {
       @RequestBody @Valid HomelessExistenceRequest request
   ) {
     return ResponseEntity.ok(homelessAppService.getHomelessExistence(request));
+  }
+
+  @Operation(summary = "노숙인 약관 목록 조회")
+  @GetMapping("/api/v1/homeless-app/terms")
+  public ResponseEntity<List<HomelessTermsResponse>> getAllTerms() {
+    return ResponseEntity.ok(homelessAppService.getAllTerms());
   }
 
   @Operation(summary = "노숙인 계정 생성")

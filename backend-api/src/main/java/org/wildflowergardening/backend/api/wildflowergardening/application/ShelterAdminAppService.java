@@ -87,7 +87,7 @@ public class ShelterAdminAppService {
 
     // 외출
     LocalDateTime lastLocationTrackedAfter = targetDateTime.minusHours(1);
-    Map<Long, LocationTracking> lastLocationMap =
+    Map<Long, LocationTracking> lastLocationMap =        // map key : Homeless id
         locationTrackingService.getAllLastByLastTrackedAfter(
             shelterId, lastLocationTrackedAfter
         );

@@ -2,6 +2,7 @@ package org.wildflowergardening.backend.core.wildflowergardening.application;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -137,5 +138,13 @@ public class SleepoverService {
       Long shelterId, LocalDateTime createdAtStart, LocalDateTime createdAtEnd
   ) {
     return sleepoverRepository.findAllByCreatedAtIn(shelterId, createdAtStart, createdAtEnd);
+  }
+
+  @Transactional(readOnly = true)
+  public boolean exist(Long homelessId, LocalDate targetDate) {
+    Set<Long> existHomelessId = sleepoverRepository.filterSleepoverHomeless(
+        Collections.singletonList(homelessId), targetDate
+    );
+    return !existHomelessId.isEmpty();
   }
 }

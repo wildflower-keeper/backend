@@ -1,7 +1,6 @@
 package org.wildflowergardening.backend.core.wildflowergardening.application;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +19,7 @@ public class LocationTrackingService {
   private final LocationTrackingRepository locationTrackingRepository;
 
   @Transactional
-  public void createOrUpdate(LinkedList<LocationTracking> newLocations) {
+  public void createOrUpdate(List<LocationTracking> newLocations) {
     Long homelessId = newLocations.get(0).getHomelessId();
 
     // 기존에 저장되어있던 마지막 위치 확인 데이터
@@ -42,12 +41,18 @@ public class LocationTrackingService {
     }
     if (lastLocation.getLocationStatus() == newFirstLocation.getLocationStatus()
         && lastTrackedAt.isAfter(newFirstTrackedAt.minusHours(1))) {
+      // 데이터 축약
       lastLocation.setLastTrackedAt(newFirstLocation.getLastTrackedAt());
       lastLocation.setLastLatitude(newFirstLocation.getLastLatitude());
       lastLocation.setLastLongitude(newFirstLocation.getLastLongitude());
 
-      newLocations.remove(0);
+      if (newLocations.size() == 1) {    // 기존 데이터 update 하고 끝
+        return;
+      }
+      locationTrackingRepository.saveAll(newLocations.subList(1, newLocations.size()));
+      return;
     }
+    // 축약 없음
     locationTrackingRepository.saveAll(newLocations);
   }
 

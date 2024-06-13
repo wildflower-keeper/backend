@@ -98,7 +98,7 @@ public class ShelterAdminAppController {
       example = "session-token-example"
   ))
   @GetMapping("/api/v1/shelter-admin/homeless-people/count")
-  @Operation(summary = "노숙인 인원수 조회")
+  @Operation(summary = "통계 데이터 조회 (변경예정)")
   public ResponseEntity<HomelessCountResponse> getHomelessCount(
       @RequestParam(required = false) @Parameter(description = "외박신청 및 위치 확인 기준일시", example = "2024-05-24 18:00:00") LocalDateTime targetDateTime
   ) {

@@ -33,7 +33,7 @@ public class HomelessResponse {
   @Schema(description = "마지막 위치 확인 일시")
   private LocalDateTime lastLocationTrackedAt;
 
-  @Schema(description = "노숙인 전화번호", example = "010-0000-0000")
+  @Schema(description = "노숙인 전화번호", example = "01012341234")
   private String phoneNumber;
 
   @Schema(description = "센터 입소일", example = "2023-01-01")

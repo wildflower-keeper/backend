@@ -20,7 +20,7 @@ public class UpdateHomelessRequest {
   private LocalDate birthDate;
 
   @Size(max = 50)
-  @Schema(example = "010-1234-1234")
+  @Schema(example = "01012341234")
   private String phoneNumber;
 
   @Schema(example = "2024-06-01", type = "string")

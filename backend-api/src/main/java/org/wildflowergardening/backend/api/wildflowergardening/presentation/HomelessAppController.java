@@ -70,7 +70,9 @@ public class HomelessAppController {
         .body(homelessAppService.createHomeless(request));
   }
 
-  @Operation(summary = "기존 계정 토큰 (재)획득")
+  @Operation(summary = "기존 계정 토큰 (재)획득", description = "노숙인 id, 센터 id, 노숙인 이름이 일치하고<br/>"
+      + "device ID 또는 전화번호 둘 중 하나가 일치하면<br/>"
+      + "토큰 재획득 가능")
   @PostMapping("/api/v1/homeless-app/token-get")
   public ResponseEntity<HomelessTokenResponse> getHomelessToken(
       @RequestBody @Valid HomelessTokenRequest request

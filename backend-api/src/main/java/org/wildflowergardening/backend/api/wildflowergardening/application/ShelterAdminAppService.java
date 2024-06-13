@@ -25,6 +25,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.S
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
+import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
@@ -160,7 +161,7 @@ public class ShelterAdminAppService {
     homeless.setPhoneNumber(
         StringUtils.isBlank(request.getPhoneNumber())
             ? homeless.getPhoneNumber()
-            : request.getPhoneNumber()
+            : PhoneNumberFormatter.format(request.getPhoneNumber())
     );
     homeless.setBirthDate(
         request.getBirthDate() == null

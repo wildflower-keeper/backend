@@ -29,6 +29,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessTermsAgreeService;
@@ -109,7 +110,7 @@ public class HomelessAppService {
         .deviceId(request.getDeviceId())
         .room(request.getRoom())
         .birthDate(request.getBirthDate())
-        .phoneNumber(request.getPhoneNumber())
+        .phoneNumber(PhoneNumberFormatter.format(request.getPhoneNumber()))
         .admissionDate(request.getAdmissionDate())
         .build());
 
@@ -152,7 +153,8 @@ public class HomelessAppService {
 
     if (homeless.getShelter().getId().equals(request.getShelterId())
         && homeless.getName().equals(request.getHomelessName())
-        && homeless.getDeviceId().equals(request.getDeviceId())
+        && (homeless.getDeviceId().equals(request.getDeviceId()) || homeless.getPhoneNumber()
+        .equals(PhoneNumberFormatter.format(request.getPhoneNumber())))
     ) {
       String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
           .homelessId(homeless.getId())

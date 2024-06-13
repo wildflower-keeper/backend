@@ -40,7 +40,7 @@ public class CreateHomelessRequest {
   @Schema(description = "노숙인 생년월일 (선택사항)", example = "1970-05-15", nullable = true)
   private LocalDate birthDate;
 
-  @Schema(description = "노숙인 휴대폰번호 (선택사항)", example = "010-0000-0000", nullable = true)
+  @Schema(description = "노숙인 휴대폰번호 (선택사항)", example = "01012341234", nullable = true)
   private String phoneNumber;
 
   @Schema(description = "센터 입소일 (선택사항)", example = "2024-08-01", nullable = true)

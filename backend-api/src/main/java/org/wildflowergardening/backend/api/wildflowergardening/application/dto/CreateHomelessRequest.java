@@ -21,9 +21,9 @@ public class CreateHomelessRequest {
   @Schema(description = "센터 id", example = "1")
   private Long shelterId;
 
-  @NotNull(message = "센터 password가 null 입니다.")
-  @Schema(description = "센터 password", example = "password_example")
-  private String shelterPw;
+  @NotNull(message = "센터 pin 이 null 입니다.")
+  @Schema(description = "센터 pin", example = "1234")
+  private String shelterPin;
 
   @NotEmpty
   @Size(max = 255, message = "디바이스 id는 255자 이내로 입력해주세요.")

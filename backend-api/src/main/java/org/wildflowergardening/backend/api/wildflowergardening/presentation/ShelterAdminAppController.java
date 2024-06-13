@@ -40,6 +40,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.N
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterAdminSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterPinResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
 
@@ -59,6 +60,19 @@ public class ShelterAdminAppController {
       @RequestBody @Valid ShelterLoginRequest shelterLoginRequest
   ) {
     return ResponseEntity.ok(shelterAdminAppService.login(shelterLoginRequest));
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @GetMapping("/api/v1/shelter-admin/pin")
+  @Operation(summary = "핀번호 조회")
+  public ResponseEntity<ShelterPinResponse> getPin() {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    return ResponseEntity.ok(shelterAdminAppService.getPin(shelterContext.getShelterId()));
   }
 
   @ShelterAuthorized

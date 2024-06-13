@@ -3,14 +3,11 @@ package org.wildflowergardening.backend.core.wildflowergardening.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,47 +26,21 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table
 @EntityListeners(AuditingEntityListener.class)
-public class Homeless {
+public class ShelterPin {
 
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "name", nullable = false)
-  @Comment("노숙인 성함")
-  @Setter
-  private String name;
-
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "shelter_id", nullable = false)
+  @Column(nullable = false, unique = true)
   @Comment("센터 id")
-  private Shelter shelter;
+  private Long shelterId;
 
-  @Column(name = "device_id", nullable = true, unique = true)
-  @Comment("노숙인의 디바이스 id")
+  @Column(nullable = false, length = 4)
+  @Comment("네자리 숫자 pin 번호")
   @Setter
-  private String deviceId;
-
-  @Column(name = "room", nullable = true)
-  @Comment("방번호")
-  @Setter
-  private String room;
-
-  @Column(name = "birth_date", nullable = true)
-  @Comment("생년월일")
-  @Setter
-  private LocalDate birthDate;
-
-  @Column(name = "phone_number", nullable = true)
-  @Comment("노숙인 휴대폰번호")
-  @Setter
-  private String phoneNumber;
-
-  @Column(name = "admission_date", nullable = true)
-  @Comment("센터 입소일")
-  @Setter
-  private LocalDate admissionDate;
+  private String pin;
 
   @CreatedDate
   @Column(name = "created_at", nullable = false)
@@ -80,4 +51,19 @@ public class Homeless {
   @Column(name = "last_updated_at", nullable = false)
   @Comment("마지막 수정일시")
   private LocalDateTime lastUpdatedAt;
+
+  public static String generatePin() {
+    int randomNum = new SecureRandom().nextInt(10_000);
+    return String.format("%04d", randomNum);
+  }
+
+  public LocalDateTime calcExpiredAt() {
+    return lastUpdatedAt.toLocalDate().plusDays(1).atStartOfDay();
+  }
+
+  public boolean isExpired() {
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime expiredAt = calcExpiredAt();
+    return now.isAfter(expiredAt) || now.isEqual(expiredAt);
+  }
 }

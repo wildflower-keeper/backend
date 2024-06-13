@@ -24,12 +24,14 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.N
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterAdminSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterPinResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterPinService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
@@ -37,6 +39,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterPin;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
@@ -48,6 +51,7 @@ public class ShelterAdminAppService {
   private final SessionService sessionService;
   private final ShelterService shelterService;
   private final PasswordEncoder passwordEncoder;
+  private final ShelterPinService shelterPinService;
   private final HomelessFilterPagerProvider homelessFilterPagerProvider;
   private final SleepoverService sleepoverService;
   private final HomelessQueryService homelessQueryService;
@@ -81,6 +85,14 @@ public class ShelterAdminAppService {
     return SessionResponse.builder()
         .authToken(session.getToken())
         .expiredAt(session.getExpiredAt())
+        .build();
+  }
+
+  public ShelterPinResponse getPin(Long shelterId) {
+    ShelterPin shelterPin = shelterPinService.getShelterPin(shelterId);
+    return ShelterPinResponse.builder()
+        .pin(shelterPin.getPin())
+        .expiredAt(shelterPin.calcExpiredAt())
         .build();
   }
 

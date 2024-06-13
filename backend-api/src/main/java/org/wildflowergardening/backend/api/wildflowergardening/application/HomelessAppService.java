@@ -1,7 +1,7 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application;
 
+import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.HOMELESS_APP_CREATE_ACCOUNT_SHELTER_ID_PIN_INVALID;
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.HOMELESS_APP_ESSENTIAL_TERMS_NOT_AGREED;
-import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,8 +13,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.HomelessAppJwtProvider;
@@ -35,6 +36,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.Home
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessTermsAgreeService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessTermsService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterPinService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.UnregisteredSleepoverService;
@@ -50,7 +52,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Unregiste
 @RequiredArgsConstructor
 public class HomelessAppService {
 
-  private final PasswordEncoder passwordEncoder;
+  private final ShelterPinService shelterPinService;
   private final HomelessTermsService homelessTermsService;
   private final HomelessTermsAgreeService homelessTermsAgreeService;
   private final ShelterService shelterService;
@@ -75,10 +77,10 @@ public class HomelessAppService {
   public HomelessTokenResponse createHomeless(CreateHomelessRequest request) {
     Optional<Shelter> shelterOptional = shelterService.getShelterById(request.getShelterId());
 
-    if (shelterOptional.isEmpty() || !passwordEncoder.matches(
-        request.getShelterPw(), shelterOptional.get().getPassword()
-    )) {
-      throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
+    if (shelterOptional.isEmpty() ||
+        !shelterPinService.matches(shelterOptional.get().getId(), request.getShelterPin())
+    ) {
+      throw new ApplicationLogicException(HOMELESS_APP_CREATE_ACCOUNT_SHELTER_ID_PIN_INVALID);
     }
     Map<Long, Boolean> termsIdAndEssential = homelessTermsService.findAllIdEssential(
         LocalDate.now()
@@ -147,24 +149,41 @@ public class HomelessAppService {
         .build();
   }
 
+  @Transactional
   public HomelessTokenResponse getToken(HomelessTokenRequest request) {
     Homeless homeless = homelessQueryService.getOneById(request.getHomelessId())
         .orElseThrow(() -> new ForbiddenException(""));
 
     if (homeless.getShelter().getId().equals(request.getShelterId())
+        && shelterPinService.matches(request.getShelterId(), request.getShelterPin())
         && homeless.getName().equals(request.getHomelessName())
-        && (homeless.getDeviceId().equals(request.getDeviceId()) || homeless.getPhoneNumber()
-        .equals(PhoneNumberFormatter.format(request.getPhoneNumber())))
     ) {
-      String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
-          .homelessId(homeless.getId())
-          .homelessName(homeless.getName())
-          .shelterId(homeless.getShelter().getId())
-          .build());
-      return HomelessTokenResponse.builder()
-          .homelessId(homeless.getId())
-          .accessToken(token)
-          .build();
+      String requestDeviceId = request.getDeviceId();
+      String requestPhoneNumber = PhoneNumberFormatter.format(request.getPhoneNumber());
+
+      if (!StringUtils.isEmpty(requestDeviceId) && requestDeviceId.equals(homeless.getDeviceId())) {
+        String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
+            .homelessId(homeless.getId())
+            .homelessName(homeless.getName())
+            .shelterId(homeless.getShelter().getId())
+            .build());
+        return HomelessTokenResponse.builder()
+            .homelessId(homeless.getId())
+            .accessToken(token)
+            .build();
+      }
+      if (!StringUtils.isEmpty(requestPhoneNumber) && requestPhoneNumber.equals(homeless.getPhoneNumber())) {
+        homeless.setDeviceId(request.getDeviceId());
+        String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
+            .homelessId(homeless.getId())
+            .homelessName(homeless.getName())
+            .shelterId(homeless.getShelter().getId())
+            .build());
+        return HomelessTokenResponse.builder()
+            .homelessId(homeless.getId())
+            .accessToken(token)
+            .build();
+      }
     }
     throw new ForbiddenException("");
   }

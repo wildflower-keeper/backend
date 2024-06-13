@@ -17,11 +17,14 @@ public class HomelessTokenRequest {
   @Schema(example = "1")
   private Long shelterId;
 
+  @NotNull
+  @Schema(example = "1234")
+  private String shelterPin;
+
   @NotEmpty
   @Schema(example = "홍길동")
   private String homelessName;
 
-  @NotEmpty
   @Schema(example = "test_device_id_1")
   private String deviceId;
 

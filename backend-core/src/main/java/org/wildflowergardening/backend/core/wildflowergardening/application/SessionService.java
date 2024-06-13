@@ -20,8 +20,8 @@ public class SessionService {
   }
 
   @Transactional(readOnly = true)
-  public Optional<Session> getSession(String sessionUuid, LocalDateTime now) {
-    return sessionRepository.findById(sessionUuid)
+  public Optional<Session> getSession(String sessionToken, LocalDateTime now) {
+    return sessionRepository.findByToken(sessionToken)
         .filter(session -> session.getExpiredAt().isAfter(now));
   }
 }

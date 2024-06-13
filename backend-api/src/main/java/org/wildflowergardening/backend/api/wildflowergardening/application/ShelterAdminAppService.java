@@ -3,11 +3,12 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import io.micrometer.common.util.StringUtils;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -64,17 +65,21 @@ public class ShelterAdminAppService {
     Shelter shelter = shelterOptional.get();
     LocalDateTime now = LocalDateTime.now();
 
-    Session session = sessionService.save(Session.builder()
-        .uuid(UUID.randomUUID().toString())
+    byte[] randomBytes = new byte[80];
+    new SecureRandom().nextBytes(randomBytes);
+    Session session = Session.builder()
+        .token(Base64.getUrlEncoder().encodeToString(randomBytes).substring(0, 80))
         .userRole(UserRole.SHELTER)
         .userId(shelter.getId())
         .username(shelter.getName())
         .createdAt(now)
         .expiredAt(now.plusHours(1))
-        .build());
+        .build();
+
+    session = sessionService.save(session);
 
     return SessionResponse.builder()
-        .authToken(session.getUuid())
+        .authToken(session.getToken())
         .expiredAt(session.getExpiredAt())
         .build();
   }

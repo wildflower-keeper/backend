@@ -67,8 +67,8 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
       + " and s.endDate > :targetDate "
       + " and s.deletedAt is null "
       + " order by s.startDate asc ")
-  List<Sleepover> findByHomelessAndTargetDateAfterOrEqual(
-      @Param("homelessId") Long homelessId, @Param("targetDate") LocalDate targetDate
+  List<Sleepover> findByHomelessAndEndDateAfter(
+      @Param("homelessId") Long homelessId, @Param("targetDate") LocalDate endDateAfter
   );
 
   @Query(" select s from Sleepover s join fetch s.homeless "

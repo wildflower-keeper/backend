@@ -22,8 +22,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppMainResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTermsResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
@@ -126,27 +125,6 @@ public class HomelessAppService {
         .build();
   }
 
-  public HomelessExistenceResponse getHomelessExistence(HomelessExistenceRequest request) {
-    Optional<Homeless> homelessOptional = homelessQueryService.getOneByDeviceId(
-        request.getDeviceId()
-    );
-    if (homelessOptional.isPresent()) {
-      Homeless homeless = homelessOptional.get();
-
-      if (homeless.getName().equals(request.getHomelessName())
-          && homeless.getShelter().getId().equals(request.getShelterId())) {
-        return HomelessExistenceResponse.builder()
-            .exist(true)
-            .homelessId(homeless.getId())
-            .build();
-      }
-    }
-    return HomelessExistenceResponse.builder()
-        .exist(false)
-        .homelessId(null)
-        .build();
-  }
-
   @Transactional
   public HomelessTokenResponse getToken(HomelessTokenRequest request) {
     Homeless homeless = homelessQueryService.getOneById(request.getHomelessId())
@@ -195,7 +173,7 @@ public class HomelessAppService {
     LocalDate nowDate = nowDateTime.toLocalDate();
 
     List<Sleepover> sleepovers =
-        sleepoverService.getAllSleepoversAfter(homelessId, nowDate.minusDays(1));
+        sleepoverService.getAllSleepoversEndDateAfter(homelessId, nowDate.minusDays(1));
 
     boolean yesterdaySleepoverExists = sleepovers.stream()
         .anyMatch(sleepover -> (sleepover.getStartDate().isEqual(nowDate.minusDays(1))
@@ -263,6 +241,19 @@ public class HomelessAppService {
       resultDates.add(date);
     }
     return resultDates;
+  }
+
+  public List<HomelessSleepoverResponse> getSleepoversEndDateAfterToday(Long homelessId) {
+    LocalDate now = LocalDate.now();
+    return sleepoverService.getAllSleepoversEndDateAfter(homelessId, LocalDate.now()).stream()
+        .map(sleepover -> HomelessSleepoverResponse.builder()
+            .sleepoverId(sleepover.getId())
+            .startDate(sleepover.getStartDate())
+            .endDate(sleepover.getEndDate())
+            .reason(sleepover.getReason())
+            .isCancelable(sleepover.cancelableAt(now))
+            .build())
+        .toList();
   }
 
   /**

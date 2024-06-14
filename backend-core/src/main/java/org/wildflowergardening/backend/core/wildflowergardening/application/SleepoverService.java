@@ -118,8 +118,8 @@ public class SleepoverService {
   }
 
   @Transactional(readOnly = true)
-  public List<Sleepover> getAllSleepoversAfter(Long homelessId, LocalDate targetDate) {
-    return sleepoverRepository.findByHomelessAndTargetDateAfterOrEqual(homelessId, targetDate);
+  public List<Sleepover> getAllSleepoversEndDateAfter(Long homelessId, LocalDate targetDate) {
+    return sleepoverRepository.findByHomelessAndEndDateAfter(homelessId, targetDate);
   }
 
   @Transactional
@@ -127,6 +127,10 @@ public class SleepoverService {
     Sleepover sleepover = sleepoverRepository.findByIdAndHomelessId(sleepoverId, homelessId)
         .orElseThrow(() -> new IllegalArgumentException(
             "id=" + sleepoverId + "인 외박신청 내역이 존재하지 않습니다."));
+
+    if (sleepover.cancelableAt(LocalDate.now())) {
+      throw new IllegalArgumentException("기간이 진행된 외박신청을 취소할 수 없습니다.");
+    }
     sleepover.toSoftDeleted();
   }
 

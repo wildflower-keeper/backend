@@ -29,8 +29,6 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppMainResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTermsResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
@@ -46,14 +44,6 @@ public class HomelessAppController {
 
   private final HomelessAppService homelessAppService;
   private final UserContextHolder userContextHolder;
-
-  @Operation(summary = "기존 계정 존재 여부 확인")
-  @PostMapping("/api/v1/homeless-app/user-existence")
-  public ResponseEntity<HomelessExistenceResponse> isHomelessUserAlreadyExist(
-      @RequestBody @Valid HomelessExistenceRequest request
-  ) {
-    return ResponseEntity.ok(homelessAppService.getHomelessExistence(request));
-  }
 
   @Operation(summary = "노숙인 약관 목록 조회")
   @GetMapping("/api/v1/homeless-app/terms")
@@ -130,6 +120,23 @@ public class HomelessAppController {
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
     return ResponseEntity.ok(homelessAppService.getAvailableSleepoverDates(
         homelessContext.getHomelessId()));
+  }
+
+  @HomelessAuthorized
+  @Operation(summary = "내 외박 신청 목록 조회",
+      description = "외박신청 최대일수 및 기간중복 제한으로 인해 한사람 당 조회 데이터가 많지 않을것으로 예상되어 "
+          + "페이지네이션을 넣지 않았습니다.")
+  @Parameters(@Parameter(
+      name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "access-token-example"
+  ))
+  @GetMapping("/api/v1/homeless-app/sleepovers")
+  public ResponseEntity<List<?>> getSleepovers() {
+    HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+    return ResponseEntity.ok(
+        homelessAppService.getSleepoversEndDateAfterToday(homelessContext.getHomelessId())
+    );
   }
 
   @HomelessAuthorized

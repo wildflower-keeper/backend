@@ -83,6 +83,10 @@ public class Sleepover {
     return now.plusDays(32);
   }
 
+  public boolean cancelableAt(LocalDate targetDate) {
+    return this.startDate.isBefore(targetDate);
+  }
+
   public void toSoftDeleted() {
     this.deletedAt = LocalDateTime.now();
   }

@@ -28,9 +28,9 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateSleepoverRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTermsResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
@@ -81,18 +81,16 @@ public class HomelessAppController {
   }
 
   @HomelessAuthorized
-  @Operation(summary = "홈 화면 노숙인 기본 정보 조회")
+  @Operation(summary = "홈 화면 내 정보 조회")
   @Parameters(@Parameter(
       name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
       in = ParameterIn.HEADER,
       example = "access-token-example"
   ))
   @GetMapping("/api/v1/homeless-app/homeless")
-  public ResponseEntity<HomelessMainResponse> getIdNameByDeviceId() {
+  public ResponseEntity<HomelessAppMainResponse> getHomelessMainInfo() {
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
-    return ResponseEntity.ok(
-        homelessAppService.getHomelessMainInfo(homelessContext.getUserId(), LocalDate.now())
-    );
+    return ResponseEntity.ok(homelessAppService.getHomelessMainInfo(homelessContext.getUserId()));
   }
 
   @HomelessAuthorized

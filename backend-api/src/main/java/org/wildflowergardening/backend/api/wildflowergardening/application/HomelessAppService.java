@@ -21,11 +21,9 @@ import org.wildflowergardening.backend.api.kernel.application.exception.Forbidde
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.HomelessAppJwtProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppSleepoverResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessExistenceResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessMainResponse.HomelessMainResponseBuilder;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTermsResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
@@ -172,7 +170,8 @@ public class HomelessAppService {
             .accessToken(token)
             .build();
       }
-      if (!StringUtils.isEmpty(requestPhoneNumber) && requestPhoneNumber.equals(homeless.getPhoneNumber())) {
+      if (!StringUtils.isEmpty(requestPhoneNumber) && requestPhoneNumber.equals(
+          homeless.getPhoneNumber())) {
         homeless.setDeviceId(request.getDeviceId());
         String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
             .homelessId(homeless.getId())
@@ -188,26 +187,39 @@ public class HomelessAppService {
     throw new ForbiddenException("");
   }
 
-  public HomelessMainResponse getHomelessMainInfo(Long homelessId, LocalDate targetDate) {
+  public HomelessAppMainResponse getHomelessMainInfo(Long homelessId) {
     Homeless homeless = homelessQueryService.getOneById(homelessId)
         .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
 
-    Optional<Sleepover> sleepoverOptional = sleepoverService.getFirstAfter(homelessId, targetDate);
+    LocalDateTime nowDateTime = LocalDateTime.now();
+    LocalDate nowDate = nowDateTime.toLocalDate();
 
-    HomelessMainResponseBuilder builder = HomelessMainResponse.builder()
+    List<Sleepover> sleepovers =
+        sleepoverService.getAllSleepoversAfter(homelessId, nowDate.minusDays(1));
+
+    boolean yesterdaySleepoverExists = sleepovers.stream()
+        .anyMatch(sleepover -> (sleepover.getStartDate().isEqual(nowDate.minusDays(1))
+            || sleepover.getStartDate().isBefore(nowDate.minusDays(1)))
+            && sleepover.getEndDate().isAfter(nowDate.minusDays(1)));
+
+    boolean todaySleepoverExists = sleepovers.stream()
+        .anyMatch(sleepover -> (sleepover.getStartDate().isEqual(nowDate)
+            || sleepover.getStartDate().isBefore(nowDate))
+            && sleepover.getEndDate().isAfter(nowDate));
+
+    boolean futureSleepoverExists = sleepovers.stream()
+        .anyMatch(sleepover -> sleepover.getEndDate().isAfter(nowDate.plusDays(1)));
+
+    return HomelessAppMainResponse.builder()
         .id(homeless.getId())
-        .name(homeless.getName())
-        .shelterName(homeless.getShelter().getName());
-
-    if (sleepoverOptional.isPresent()) {
-      Sleepover sleepover = sleepoverOptional.get();
-      builder.planedSleepover(HomelessAppSleepoverResponse.builder()
-          .sleepoverId(sleepover.getId())
-          .startDate(sleepover.getStartDate())
-          .endDate(sleepover.getEndDate())
-          .build());
-    }
-    return builder.build();
+        .homelessName(homeless.getName())
+        .shelterId(homeless.getShelter().getId())
+        .shelterName(homeless.getShelter().getName())
+        .yesterdaySleepoverExists(yesterdaySleepoverExists)
+        .todaySleepoverExists(todaySleepoverExists)
+        .futureSleepoverExists(futureSleepoverExists)
+        .targetDateTime(nowDateTime)
+        .build();
   }
 
   public Long createSleepover(CreateSleepoverDto dto) {

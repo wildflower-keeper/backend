@@ -20,6 +20,7 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -195,5 +196,19 @@ public class ShelterAdminAppController {
       response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
       log.error("엑셀 생성 실패", e);
     }
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @Operation(summary = "노숙인 계정 삭제")
+  @DeleteMapping("/api/v1/shelter-admin/homeless/{homelessId}")
+  public ResponseEntity<Void> deleteHomeless(@PathVariable Long homelessId) {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    shelterAdminAppService.deleteHomeless(homelessId, shelterContext.getShelterId());
+    return ResponseEntity.ok().build();
   }
 }

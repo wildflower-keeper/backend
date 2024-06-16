@@ -28,6 +28,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.S
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
+import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
@@ -56,6 +57,7 @@ public class ShelterAdminAppService {
   private final SleepoverService sleepoverService;
   private final HomelessQueryService homelessQueryService;
   private final LocationTrackingService locationTrackingService;
+  private final HomelessCommandService homelessCommandService;
 
   public SessionResponse login(ShelterLoginRequest dto) {
     Optional<Shelter> shelterOptional = shelterService.getShelterById(dto.getId());
@@ -190,5 +192,9 @@ public class ShelterAdminAppService {
             ? homeless.getAdmissionDate()
             : request.getAdmissionDate()
     );
+  }
+
+  public void deleteHomeless(Long homelessId, Long shelterId) {
+    homelessCommandService.deleteHomeless(homelessId, shelterId);
   }
 }

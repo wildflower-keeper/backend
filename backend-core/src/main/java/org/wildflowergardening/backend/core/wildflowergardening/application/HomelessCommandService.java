@@ -23,4 +23,15 @@ public class HomelessCommandService {
     }
     return homelessRepository.save(homeless).getId();
   }
+
+  @Transactional
+  public void deleteHomeless(Long homelessId, Long shelterId) {
+    Optional<Homeless> homelessOptional =
+        homelessRepository.findByIdAndShelterId(homelessId, shelterId);
+
+    if (homelessOptional.isEmpty()) {
+      throw new IllegalArgumentException("센터에 해당 노숙인 계정이 존재하지 않습니다.");
+    }
+    homelessRepository.delete(homelessOptional.get());
+  }
 }

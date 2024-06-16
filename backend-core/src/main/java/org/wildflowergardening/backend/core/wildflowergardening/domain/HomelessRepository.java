@@ -19,4 +19,6 @@ public interface HomelessRepository extends JpaRepository<Homeless, Long> {
   );
 
   long countByShelterId(Long shelterId);
+
+  Optional<Homeless> findByIdAndShelterId(Long id, Long shelter_id);
 }

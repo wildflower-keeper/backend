@@ -4,12 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,10 +42,17 @@ public class Sleepover {
   @Comment("센터 id")
   private Long shelterId;
 
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "homeless_id", nullable = false)
+  @Column(nullable = true)
   @Comment("노숙인 id")
-  private Homeless homeless;
+  private Long homelessId;
+
+  @Column(nullable = false)
+  @Comment("노숙인 이름")
+  private String homelessName;
+
+  @Column(nullable = false)
+  @Comment("노숙인 연락처")
+  private String homelessPhoneNumber;
 
   @Column(name = "start_date", nullable = false)
   @Comment("외박/외출 시작일")

@@ -15,8 +15,8 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
 
   Optional<Sleepover> findByIdAndHomelessId(Long id, Long homelessId);
 
-  @Query(" select s.homeless.id from Sleepover s "
-      + " where s.homeless.id in :candidateHomelessIds "
+  @Query(" select s.homelessId from Sleepover s "
+      + " where s.homelessId in :candidateHomelessIds "
       + " and "
       + " s.startDate <= :targetDate and s.endDate > :targetDate "
       + " and s.deletedAt is null ")
@@ -25,12 +25,12 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
       @Param("targetDate") LocalDate targetDate
   );
 
-  @Query(" select s from Sleepover s join fetch s.homeless "
+  @Query(" select s from Sleepover s "
       + " where s.shelterId = :shelterId and s.deletedAt is null "
       + " order by s.id desc")
   Page<Sleepover> findAllByShelterId(@Param("shelterId") Long shelterId, Pageable pageable);
 
-  @Query(" select s from Sleepover s join fetch s.homeless "
+  @Query(" select s from Sleepover s "
       + " where s.shelterId = :shelterId "
       + " and "
       + " s.startDate <= :targetDate and s.endDate > :targetDate "
@@ -50,7 +50,7 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
   );
 
   @Query(" select s from Sleepover s "
-      + " where s.homeless.id = :homelessId "
+      + " where s.homelessId = :homelessId "
       + " and "
       + " s.startDate < :startDateBefore "
       + " and "
@@ -63,7 +63,7 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
   );
 
   @Query(" select s from Sleepover s "
-      + " where s.homeless.id = :homelessId "
+      + " where s.homelessId = :homelessId "
       + " and s.endDate > :targetDate "
       + " and s.deletedAt is null "
       + " order by s.startDate asc ")
@@ -71,7 +71,7 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
       @Param("homelessId") Long homelessId, @Param("targetDate") LocalDate endDateAfter
   );
 
-  @Query(" select s from Sleepover s join fetch s.homeless "
+  @Query(" select s from Sleepover s "
       + " where s.shelterId = :shelterId "
       + " and "
       + " s.createdAt between :createdAtStart and :createdAtEnd ")

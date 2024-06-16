@@ -24,7 +24,7 @@ public class SleepoverExcelService {
     List<SleepoverExcelDto> dtoList = sleepoverService.findAllByCreatedAtIn(
             shelterId, createdAtStart, createdAtEnd
         ).stream().map(sleepover -> SleepoverExcelDto.builder()
-            .homelessName(sleepover.getHomeless().getName())
+            .homelessName(sleepover.getHomelessName())
             .startDate(sleepover.getStartDate().format(DateTimeFormatter.ofPattern("yy년 MM월 dd일")))
             .endDate(sleepover.getEndDate().format(DateTimeFormatter.ofPattern("yy년 MM월 dd일")))
             .reason(sleepover.getReason())

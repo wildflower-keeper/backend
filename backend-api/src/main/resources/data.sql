@@ -17,9 +17,7 @@ INSERT INTO wildflower_gardening.homeless (admission_date, birth_date, created_a
 INSERT INTO wildflower_gardening.homeless (admission_date, birth_date, created_at, id, last_updated_at, shelter_id, device_id, name, phone_number, room) VALUES (null, null, '2024-05-24 13:12:01.155215', 7, '2024-05-24 13:12:15.130980', 1, 'test_device_id_7', '유민수', null, null);
 
 -- 외박 신청 장부
-INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id, reason, emergency_contact) VALUES (2, '2024-09-01', '2024-05-24', '2024-05-24 13:07:02.277768', null, 2, 1, 1, '지인만남', '01012341234');
-INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id, reason, emergency_contact) VALUES (2, '2024-09-01', '2024-05-24', '2024-05-24 13:09:43.303959', null, 4, 2, 1, '집에감', '02-129-129');
-INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id, reason, emergency_contact) VALUES (2, '2024-05-25', '2024-05-24', '2024-05-24 13:10:36.950112', null, 5, 3, 1, '지인 만나ㅓ러', '');
+
 
 -- 위치 기록
 insert into location_tracking(last_latitude, last_longitude, first_tracked_at, homeless_id, id, last_tracked_at, shelter_id, location_status, created_at, last_updated_at) values(90, -180, '2024-05-28 13:06:36.398729', 1, 1, '2024-05-28 14:06:36.398729', 1, 'OUTING', '2024-05-28 13:06:36.398729', '2024-05-28 14:06:36.398729');

@@ -80,4 +80,7 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
       @Param("createdAtStart") LocalDateTime createdAtStart,
       @Param("createdAtEnd") LocalDateTime createdAtEnd
   );
+
+  Optional<Sleepover> findTopByHomelessIdAndEndDateAfterAndDeletedAtIsNullOrderByStartDateAsc(
+      Long homelessId, LocalDate endDate);
 }

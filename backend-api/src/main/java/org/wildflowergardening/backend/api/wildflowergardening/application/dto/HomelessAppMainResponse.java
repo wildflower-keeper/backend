@@ -1,6 +1,7 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application.dto;
 
-import java.time.LocalDateTime;
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,8 +13,21 @@ public class HomelessAppMainResponse {
   private String homelessName;
   private Long shelterId;
   private String shelterName;
-  private LocalDateTime targetDateTime;
-  private boolean yesterdaySleepoverExists;
-  private boolean todaySleepoverExists;
-  private boolean futureSleepoverExists;
+  private UpcomingSleepover upcomingSleepover;
+
+  @Getter
+  @Builder
+  public static class UpcomingSleepover {
+
+    private Long sleepoverId;
+
+    @Schema(description = "외박시작일")
+    private LocalDate startDate;
+
+    @Schema(description = "외박종료일")
+    private LocalDate endDate;
+
+    @Schema(description = "외박일수")
+    private int nightCount;
+  }
 }

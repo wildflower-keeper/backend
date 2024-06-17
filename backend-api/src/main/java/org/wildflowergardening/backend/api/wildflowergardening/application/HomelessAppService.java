@@ -6,6 +6,7 @@ import static org.wildflowergardening.backend.api.wildflowergardening.applicatio
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.HomelessUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppMainResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppMainResponse.UpcomingSleepover;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTermsResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
@@ -172,31 +174,23 @@ public class HomelessAppService {
     LocalDateTime nowDateTime = LocalDateTime.now();
     LocalDate nowDate = nowDateTime.toLocalDate();
 
-    List<Sleepover> sleepovers =
-        sleepoverService.getAllSleepoversEndDateAfter(homelessId, nowDate.minusDays(1));
-
-    boolean yesterdaySleepoverExists = sleepovers.stream()
-        .anyMatch(sleepover -> (sleepover.getStartDate().isEqual(nowDate.minusDays(1))
-            || sleepover.getStartDate().isBefore(nowDate.minusDays(1)))
-            && sleepover.getEndDate().isAfter(nowDate.minusDays(1)));
-
-    boolean todaySleepoverExists = sleepovers.stream()
-        .anyMatch(sleepover -> (sleepover.getStartDate().isEqual(nowDate)
-            || sleepover.getStartDate().isBefore(nowDate))
-            && sleepover.getEndDate().isAfter(nowDate));
-
-    boolean futureSleepoverExists = sleepovers.stream()
-        .anyMatch(sleepover -> sleepover.getEndDate().isAfter(nowDate.plusDays(1)));
+    Optional<UpcomingSleepover> upcomingSleepoverOptional =
+        sleepoverService.getUpcomingSleepover(homelessId, nowDate).stream()
+            .map(sleepover -> UpcomingSleepover.builder()
+                .sleepoverId(sleepover.getId())
+                .nightCount(Period.between(sleepover.getStartDate(), sleepover.getEndDate())
+                    .getDays())
+                .startDate(sleepover.getStartDate())
+                .endDate(sleepover.getEndDate())
+                .build())
+            .findAny();
 
     return HomelessAppMainResponse.builder()
         .id(homeless.getId())
         .homelessName(homeless.getName())
         .shelterId(homeless.getShelter().getId())
         .shelterName(homeless.getShelter().getName())
-        .yesterdaySleepoverExists(yesterdaySleepoverExists)
-        .todaySleepoverExists(todaySleepoverExists)
-        .futureSleepoverExists(futureSleepoverExists)
-        .targetDateTime(nowDateTime)
+        .upcomingSleepover(upcomingSleepoverOptional.orElse(null))
         .build();
   }
 

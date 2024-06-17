@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -94,6 +95,17 @@ public class SleepoverService {
         .build();
   }
 
+  @Transactional(readOnly = true)
+  public Optional<Sleepover> getUpcomingSleepover(Long homelessId, LocalDate today) {
+    return sleepoverRepository.findTopByHomelessIdAndEndDateAfterAndDeletedAtIsNullOrderByStartDateAsc(
+        homelessId, today);
+  }
+
+  @Transactional(readOnly = true)
+  public List<Sleepover> getAllSleepoversEndDateAfter(Long homelessId, LocalDate targetDate) {
+    return sleepoverRepository.findByHomelessAndEndDateAfter(homelessId, targetDate);
+  }
+
   /*
    특정 날짜에 외박하겠다고 되어있는 외박신청 목록 조회
    */
@@ -117,11 +129,6 @@ public class SleepoverService {
   public long count(Long shelterId, LocalDate sleepoverTargetDate) {
     Long count = sleepoverRepository.countByTargetDate(shelterId, sleepoverTargetDate);
     return count != null ? count : 0;
-  }
-
-  @Transactional(readOnly = true)
-  public List<Sleepover> getAllSleepoversEndDateAfter(Long homelessId, LocalDate targetDate) {
-    return sleepoverRepository.findByHomelessAndEndDateAfter(homelessId, targetDate);
   }
 
   @Transactional

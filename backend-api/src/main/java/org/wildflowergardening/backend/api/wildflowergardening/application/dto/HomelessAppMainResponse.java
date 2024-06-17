@@ -29,5 +29,12 @@ public class HomelessAppMainResponse {
 
     @Schema(description = "외박일수")
     private int nightCount;
+
+    @Schema(description = "상태 (IN_PROGRESS:진행중, TODAY_SCHEDULE:오늘예정, FUTURE_SCHEDULED:미래예정)")
+    private UpcomingSleepoverStatus status;
+
+    public enum UpcomingSleepoverStatus {
+      IN_PROGRESS, TODAY_SCHEDULED, FUTURE_SCHEDULED
+    }
   }
 }

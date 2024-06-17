@@ -24,6 +24,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppMainResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppMainResponse.UpcomingSleepover;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessAppMainResponse.UpcomingSleepover.UpcomingSleepoverStatus;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessSleepoverResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTermsResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenRequest;
@@ -172,17 +173,35 @@ public class HomelessAppService {
         .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
 
     LocalDateTime nowDateTime = LocalDateTime.now();
-    LocalDate nowDate = nowDateTime.toLocalDate();
+    LocalDate nowDate = nowDateTime.toLocalTime().isBefore(LocalTime.of(6, 0))
+        ? nowDateTime.toLocalDate().minusDays(1)
+        : nowDateTime.toLocalDate();
 
     Optional<UpcomingSleepover> upcomingSleepoverOptional =
         sleepoverService.getUpcomingSleepover(homelessId, nowDate).stream()
-            .map(sleepover -> UpcomingSleepover.builder()
-                .sleepoverId(sleepover.getId())
-                .nightCount(Period.between(sleepover.getStartDate(), sleepover.getEndDate())
-                    .getDays())
-                .startDate(sleepover.getStartDate())
-                .endDate(sleepover.getEndDate())
-                .build())
+            .map(sleepover -> {
+              UpcomingSleepoverStatus status;
+
+              if (sleepover.getStartDate().isBefore(nowDate)
+                  || sleepover.getStartDate().isEqual(nowDate)) {
+                if (nowDateTime.toLocalTime().isBefore(LocalTime.of(6, 0))
+                    || nowDateTime.toLocalTime().isAfter(LocalTime.of(23, 0))) {
+                  status = UpcomingSleepoverStatus.IN_PROGRESS;
+                } else {
+                  status = UpcomingSleepoverStatus.TODAY_SCHEDULED;
+                }
+              } else {
+                status = UpcomingSleepoverStatus.FUTURE_SCHEDULED;
+              }
+              return UpcomingSleepover.builder()
+                  .sleepoverId(sleepover.getId())
+                  .nightCount(Period.between(sleepover.getStartDate(), sleepover.getEndDate())
+                      .getDays())
+                  .startDate(sleepover.getStartDate())
+                  .endDate(sleepover.getEndDate())
+                  .status(status)
+                  .build();
+            })
             .findAny();
 
     return HomelessAppMainResponse.builder()

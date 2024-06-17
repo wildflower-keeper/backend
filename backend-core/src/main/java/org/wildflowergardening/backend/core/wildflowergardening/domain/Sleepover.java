@@ -88,7 +88,7 @@ public class Sleepover {
   }
 
   public boolean cancelableAt(LocalDate targetDate) {
-    return this.startDate.isBefore(targetDate.minusDays(1));
+    return this.startDate.isAfter(targetDate.minusDays(1));
   }
 
   public void toSoftDeleted() {

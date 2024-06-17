@@ -137,7 +137,7 @@ public class SleepoverService {
         .orElseThrow(() -> new IllegalArgumentException(
             "id=" + sleepoverId + "인 외박신청 내역이 존재하지 않습니다."));
 
-    if (sleepover.cancelableAt(LocalDate.now())) {
+    if (!sleepover.cancelableAt(LocalDate.now())) {
       throw new IllegalArgumentException("기간이 진행된 외박신청을 취소할 수 없습니다.");
     }
     sleepover.toSoftDeleted();

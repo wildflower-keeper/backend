@@ -43,8 +43,6 @@ public class LocationTrackingService {
         && lastTrackedAt.isAfter(newFirstTrackedAt.minusHours(1))) {
       // 데이터 축약
       lastLocation.setLastTrackedAt(newFirstLocation.getLastTrackedAt());
-      lastLocation.setLastLatitude(newFirstLocation.getLastLatitude());
-      lastLocation.setLastLongitude(newFirstLocation.getLastLongitude());
 
       if (newLocations.size() == 1) {    // 기존 데이터 update 하고 끝
         return;

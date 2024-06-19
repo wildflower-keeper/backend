@@ -24,6 +24,3 @@ INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, 
 
 
 -- 위치 기록
-insert into location_tracking(last_latitude, last_longitude, first_tracked_at, homeless_id, id, last_tracked_at, shelter_id, location_status, created_at, last_updated_at) values(90, -180, '2024-05-28 13:06:36.398729', 1, 1, '2024-05-28 14:06:36.398729', 1, 'OUTING', '2024-05-28 13:06:36.398729', '2024-05-28 14:06:36.398729');
-insert into location_tracking(last_latitude, last_longitude, first_tracked_at, homeless_id, id, last_tracked_at, shelter_id, location_status, created_at, last_updated_at) values(90, -180, '2024-05-28 14:36:36.398729', 1, 2, '2024-05-29 14:06:36.398729', 1, 'IN_SHELTER', '2024-05-28 14:36:36.398729', '2024-05-29 14:06:36.398729');
-insert into location_tracking(last_latitude, last_longitude, first_tracked_at, homeless_id, id, last_tracked_at, shelter_id, location_status, created_at, last_updated_at) values(-90, 180, '2024-05-28 13:06:36.398729', 2, 3, '2024-05-28 14:06:36.398729', 1, 'IN_SHELTER', '2024-05-28 13:06:36.398729', '2024-05-28 14:06:36.398729');

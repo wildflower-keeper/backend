@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,16 +51,6 @@ public class LocationTracking {
   @Comment("위치 상태")
   @Setter
   private LocationStatus locationStatus;
-
-  @Setter
-  @Column(name = "last_latitude", columnDefinition = "decimal(10,8)", nullable = true)
-  @Comment("마지막 위도")
-  private BigDecimal lastLatitude;
-
-  @Setter
-  @Column(name = "last_longitude", columnDefinition = "decimal(11,8)", nullable = true)
-  @Comment("마지막 경도")
-  private BigDecimal lastLongitude;
 
   @Column(name = "first_tracked_at", nullable = false)
   @Comment("최초 위치 확인 일시 (=생성일시)")

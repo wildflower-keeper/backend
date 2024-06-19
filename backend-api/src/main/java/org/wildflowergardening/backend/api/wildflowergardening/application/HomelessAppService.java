@@ -299,8 +299,6 @@ public class HomelessAppService {
             .homelessId(homelessId)
             .shelterId(shelterId)
             .locationStatus(dto.getLocationStatus())
-            .lastLatitude(dto.getLastLatitude())
-            .lastLongitude(dto.getLastLongitude())
             .firstTrackedAt(dto.getFirstTrackedAt())
             .lastTrackedAt(dto.getLastTrackedAt())
             .build());
@@ -310,16 +308,12 @@ public class HomelessAppService {
 
       if (last.getLocationStatus() == dto.getLocationStatus()) {
         last.setLastTrackedAt(dto.getLastTrackedAt());
-        last.setLastLatitude(dto.getLastLatitude());
-        last.setLastLongitude(dto.getLastLongitude());
         continue;
       }
       newLocations.add(LocationTracking.builder()
           .homelessId(homelessId)
           .shelterId(shelterId)
           .locationStatus(dto.getLocationStatus())
-          .lastLatitude(dto.getLastLatitude())
-          .lastLongitude(dto.getLastLongitude())
           .firstTrackedAt(dto.getFirstTrackedAt())
           .lastTrackedAt(dto.getLastTrackedAt())
           .build());

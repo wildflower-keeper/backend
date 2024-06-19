@@ -14,7 +14,7 @@ SPRING_PROFILES_ACTIVE=local RDS_USERNAME=root RDS_PW=test ./gradlew clean build
 ### 1.2. 실행
 프로젝트 루트 경로에서 아래 명령 실행
 ```shell
-java -Dspring.profiles.active="local" -DRDS_USERNAME="example" -DRDS_PW="example" -jar /backend-api/build/libs/backend-api-1.0.0.jar
+java -Dspring.profiles.active="local" -DRDS_USERNAME="example" -DRDS_PW="example" -jar ./backend-api/build/libs/backend-api-1.0.0.jar
 ```
 - 맨 마지막(/backend-api/build/libs/backend-api-1.0.0.jar)은 1.1.에서 빌드한 jar 파일이 와야함
 - spring.profiles.active : 1.1.의 SPRING_PROFILES_ACTIVE와 동일

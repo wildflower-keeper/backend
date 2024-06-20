@@ -14,7 +14,7 @@ public class HomelessTermsAgreeService {
 
   private final HomelessTermsAgreeRepository homelessTermsAgreeRepository;
 
-  @Transactional(readOnly = true)
+  @Transactional
   public void createTermsAgrees(Long homelessId, Collection<Long> homelessTermsIds) {
     List<HomelessTermsAgree> termsAgrees = homelessTermsIds.stream()
         .map(homelessTermsId -> HomelessTermsAgree.builder()

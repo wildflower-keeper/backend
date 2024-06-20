@@ -116,6 +116,9 @@ public class HomelessAppService {
         .admissionDate(request.getAdmissionDate())
         .build());
 
+    // 약관 동의 내역 생성
+    homelessTermsAgreeService.createTermsAgrees(homelessId, termsIdsToAgree);
+
     String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
         .homelessId(homelessId)
         .homelessName(request.getName())

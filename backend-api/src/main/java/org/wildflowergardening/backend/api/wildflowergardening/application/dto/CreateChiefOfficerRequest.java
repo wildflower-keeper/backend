@@ -3,7 +3,6 @@ package org.wildflowergardening.backend.api.wildflowergardening.application.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDate;
 import lombok.Getter;
 
 @Getter
@@ -18,7 +17,4 @@ public class CreateChiefOfficerRequest {
   @Size(max = 50)
   @NotEmpty
   private String phoneNumber;
-
-  @Schema(description = "마지막 책임일 (nullable)", type = "string", example = "2025-02-13")
-  private LocalDate endDate;
 }

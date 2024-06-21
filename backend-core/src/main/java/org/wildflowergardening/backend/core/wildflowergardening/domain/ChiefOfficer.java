@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +39,7 @@ public class ChiefOfficer {
   @Comment("센터 id")
   private Long shelterId;
 
+  @Setter
   @Column(nullable = false)
   @Comment("책임자 성함")
   private String name;
@@ -48,10 +48,6 @@ public class ChiefOfficer {
   @Column(nullable = false)
   @Comment("책임자 전화번호")
   private String phoneNumber;
-
-  @Column(nullable = true)
-  @Comment("마지막 책임일자")
-  private LocalDate lastDate;
 
   @CreatedDate
   @Column(name = "created_at", nullable = false)

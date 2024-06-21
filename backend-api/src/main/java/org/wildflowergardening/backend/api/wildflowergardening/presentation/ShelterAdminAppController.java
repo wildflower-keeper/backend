@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -44,6 +45,8 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.S
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterPinResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateChiefOfficerRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
 
 @RestController
@@ -220,18 +223,39 @@ public class ShelterAdminAppController {
       in = ParameterIn.HEADER,
       example = "session-token-example"
   ))
-  @Operation(summary = "책임자 정보 생성", description = "마지막 책임일은 nullable 입니다.")
+  @Operation(summary = "책임자 정보 생성")
   @PostMapping("/api/v1/shelter-admin/chief-officer")
   public ResponseEntity<Long> createChiefOfficer(
       @Valid @RequestBody CreateChiefOfficerRequest request
   ) {
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
     Long chiefOfficerId = shelterAdminAppService.createChiefOfficer(
-        shelterContext.getShelterId(),
-        request.getName(), request.getPhoneNumber(), request.getEndDate()
+        shelterContext.getShelterId(), request.getName(),
+        PhoneNumberFormatter.format(request.getPhoneNumber())
     );
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(chiefOfficerId);
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @Operation(summary = "책임자 정보 수정")
+  @PutMapping("/api/v1/shelter-admin/chief-officer/{chiefOfficerId}")
+  public ResponseEntity<Void> updateChiefOfficer(
+      @PathVariable @Schema(example = "1") Long chiefOfficerId,
+      @RequestBody @Valid UpdateChiefOfficerRequest request
+  ) {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    shelterAdminAppService.updateChiefOfficer(
+        shelterContext.getShelterId(),
+        chiefOfficerId,
+        request.getName(), request.getPhoneNumber()
+    );
+    return ResponseEntity.ok().build();
   }
 
   @ShelterAuthorized

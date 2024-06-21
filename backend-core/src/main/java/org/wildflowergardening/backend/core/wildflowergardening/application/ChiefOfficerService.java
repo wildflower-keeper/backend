@@ -3,7 +3,7 @@ package org.wildflowergardening.backend.core.wildflowergardening.application;
 import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_CHIEF_OFFICERS_TOO_MANY;
 import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_CHIEF_PHONE_NUMBER_ALREADY_EXISTS;
 
-import java.time.LocalDate;
+import io.micrometer.common.util.StringUtils;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,8 @@ public class ChiefOfficerService {
   private final ChiefOfficerRepository chiefOfficerRepository;
 
   @Transactional
-  public Long create(Long shelterId, String name, String phoneNumber, LocalDate endDate) {
-    LocalDate now = LocalDate.now();
-
-    List<ChiefOfficer> chiefOfficers =
-        chiefOfficerRepository.findByShelterId(shelterId, now);
+  public Long create(Long shelterId, String name, String phoneNumber) {
+    List<ChiefOfficer> chiefOfficers = chiefOfficerRepository.findByShelterId(shelterId);
 
     if (chiefOfficers.size() >= 10) {
       throw new ApplicationLogicException(SHELTER_ADMIN_CHIEF_OFFICERS_TOO_MANY);
@@ -37,8 +34,20 @@ public class ChiefOfficerService {
             .shelterId(shelterId)
             .name(name)
             .phoneNumber(phoneNumber)
-            .lastDate(endDate)
             .build()
     ).getId();
+  }
+
+  @Transactional
+  public void update(Long shelterId, Long chiefOfficerId, String name, String phoneNumber) {
+    chiefOfficerRepository.findByIdAndShelterId(chiefOfficerId, shelterId)
+        .ifPresent(chiefOfficer -> {
+          if (!StringUtils.isEmpty(name)) {
+            chiefOfficer.setName(name);
+          }
+          if (!StringUtils.isEmpty(phoneNumber)) {
+            chiefOfficer.setPhoneNumber(phoneNumber);
+          }
+        });
   }
 }

@@ -201,13 +201,19 @@ public class ShelterAdminAppService {
     homelessCommandService.deleteHomeless(homelessId, shelterId);
   }
 
-  public void createDutyOfficers() {
-
+  public Long createChiefOfficer(Long shelterId, String name, String phoneNumber) {
+    return chiefOfficerService.create(shelterId, name, phoneNumber);
   }
 
-  public Long createChiefOfficer(
-      Long shelterId, String name, String phoneNumber, LocalDate endDate
+  public void updateChiefOfficer(
+      Long shelterId, Long chiefOfficerId, String name, String phoneNumber
   ) {
-    return chiefOfficerService.create(shelterId, name, phoneNumber, endDate);
+    chiefOfficerService.update(shelterId, chiefOfficerId, name, phoneNumber);
+  }
+
+
+
+  public void createDutyOfficers() {
+
   }
 }

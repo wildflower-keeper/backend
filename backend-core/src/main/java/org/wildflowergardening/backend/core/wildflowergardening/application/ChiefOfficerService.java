@@ -1,10 +1,12 @@
 package org.wildflowergardening.backend.core.wildflowergardening.application;
 
 import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_CHIEF_OFFICERS_TOO_MANY;
-import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_CHIEF_PHONE_NUMBER_ALREADY_EXISTS;
+import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_CHIEF_OFFICER_NOT_FOUND;
+import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_CHIEF_OFFICER_PHONE_NUMBER_ALREADY_EXISTS;
 
 import io.micrometer.common.util.StringUtils;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +29,7 @@ public class ChiefOfficerService {
     }
     if (chiefOfficers.stream()
         .anyMatch(chiefOfficer -> chiefOfficer.getPhoneNumber().equals(phoneNumber))) {
-      throw new ApplicationLogicException(SHELTER_ADMIN_CHIEF_PHONE_NUMBER_ALREADY_EXISTS);
+      throw new ApplicationLogicException(SHELTER_ADMIN_CHIEF_OFFICER_PHONE_NUMBER_ALREADY_EXISTS);
     }
     return chiefOfficerRepository.save(
         ChiefOfficer.builder()
@@ -54,5 +56,16 @@ public class ChiefOfficerService {
             chiefOfficer.setPhoneNumber(phoneNumber);
           }
         });
+  }
+
+  @Transactional
+  public void delete(Long shelterId, Long chiefOfficerId) {
+    Optional<ChiefOfficer> chiefOfficerOptional =
+        chiefOfficerRepository.findByIdAndShelterId(chiefOfficerId, shelterId);
+
+    if (chiefOfficerOptional.isEmpty()) {
+      throw new ApplicationLogicException(SHELTER_ADMIN_CHIEF_OFFICER_NOT_FOUND);
+    }
+    chiefOfficerRepository.delete(chiefOfficerOptional.get());
   }
 }

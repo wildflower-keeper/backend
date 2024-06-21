@@ -223,7 +223,10 @@ public class ShelterAdminAppService {
     chiefOfficerService.update(shelterId, chiefOfficerId, name, phoneNumber);
   }
 
-  public void createDutyOfficers() {
+  public void deleteChiefOfficer(Long shelterId, Long chiefOfficerId) {
+    chiefOfficerService.delete(shelterId, chiefOfficerId);
+  }
 
+  public void createDutyOfficers() {
   }
 }

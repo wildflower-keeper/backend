@@ -279,7 +279,23 @@ public class ShelterAdminAppController {
       in = ParameterIn.HEADER,
       example = "session-token-example"
   ))
-  @Operation(summary = "당직자 정보 생성")
+  @Operation(summary = "책임자 정보 삭제")
+  @DeleteMapping("/api/v1/shelter-admin/chief-officer/{chiefOfficerId}")
+  public ResponseEntity<Void> deleteChiefOfficer(
+      @PathVariable @Schema(example = "1") Long chiefOfficerId
+  ) {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    shelterAdminAppService.deleteChiefOfficer(shelterContext.getShelterId(), chiefOfficerId);
+    return ResponseEntity.ok().build();
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @Operation(summary = "당직자 정보 생성 (구현예정)")
   @PostMapping("/api/v1/shelter-admin/duty-officers")
   public ResponseEntity<Void> createDutyOfficers() {
     // Todo 구현

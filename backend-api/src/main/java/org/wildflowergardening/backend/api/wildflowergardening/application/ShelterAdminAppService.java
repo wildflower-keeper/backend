@@ -7,6 +7,7 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ChiefOfficerResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
@@ -205,13 +207,21 @@ public class ShelterAdminAppService {
     return chiefOfficerService.create(shelterId, name, phoneNumber);
   }
 
+  public List<ChiefOfficerResponse> getAll(Long shelterId) {
+    return chiefOfficerService.getAll(shelterId).stream()
+        .map(chiefOfficer -> ChiefOfficerResponse.builder()
+            .chiefOfficerId(chiefOfficer.getId())
+            .name(chiefOfficer.getName())
+            .phoneNumber(chiefOfficer.getPhoneNumber())
+            .build())
+        .toList();
+  }
+
   public void updateChiefOfficer(
       Long shelterId, Long chiefOfficerId, String name, String phoneNumber
   ) {
     chiefOfficerService.update(shelterId, chiefOfficerId, name, phoneNumber);
   }
-
-
 
   public void createDutyOfficers() {
 

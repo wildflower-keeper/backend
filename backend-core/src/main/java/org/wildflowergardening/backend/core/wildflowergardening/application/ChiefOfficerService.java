@@ -38,6 +38,11 @@ public class ChiefOfficerService {
     ).getId();
   }
 
+  @Transactional(readOnly = true)
+  public List<ChiefOfficer> getAll(Long shelterId) {
+    return chiefOfficerRepository.findByShelterId(shelterId);
+  }
+
   @Transactional
   public void update(Long shelterId, Long chiefOfficerId, String name, String phoneNumber) {
     chiefOfficerRepository.findByIdAndShelterId(chiefOfficerId, shelterId)

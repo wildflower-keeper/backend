@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ContentDisposition;
@@ -34,6 +35,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ChiefOfficerResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateChiefOfficerRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessFilterType;
@@ -235,6 +237,19 @@ public class ShelterAdminAppController {
     );
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(chiefOfficerId);
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @Operation(summary = "센터 책임자 목록 조회")
+  @GetMapping("/api/v1/shelter-admin/chief-officers")
+  public ResponseEntity<List<ChiefOfficerResponse>> getChiefOfficers() {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    return ResponseEntity.ok(shelterAdminAppService.getAll(shelterContext.getShelterId()));
   }
 
   @ShelterAuthorized

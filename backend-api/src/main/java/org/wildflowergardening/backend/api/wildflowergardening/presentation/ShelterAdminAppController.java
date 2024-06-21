@@ -33,6 +33,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateChiefOfficerRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessFilterType;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
@@ -181,7 +182,8 @@ public class ShelterAdminAppController {
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
       ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
-          .filename(createdAtStart.format(DateTimeFormatter.ofPattern("yy_MM_dd")) + ".xlsx", StandardCharsets.UTF_8)
+          .filename(createdAtStart.format(DateTimeFormatter.ofPattern("yy_MM_dd")) + ".xlsx",
+              StandardCharsets.UTF_8)
           .build();
       response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
 
@@ -210,5 +212,38 @@ public class ShelterAdminAppController {
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
     shelterAdminAppService.deleteHomeless(homelessId, shelterContext.getShelterId());
     return ResponseEntity.ok().build();
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @Operation(summary = "책임자 정보 생성", description = "마지막 책임일은 nullable 입니다.")
+  @PostMapping("/api/v1/shelter-admin/chief-officer")
+  public ResponseEntity<Long> createChiefOfficer(
+      @Valid @RequestBody CreateChiefOfficerRequest request
+  ) {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    Long chiefOfficerId = shelterAdminAppService.createChiefOfficer(
+        shelterContext.getShelterId(),
+        request.getName(), request.getPhoneNumber(), request.getEndDate()
+    );
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(chiefOfficerId);
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @Operation(summary = "당직자 정보 생성")
+  @PostMapping("/api/v1/shelter-admin/duty-officers")
+  public ResponseEntity<Void> createDutyOfficers() {
+    // Todo 구현
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 }

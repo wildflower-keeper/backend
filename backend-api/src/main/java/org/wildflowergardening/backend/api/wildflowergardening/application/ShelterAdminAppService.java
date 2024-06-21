@@ -1,6 +1,6 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application;
 
-import static org.wildflowergardening.backend.api.wildflowergardening.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
+import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import io.micrometer.common.util.StringUtils;
 import java.security.SecureRandom;
@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.wildflowergardening.backend.api.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
@@ -28,6 +27,8 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.S
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
+import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
+import org.wildflowergardening.backend.core.wildflowergardening.application.ChiefOfficerService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
@@ -58,6 +59,7 @@ public class ShelterAdminAppService {
   private final HomelessQueryService homelessQueryService;
   private final LocationTrackingService locationTrackingService;
   private final HomelessCommandService homelessCommandService;
+  private final ChiefOfficerService chiefOfficerService;
 
   public SessionResponse login(ShelterLoginRequest dto) {
     Optional<Shelter> shelterOptional = shelterService.getShelterById(dto.getId());
@@ -197,5 +199,15 @@ public class ShelterAdminAppService {
 
   public void deleteHomeless(Long homelessId, Long shelterId) {
     homelessCommandService.deleteHomeless(homelessId, shelterId);
+  }
+
+  public void createDutyOfficers() {
+
+  }
+
+  public Long createChiefOfficer(
+      Long shelterId, String name, String phoneNumber, LocalDate endDate
+  ) {
+    return chiefOfficerService.create(shelterId, name, phoneNumber, endDate);
   }
 }

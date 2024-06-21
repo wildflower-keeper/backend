@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.api.kernel.application.exception;
+package org.wildflowergardening.backend.core.kernel.application.exception;
 
 import lombok.Getter;
 

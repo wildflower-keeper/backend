@@ -20,6 +20,9 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.C
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerCreateRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.EmergencyCount;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.LocationTrackingCount;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.SleepoverCount;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
@@ -137,12 +140,26 @@ public class ShelterAdminAppService {
 
     return HomelessCountResponse.builder()
         .totalHomelessCount(totalHomelessCount)
-        .sleepoverTargetDate(sleepoverTargetDate)
-        .sleepoverCount(sleepoverCount)
-        .locationTrackedHomelessCount(trackedCount)
-        .locationTrackedAfter(lastLocationTrackedAfter)
-        .outingCount(outingCount)
-        .inShelterCount(inShelterCount)
+        .sleepoverCount(
+            SleepoverCount.builder()
+                .targetDate(sleepoverTargetDate)
+                .count(sleepoverCount)
+                .build()
+        )
+        .locationTrackingCount(
+            LocationTrackingCount.builder()
+                .locationTrackedHomelessCount(trackedCount)
+                .locationTrackedAfter(lastLocationTrackedAfter)
+                .outingCount(outingCount)
+                .inShelterCount(inShelterCount)
+                .build()
+        )
+        .emergencyCount(
+            EmergencyCount.builder()
+                .emergencyOccurredAfter(targetDateTime.minusHours(24))
+                .count(0L)
+                .build()
+        )
         .build();
   }
 
@@ -245,7 +262,8 @@ public class ShelterAdminAppService {
     );
   }
 
-  public List<DutyOfficerResponse> getDutyOfficers(Long shelterId, LocalDate startDate, LocalDate endDate) {
+  public List<DutyOfficerResponse> getDutyOfficers(Long shelterId, LocalDate startDate,
+      LocalDate endDate) {
     return dutyOfficerService.getList(shelterId, startDate, endDate).stream()
         .map(dutyOfficer -> DutyOfficerResponse.builder()
             .dutyOfficerId(dutyOfficer.getId())

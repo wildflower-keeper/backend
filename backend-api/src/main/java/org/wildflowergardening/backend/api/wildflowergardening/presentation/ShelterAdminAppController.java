@@ -1,5 +1,7 @@
 package org.wildflowergardening.backend.api.wildflowergardening.presentation;
 
+import static org.wildflowergardening.backend.api.kernel.config.JsonObjectMapperConfig.DATE_TIME_FORMAT;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -20,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -125,9 +128,12 @@ public class ShelterAdminAppController {
       example = "session-token-example"
   ))
   @GetMapping("/api/v1/shelter-admin/homeless-people/count")
-  @Operation(summary = "통계 데이터 조회 (변경예정)")
+  @Operation(summary = "통계 데이터 조회 ", description = ""
+      + "외박신청 : 기준일시에서 기준일의 외박자수<br/>"
+      + "위치확인 : 기준일시로부터 한시간 전 이후 데이터<br/>"
+      + "긴급상황 : 기준일시로부터 24시간동안의 발생수 (무조건 0명 내려가도록 구현되어있음)")
   public ResponseEntity<HomelessCountResponse> getHomelessCount(
-      @RequestParam(required = false) @Parameter(description = "외박신청 및 위치 확인 기준일시", example = "2024-05-24 18:00:00") LocalDateTime targetDateTime
+      @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) @Parameter(description = "기준일시", example = "2024-05-24 18:00:00.000000") LocalDateTime targetDateTime
   ) {
     if (targetDateTime == null) {
       targetDateTime = LocalDateTime.now();

@@ -6,15 +6,17 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class JsonObjectMapperConfig {
 
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
-      "yyyy-MM-dd HH:mm:ss.SSSSSS"
-  );
+  public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSSSSS";
+  public static final DateTimeFormatter DATE_TIME_FORMATTER =
+      DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
   @Bean
+  @Primary
   public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
     return builder -> {
       builder.serializers(new LocalDateTimeSerializer(DATE_TIME_FORMATTER));

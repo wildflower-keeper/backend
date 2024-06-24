@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +39,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ChiefOfficerResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateChiefOfficerRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerCreateRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessFilterType;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
@@ -55,6 +58,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.Slee
 @RequiredArgsConstructor
 @Tag(name = "센터 admin API")
 @Slf4j
+@Validated
 public class ShelterAdminAppController {
 
   private final ShelterAdminAppService shelterAdminAppService;
@@ -295,10 +299,13 @@ public class ShelterAdminAppController {
       in = ParameterIn.HEADER,
       example = "session-token-example"
   ))
-  @Operation(summary = "당직자 정보 생성 (구현예정)")
+  @Operation(summary = "당직자 정보 생성")
   @PostMapping("/api/v1/shelter-admin/duty-officers")
-  public ResponseEntity<Void> createDutyOfficers() {
-    // Todo 구현
+  public ResponseEntity<Void> createDutyOfficers(
+      @RequestBody @Valid @Size(max = 200) List<DutyOfficerCreateRequest> requests
+  ) {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    shelterAdminAppService.createDutyOfficers(shelterContext.getShelterId(), requests);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 }

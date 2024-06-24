@@ -34,7 +34,7 @@ public class DutyOfficer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   @Comment("센터 id")
   private Long shelterId;
 

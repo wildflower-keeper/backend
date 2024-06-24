@@ -1,5 +1,6 @@
 package org.wildflowergardening.backend.core.wildflowergardening.application;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,5 +17,10 @@ public class DutyOfficerService {
   @Transactional
   public void create(List<DutyOfficer> dutyOfficers) {
     dutyOfficerRepository.saveAll(dutyOfficers);
+  }
+
+  @Transactional(readOnly = true)
+  public List<DutyOfficer> getList(Long shelterId, LocalDate startDate, LocalDate endDate) {
+    return dutyOfficerRepository.findByShelterIdAndTargetDate(shelterId, startDate, endDate);
   }
 }

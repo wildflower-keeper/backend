@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -40,6 +41,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ChiefOfficerResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateChiefOfficerRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerCreateRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessFilterType;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
@@ -307,5 +309,29 @@ public class ShelterAdminAppController {
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
     shelterAdminAppService.createDutyOfficers(shelterContext.getShelterId(), requests);
     return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @Operation(summary = "당직자 정보 조회", description = "최대 60일까지 조회가능")
+  @GetMapping("/api/v1/shelter-admin/duty-officers")
+  public ResponseEntity<List<DutyOfficerResponse>> getDutyOfficers(
+      @RequestParam @NotNull @Parameter(example = "2024-06-20") LocalDate startDate,
+      @RequestParam @NotNull @Parameter(example = "2024-07-20") LocalDate endDate
+  ) {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    if (endDate.isBefore(startDate)) {
+      throw new IllegalArgumentException("endDate 가 startDate 보다 이전이면 안됩니다.");
+    }
+    if (endDate.isAfter(startDate.plusDays(60))) {
+      throw new IllegalArgumentException("한번에 60일 이상의 당직자 정보를 조회할 수 없습니다.");
+    }
+    return ResponseEntity.ok(
+        shelterAdminAppService.getDutyOfficers(shelterContext.getShelterId(), startDate, endDate)
+    );
   }
 }

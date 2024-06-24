@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ChiefOfficerResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerCreateRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
@@ -242,5 +243,16 @@ public class ShelterAdminAppService {
                 .build())
             .toList()
     );
+  }
+
+  public List<DutyOfficerResponse> getDutyOfficers(Long shelterId, LocalDate startDate, LocalDate endDate) {
+    return dutyOfficerService.getList(shelterId, startDate, endDate).stream()
+        .map(dutyOfficer -> DutyOfficerResponse.builder()
+            .dutyOfficerId(dutyOfficer.getId())
+            .name(dutyOfficer.getName())
+            .phoneNumber(dutyOfficer.getPhoneNumber())
+            .targetDate(dutyOfficer.getTargetDate())
+            .build())
+        .toList();
   }
 }

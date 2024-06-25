@@ -110,6 +110,16 @@ public class ShelterAdminAppService {
         .build();
   }
 
+  public List<ChiefOfficerResponse> getChiefOfficers(Long shelterId) {
+    return chiefOfficerService.getAll(shelterId).stream()
+        .map(chiefOfficer -> ChiefOfficerResponse.builder()
+            .chiefOfficerId(chiefOfficer.getId())
+            .name(chiefOfficer.getName())
+            .phoneNumber(chiefOfficer.getPhoneNumber())
+            .build())
+        .toList();
+  }
+
   public NumberPageResponse<HomelessResponse> getHomelessPage(HomelessPageRequest pageRequest) {
     return homelessFilterPagerProvider.from(pageRequest.getFilterType())
         .getPage(pageRequest);
@@ -227,16 +237,6 @@ public class ShelterAdminAppService {
 
   public Long createChiefOfficer(Long shelterId, String name, String phoneNumber) {
     return chiefOfficerService.create(shelterId, name, phoneNumber);
-  }
-
-  public List<ChiefOfficerResponse> getAll(Long shelterId) {
-    return chiefOfficerService.getAll(shelterId).stream()
-        .map(chiefOfficer -> ChiefOfficerResponse.builder()
-            .chiefOfficerId(chiefOfficer.getId())
-            .name(chiefOfficer.getName())
-            .phoneNumber(chiefOfficer.getPhoneNumber())
-            .build())
-        .toList();
   }
 
   public void updateChiefOfficer(

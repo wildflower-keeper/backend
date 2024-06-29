@@ -2,6 +2,8 @@ package org.wildflowergardening.backend.api.kernel.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
+import java.util.Arrays;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +13,21 @@ public class OpenApiConfig {
 
   @Bean
   public OpenAPI openAPI() {
-    return new OpenAPI()
+    Server local = new Server();
+    local.setDescription("local");
+    local.setUrl("http://localhost:8080");
+
+    Server prod = new Server();
+    prod.setDescription("prod");
+    prod.setUrl("https://api.wildflower-gardening.com");
+
+    OpenAPI openAPI = new OpenAPI()
         .info(new Info()
             .title("들꽃가드닝 API")
             .description("들꽃가드닝 API")
             .version("1.0.0"));
+    openAPI.setServers(Arrays.asList(local, prod));
+    return openAPI;
   }
 
   @Bean

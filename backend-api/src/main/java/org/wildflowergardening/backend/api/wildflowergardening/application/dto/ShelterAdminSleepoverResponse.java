@@ -19,6 +19,9 @@ public class ShelterAdminSleepoverResponse {
   @Schema(description = "노숙인 성함")
   private String homelessName;
 
+  @Schema(description = "노숙인 방번호")
+  private String homelessRoom;
+
   @Schema(description = "노숙인 연락처")
   private String homelessPhoneNumber;
 

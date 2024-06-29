@@ -47,6 +47,7 @@ public class SleepoverService {
         .homelessId(homeless.getId())
         .homelessName(homeless.getName())
         .homelessPhoneNumber(homeless.getPhoneNumber())
+        .homelessRoom(homeless.getRoom())
         .startDate(dto.getStartDate())
         .endDate(dto.getEndDate())
         .reason(dto.getReason())

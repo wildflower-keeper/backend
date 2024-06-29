@@ -185,6 +185,7 @@ public class ShelterAdminAppService {
                 .homelessId(sleepover.getHomelessId())
                 .homelessName(sleepover.getHomelessName())
                 .homelessPhoneNumber(sleepover.getHomelessPhoneNumber())
+                .emergencyContact(sleepover.getEmergencyContact())
                 .startDate(sleepover.getStartDate())
                 .endDate(sleepover.getEndDate())
                 .createdAt(sleepover.getCreatedAt())

@@ -22,6 +22,9 @@ public class ShelterAdminSleepoverResponse {
   @Schema(description = "노숙인 연락처")
   private String homelessPhoneNumber;
 
+  @Schema(description = "비상연락망")
+  private String emergencyContact;
+
   @Schema(description = "외박 시작일")
   private LocalDate startDate;
 

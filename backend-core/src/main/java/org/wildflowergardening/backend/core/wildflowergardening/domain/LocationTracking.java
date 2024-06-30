@@ -53,7 +53,7 @@ public class LocationTracking {
   private LocationStatus locationStatus;
 
   @Column(name = "tracked_at", nullable = false)
-  @Comment("위치 확인 일시 (=생성일시)")
+  @Comment("위치 확인 일시")
   @Setter
   private LocalDateTime trackedAt;
 

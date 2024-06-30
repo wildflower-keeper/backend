@@ -39,14 +39,10 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.Loca
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterPinService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.UnregisteredSleepoverService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationStatus;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.UnregisteredSleepover;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +57,6 @@ public class HomelessAppService {
   private final SleepoverService sleepoverService;
   private final HomelessAppJwtProvider homelessAppJwtProvider;
   private final LocationTrackingService locationTrackingService;
-  private final UnregisteredSleepoverService unregisteredSleepoverService;
 
   public List<HomelessTermsResponse> getAllTerms() {
     return homelessTermsService.findAll(LocalDate.now()).stream()
@@ -272,114 +267,12 @@ public class HomelessAppService {
         .toList();
   }
 
-  /**
-   * @param dtoList lastTrackedAt ASC 정렬된 리스트
-   */
-  public void updateLocationStatus(
-      Long homelessId, Long shelterId, List<UpdateLocationRequest> dtoList
+  public Long createOrUpdateLocationTracking(
+      Long homelessId, Long shelterId, UpdateLocationRequest request
   ) {
-    if (dtoList.isEmpty()) {
-      return;
-    }
-    // 위치 확인 일시 유효성검사
-    LocalDateTime beforeLast = LocalDateTime.MIN;
-    for (UpdateLocationRequest dto : dtoList) {
-      if (dto.getFirstTrackedAt().isAfter(dto.getLastTrackedAt())) {
-        throw new IllegalArgumentException("firstTrackedAt 이 lastTrackedAt 보다 큰 위치 정보가 있습니다.");
-      }
-      if (dto.getFirstTrackedAt().isBefore(beforeLast)) {
-        throw new IllegalArgumentException("요청 목록에 위치 확인 기간 중복이 있습니다.");
-      }
-      beforeLast = dto.getLastTrackedAt();
-    }
-
-    // List<LocationTracking> 만들기
-    List<LocationTracking> newLocations = new ArrayList<>();
-
-    for (UpdateLocationRequest dto : dtoList) {
-      if (newLocations.isEmpty()) {
-        newLocations.add(LocationTracking.builder()
-            .homelessId(homelessId)
-            .shelterId(shelterId)
-            .locationStatus(dto.getLocationStatus())
-            .firstTrackedAt(dto.getFirstTrackedAt())
-            .lastTrackedAt(dto.getLastTrackedAt())
-            .build());
-        continue;
-      }
-      LocationTracking last = newLocations.get(newLocations.size() - 1);
-
-      if (last.getLocationStatus() == dto.getLocationStatus()) {
-        last.setLastTrackedAt(dto.getLastTrackedAt());
-        continue;
-      }
-      newLocations.add(LocationTracking.builder()
-          .homelessId(homelessId)
-          .shelterId(shelterId)
-          .locationStatus(dto.getLocationStatus())
-          .firstTrackedAt(dto.getFirstTrackedAt())
-          .lastTrackedAt(dto.getLastTrackedAt())
-          .build());
-    }
-    locationTrackingService.createOrUpdate(newLocations);
-
-    // 23시 - 24시 외출중 ; lastTrackedAt 에 대해 오름차순 정렬되어있음
-    List<LocationTracking> nightOuting1 = newLocations.stream()
-        .filter(newLocation -> newLocation.getLocationStatus() == LocationStatus.OUTING
-            && newLocation.getLastTrackedAt().toLocalTime().isAfter(LocalTime.of(23, 0)))
-        .toList();
-    // 0시 - 5시 외출중 ; lastTrackedAt 에 대해 오름차순 정렬되어있음
-    List<LocationTracking> nightOuting2 = newLocations.stream()
-        .filter(newLocation -> newLocation.getLocationStatus() == LocationStatus.OUTING
-            && newLocation.getLastTrackedAt().toLocalTime().isBefore(LocalTime.of(5, 0)))
-        .toList();
-
-    /*
-     외박신청 안한 날 야간 외출 감지 -> 미신청 외박 데이터 생성
-     */
-    if (nightOuting1.isEmpty() && nightOuting2.isEmpty()) {
-      return;
-    }
-    Homeless homeless = homelessQueryService.getOneById(homelessId)
-        .orElseThrow(() -> new IllegalArgumentException("homeless not found"));
-
-    UnregisteredSleepover unregisteredSleepover = null;
-
-    if (!nightOuting1.isEmpty()) {
-      LocationTracking lastLocationTracking = nightOuting1.get(nightOuting1.size() - 1);
-      LocalDate targetDate = lastLocationTracking.getLastTrackedAt().toLocalDate();
-
-      if (!sleepoverService.exist(homelessId, targetDate)) {
-        // 23시 - 24시에 무단외박 감지됨
-        unregisteredSleepover = UnregisteredSleepover.builder()
-            .homeless(homeless)
-            .shelterId(shelterId)
-            .targetDate(targetDate)
-            .firstTrackedAt(lastLocationTracking.getLastTrackedAt())
-            .lastTrackedAt(lastLocationTracking.getLastTrackedAt())
-            .build();
-      }
-    }
-    if (!nightOuting2.isEmpty()) {
-      LocationTracking lastLocationTracking = nightOuting2.get(nightOuting2.size() - 1);
-      LocalDate targetDate = lastLocationTracking.getLastTrackedAt().toLocalDate().minusDays(1);
-
-      if (!sleepoverService.exist(homelessId, targetDate)) {
-        // 0시 - 5시에 무단외박 감지됨
-        if (unregisteredSleepover != null) {
-          unregisteredSleepover.setLastTrackedAt(lastLocationTracking.getLastTrackedAt());
-        } else {
-          unregisteredSleepover = UnregisteredSleepover.builder()
-              .homeless(homeless)
-              .shelterId(shelterId)
-              .targetDate(targetDate)
-              .firstTrackedAt(lastLocationTracking.getLastTrackedAt())
-              .lastTrackedAt(lastLocationTracking.getLastTrackedAt())
-              .build();
-        }
-      }
-    }
-    unregisteredSleepoverService.createOrUpdate(unregisteredSleepover);
+    return locationTrackingService.createOrUpdate(
+        homelessId, shelterId, request.getLocationStatus(), request.getTrackedAt()
+    );
   }
 
   public boolean isSleepoverTonight(Long homelessId) {

@@ -45,7 +45,7 @@ public class HomelessResponse {
     LocationStatus locationStatus =
         lastLocationTracking != null ? lastLocationTracking.getLocationStatus() : null;
     LocalDateTime lastLocationTrackedAt =
-        lastLocationTracking != null ? lastLocationTracking.getLastTrackedAt() : null;
+        lastLocationTracking != null ? lastLocationTracking.getTrackedAt() : null;
 
     return HomelessResponse.builder()
         .id(homeless.getId())

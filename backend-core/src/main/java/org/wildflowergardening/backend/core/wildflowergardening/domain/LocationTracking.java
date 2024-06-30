@@ -38,7 +38,7 @@ public class LocationTracking {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "homeless_id", nullable = false)
+  @Column(name = "homeless_id", nullable = false, unique = true)
   @Comment("노숙인 id")
   private Long homelessId;
 
@@ -52,14 +52,10 @@ public class LocationTracking {
   @Setter
   private LocationStatus locationStatus;
 
-  @Column(name = "first_tracked_at", nullable = false)
-  @Comment("최초 위치 확인 일시 (=생성일시)")
-  private LocalDateTime firstTrackedAt;
-
+  @Column(name = "tracked_at", nullable = false)
+  @Comment("위치 확인 일시 (=생성일시)")
   @Setter
-  @Column(name = "last_tracked_at", nullable = false)
-  @Comment("마지막 위치 확인 일시")
-  private LocalDateTime lastTrackedAt;
+  private LocalDateTime trackedAt;
 
   @CreatedDate
   @Column(name = "created_at", nullable = false)

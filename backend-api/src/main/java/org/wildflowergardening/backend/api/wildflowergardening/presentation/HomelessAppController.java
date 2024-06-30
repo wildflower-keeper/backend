@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -147,18 +144,14 @@ public class HomelessAppController {
       example = "access-token-example"
   ))
   @PostMapping("/api/v1/homeless-app/location")
-  public ResponseEntity<Void> updateLocationStatus(
-      @RequestBody @Valid @NotEmpty @Size(max = 100) List<UpdateLocationRequest> requests
+  public ResponseEntity<Long> updateLocationStatus(
+      @RequestBody @Valid UpdateLocationRequest request
   ) {
-    List<UpdateLocationRequest> dtoList = requests.stream()
-        .sorted(Comparator.comparing(UpdateLocationRequest::getFirstTrackedAt))
-        .toList();
-
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
-    homelessAppService.updateLocationStatus(
-        homelessContext.getHomelessId(), homelessContext.getShelterId(), dtoList
+    Long locationTrackingId = homelessAppService.createOrUpdateLocationTracking(
+        homelessContext.getHomelessId(), homelessContext.getShelterId(), request
     );
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(locationTrackingId);
   }
 
   @HomelessAuthorized

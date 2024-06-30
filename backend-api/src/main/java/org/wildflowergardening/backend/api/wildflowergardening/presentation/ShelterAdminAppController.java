@@ -123,19 +123,19 @@ public class ShelterAdminAppController {
   public ResponseEntity<NumberPageResponse<HomelessResponse>> getHomelessPage(
       @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "NAME") HomelessFilterType filterType,
       @RequestParam(required = false) @Parameter(description = "필터 값", example = "민수") String filterValue,
-      @RequestParam(required = false) @Parameter(description = "외박신청 확인 기준일", example = "2024-05-24") LocalDate sleepoverTargetDate,
+      @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) @Parameter(description = "외박 신청 및 재실/외출여부 조회 기준 일시", example = "2024-06-30 18:00:00.000000") LocalDateTime targetDateTime,
       @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
       @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
   ) {
-    if (sleepoverTargetDate == null) {
-      sleepoverTargetDate = LocalDate.now();
+    if (targetDateTime == null) {
+      targetDateTime = LocalDateTime.now();
     }
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
     HomelessPageRequest pageRequest = HomelessPageRequest.builder()
         .shelterId(shelterContext.getShelterId())
         .filterType(filterType)
         .filterValue(filterValue)
-        .sleepoverTargetDate(sleepoverTargetDate)
+        .targetDateTime(targetDateTime)
         .pageNumber(pageNumber)
         .pageSize(pageSize)
         .build();

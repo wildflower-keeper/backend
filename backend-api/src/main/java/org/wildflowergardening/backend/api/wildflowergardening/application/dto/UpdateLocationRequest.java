@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.Setter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationStatus;
 
 @Getter
@@ -14,5 +15,6 @@ public class UpdateLocationRequest {
   private LocationStatus locationStatus;
 
   @Schema(description = "위치 확인 일시", example = "2024-06-03 00:00:01.123123", type = "string")
+  @Setter
   private LocalDateTime trackedAt;
 }

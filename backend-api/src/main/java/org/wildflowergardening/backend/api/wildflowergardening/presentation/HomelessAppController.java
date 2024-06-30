@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -147,6 +148,9 @@ public class HomelessAppController {
   public ResponseEntity<Long> updateLocationStatus(
       @RequestBody @Valid UpdateLocationRequest request
   ) {
+    if (request.getTrackedAt() == null) {
+      request.setTrackedAt(LocalDateTime.now());
+    }
     HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
     Long locationTrackingId = homelessAppService.createOrUpdateLocationTracking(
         homelessContext.getHomelessId(), homelessContext.getShelterId(), request

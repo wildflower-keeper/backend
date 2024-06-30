@@ -167,7 +167,7 @@ public class ShelterAdminAppService {
         .emergencyCount(
             EmergencyCount.builder()
                 .emergencyOccurredAfter(targetDateTime.minusHours(24))
-                .count(0L)
+                .count(1L)
                 .build()
         )
         .build();

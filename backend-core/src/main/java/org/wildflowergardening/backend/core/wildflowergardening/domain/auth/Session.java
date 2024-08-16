@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -44,6 +45,7 @@ public class Session {
   private String username;
 
   @Column(name = "expired_at", nullable = false)
+  @Setter
   private LocalDateTime expiredAt;
 
   @Column(name = "created_at", nullable = false)

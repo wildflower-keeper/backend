@@ -91,7 +91,7 @@ public class ShelterAdminAppService {
         .userId(shelter.getId())
         .username(shelter.getName())
         .createdAt(now)
-        .expiredAt(now.plusHours(1))
+        .expiredAt(now.plusMinutes(30))
         .build();
 
     session = sessionService.save(session);

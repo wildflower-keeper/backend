@@ -95,6 +95,20 @@ public class ShelterAdminAppController {
       in = ParameterIn.HEADER,
       example = "session-token-example"
   ))
+  @PostMapping("/api/v1/shelter-admin/logout")
+  @Operation(summary = "센터 관리자 로그아웃")
+  public ResponseEntity<?> logout() {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    shelterAdminAppService.logout(shelterContext.getShelterId());
+    return ResponseEntity.ok().build();
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
   @Operation(summary = "홈 화면 센터 정보 조회")
   @GetMapping("/api/v1/shelter-admin/shelter")
   public ResponseEntity<ShelterInfoResponse> getShelterInfo() {

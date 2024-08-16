@@ -110,6 +110,10 @@ public class ShelterAdminAppService {
         .build();
   }
 
+  public void logout(Long shelterId) {
+    sessionService.deleteAllBy(UserRole.SHELTER, shelterId);
+  }
+
   public List<ChiefOfficerResponse> getChiefOfficers(Long shelterId) {
     return chiefOfficerService.getAll(shelterId).stream()
         .map(chiefOfficer -> ChiefOfficerResponse.builder()

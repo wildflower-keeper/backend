@@ -15,11 +15,13 @@ public class HomelessCommandService {
 
   @Transactional
   public Long create(Homeless homeless) {
-    Optional<Homeless> homelessOptional = homelessRepository.findByDeviceId(
-        homeless.getDeviceId()
-    );
-    if (homelessOptional.isPresent()) {
-      throw new IllegalArgumentException("해당 디바이스로 이미 등록된 계정이 있습니다.");
+    if (homeless.getPhoneNumber() != null || homeless.getDeviceId() != null) {
+      Optional<Homeless> homelessOptional = homelessRepository.findByPhoneNumberOrDeviceId(
+          homeless.getPhoneNumber(), homeless.getDeviceId()
+      );
+      if (homelessOptional.isPresent()) {
+        throw new IllegalArgumentException("해당 디바이스 혹은 전화번호로 이미 등록된 계정이 있습니다.");
+      }
     }
     return homelessRepository.save(homeless).getId();
   }

@@ -41,6 +41,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateChiefOfficerRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessByAdminRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerCreateRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessFilterType;
@@ -337,5 +338,19 @@ public class ShelterAdminAppController {
     ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
     shelterAdminAppService.createDutyOfficers(shelterContext.getShelterId(), requests);
     return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
+
+  @ShelterAuthorized
+  @Parameters(@Parameter(
+      name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+      in = ParameterIn.HEADER,
+      example = "session-token-example"
+  ))
+  @Operation(summary = "노숙인 생성")
+  @PostMapping("/api/v1/shelter-admin/homeless")
+  public ResponseEntity<Long> createHomeless(@RequestBody CreateHomelessByAdminRequest request) {
+    ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+    Long homelessId = shelterAdminAppService.createHomeless(shelterContext.getShelterId(), request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(homelessId);
   }
 }

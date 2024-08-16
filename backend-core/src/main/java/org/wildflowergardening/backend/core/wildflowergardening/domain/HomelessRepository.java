@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface HomelessRepository extends JpaRepository<Homeless, Long> {
 
-  Optional<Homeless> findByDeviceId(String deviceId);
+  Optional<Homeless> findByPhoneNumberOrDeviceId(String phoneNumber, String deviceId);
 
   Page<Homeless> findAllByShelterId(Long shelterId, Pageable pageable);
 

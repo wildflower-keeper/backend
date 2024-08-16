@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ChiefOfficerResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessByAdminRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerCreateRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
@@ -279,5 +280,21 @@ public class ShelterAdminAppService {
             .targetDate(dutyOfficer.getTargetDate())
             .build())
         .toList();
+  }
+
+  @Transactional
+  public Long createHomeless(Long shelterId, CreateHomelessByAdminRequest request) {
+    Shelter shelter = shelterService.getShelterById(request.getShelterId())
+        .orElseThrow(() -> new IllegalStateException("id=" + shelterId + "인 센터가 존재하지 않습니다."));
+
+    return homelessCommandService.create(Homeless.builder()
+        .name(request.getName())
+        .shelter(shelter)
+        .deviceId(null)
+        .room(request.getRoom())
+        .birthDate(request.getBirthDate())
+        .phoneNumber(PhoneNumberFormatter.format(request.getPhoneNumber()))
+        .admissionDate(request.getAdmissionDate())
+        .build());
   }
 }

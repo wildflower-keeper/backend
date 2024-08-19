@@ -69,4 +69,12 @@ public class OpenApiConfig {
         .pathsToMatch("/api/v1/shared/**")
         .build();
   }
+
+  @Bean
+  public GroupedOpenApi systemGroup() {
+    return GroupedOpenApi.builder()
+        .group("시스템 API")
+        .pathsToMatch("/api/v1/system/**")
+        .build();
+  }
 }

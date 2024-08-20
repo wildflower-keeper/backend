@@ -9,6 +9,14 @@
     <Console name="Console_Appender" target="SYSTEM_OUT">
       <PatternLayout pattern="${layoutPattern}"/>
     </Console>
+    <RollingFile name="File_Appender" fileName="logs/${logNm}.log" filePattern="logs/${logNm}_%d{yyyy-MM-dd}_%i.log.gz">
+      <PatternLayout pattern="${layoutPattern}"/>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="200KB"/>
+        <TimeBasedTriggeringPolicy interval="1"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10" fileIndex="min"/>
+    </RollingFile>
   </Appenders>
 
   <Loggers>

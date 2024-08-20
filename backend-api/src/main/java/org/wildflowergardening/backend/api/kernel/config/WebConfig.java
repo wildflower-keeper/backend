@@ -24,7 +24,10 @@ public class WebConfig implements WebMvcConfigurer {
             "http://localhost:3000", "http://127.0.0.1:3000",
             "http://localhost:80", "http://127.0.0.1:80",
             "http://localhost:8081", "http://127.0.0.1:8081",
-            "https://wildflower-gardening.com:443", "http://wildflower-gardening.com:80"
+            "https://wildflower-gardening.com", "https://www.wildflower-gardening.com",
+            "https://wildflower-gardening.com:443", "https://www.wildflower-gardening.com:443",
+            "http://wildflower-gardening.com", "http://www.wildflower-gardening.com",
+            "http://wildflower-gardening.com:80", "http://www.wildflower-gardening.com:80"
         )
         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
         .allowedHeaders("auth-token")

@@ -55,4 +55,11 @@ public class WildflowerAdminService {
 
     return homelessTermsService.create(homelessTerms);
   }
+
+  public void changeShelterPassword(String adminPassword, Long shelterId, String newPw) {
+    if (!this.adminPassword.equals(adminPassword)) {
+      throw new ForbiddenException("권한이 없습니다.");
+    }
+    shelterService.changePassword(shelterId, passwordEncoder.encode(newPw));
+  }
 }

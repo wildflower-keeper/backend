@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -43,5 +44,15 @@ public class WildflowerAdminController {
     Long homelessTermsId = wildflowerAdminService.createHomelessTerms(adminAuth, request);
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(homelessTermsId);
+  }
+
+  @PostMapping("/api/v1/wildflower-admin/shelter/{shelterId}/password")
+  public ResponseEntity<Void> changeShelterPassword(
+      @RequestHeader(value = "auth-token") @Parameter(example = "test") String adminAuth,
+      @PathVariable Long shelterId,
+      @RequestBody String newShelterPw
+  ) {
+    wildflowerAdminService.changeShelterPassword(adminAuth, shelterId, newShelterPw);
+    return ResponseEntity.ok().build();
   }
 }

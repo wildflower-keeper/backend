@@ -36,4 +36,10 @@ public class ShelterService {
   public Optional<Shelter> getShelterById(Long id) {
     return shelterRepository.findById(id);
   }
+
+  @Transactional
+  public void changePassword(Long shelterId, String newPwEncrypted) {
+    shelterRepository.findById(shelterId)
+        .ifPresent(shelter -> shelter.setPassword(newPwEncrypted));
+  }
 }

@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -38,6 +39,7 @@ public class Shelter {
 
   @Column(name = "password", nullable = false)
   @Comment("비밀번호")
+  @Setter
   private String password;
 
   @Column(name = "latitude", columnDefinition = "decimal(10,8)", nullable = false)

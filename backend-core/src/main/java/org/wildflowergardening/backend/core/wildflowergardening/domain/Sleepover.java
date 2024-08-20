@@ -3,6 +3,7 @@ package org.wildflowergardening.backend.core.wildflowergardening.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,7 +34,7 @@ public class Sleepover {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   @Column(name = "creator_type", nullable = false)
   @Comment("외출/외박을 신청한 계정 유형 (HOMELESS:노숙인계정, SHELTER_PUBLIC:센터노숙인공용계정, SHELTER:센터관리자계정)")
   private UserRole creatorType;

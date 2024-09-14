@@ -1,10 +1,12 @@
 package org.wildflowergardening.backend.core.wildflowergardening.application;
 
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.EmergencyLog;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.EmergencyLogRepository;
+
 
 @RequiredArgsConstructor
 @Service
@@ -14,5 +16,7 @@ public class EmergencyService {
     public Long save(EmergencyLog log){
         return emergencyLogRepository.save(log).getId();
     }
+
+
 
 }

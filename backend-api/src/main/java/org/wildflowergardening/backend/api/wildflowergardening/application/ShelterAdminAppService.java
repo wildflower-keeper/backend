@@ -297,4 +297,5 @@ public class ShelterAdminAppService {
         .admissionDate(request.getAdmissionDate())
         .build());
   }
+
 }

@@ -282,16 +282,15 @@ public class HomelessAppService {
     }
 
     public void saveEmergencyLog(long homelessId, long shelterId, EmergencyRequest request) {
-        //1. 노숙인을 가져온다
-//        Optional<Homeless> homeless = homelessQueryService.getOneById(homelessId);
+
         Homeless homeless = homelessQueryService.getOneById(homelessId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
 
         emergencyService.save(EmergencyLog.builder()
                 .homless(homeless)
                 .shelter_id(shelterId)
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
+                .latitude(request.getLocation().getLatitude())
+                .longitude(request.getLocation().getLongitude())
                 .build());
 
     }

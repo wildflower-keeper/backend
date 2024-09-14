@@ -5,11 +5,13 @@ import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
 @Getter
+@Builder
 public class Location {
     @NotNull(message = "위도가 null 일 수 없습니다.")
     @DecimalMax(value = "90", message = "위도 최댓값은 90 입니다.")

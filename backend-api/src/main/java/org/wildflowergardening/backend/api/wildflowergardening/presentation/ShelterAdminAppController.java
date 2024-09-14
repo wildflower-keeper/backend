@@ -55,6 +55,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.S
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterPinResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateChiefOfficerRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
@@ -357,4 +358,18 @@ public class ShelterAdminAppController {
     }
 
     //TO DO : shelter id를 기준으로 긴급 상황 전체 조회
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @Operation(summary = "긴급상황 전체 조회")
+    @GetMapping("/api/v1/shelter-admin/emergency")
+    public ResponseEntity<EmergencyResponse> getEmergencyLog() {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        EmergencyResponse response = shelterAdminAppService.getEmergencyListByShelterId(shelterContext.getShelterId());
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }

@@ -43,9 +43,6 @@ public class EmergencyLog {
     @JoinColumn(name = "homeless_id", nullable = false)
     @Comment("노숙인 id")
     private Homeless homless;
-//    @Column(name = "homeless_id", nullable = false)
-//    @Comment("노숙인 id")
-//    private Long homeless_id;
 
     @Column(name = "shelter_id", nullable = false)
     @Comment("보호소 id")

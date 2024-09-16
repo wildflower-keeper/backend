@@ -289,8 +289,8 @@ public class HomelessAppService {
         emergencyService.save(EmergencyLog.builder()
                 .homless(homeless)
                 .shelter_id(shelterId)
-                .latitude(request.getLocation().getLatitude())
-                .longitude(request.getLocation().getLongitude())
+                .latitude(request.getLocation().getLat())
+                .longitude(request.getLocation().getLng())
                 .build());
 
     }

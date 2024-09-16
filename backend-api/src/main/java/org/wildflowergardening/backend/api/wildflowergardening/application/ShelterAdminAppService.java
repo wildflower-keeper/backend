@@ -281,19 +281,19 @@ public class ShelterAdminAppService {
         List<EmergencyLogItem> list = new ArrayList<>();
         for (EmergencyLog log : allList) {
             EmergencyLogItem item = EmergencyLogItem.builder()
-                    .emergencyId(log.getId())
+                    .id(log.getId())
                     .name(log.getHomless().getName())
                     .phNumber(log.getHomless().getPhoneNumber())
                     .date(log.getCreatedAt())
                     .location(Location.builder()
-                            .latitude(log.getLatitude())
-                            .longitude(log.getLongitude()).build())
+                            .lat(log.getLatitude())
+                            .lng(log.getLongitude()).build())
                     .build();
             list.add(item);
         }
 
         return EmergencyResponse.builder()
-                .result(shelterId.toString())
+                .result(String.valueOf(list.size()))
                 .logs(list)
                 .build();
     }

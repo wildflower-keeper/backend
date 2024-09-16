@@ -9,9 +9,10 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class EmergencyLogItem {
-    private Long emergencyId;
-    private LocalDateTime date;
+    private Long id;
     private String name;
     private String phNumber;
+    private LocalDateTime date;
     private Location location;
+
 }

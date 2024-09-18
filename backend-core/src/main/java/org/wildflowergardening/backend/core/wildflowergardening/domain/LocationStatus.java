@@ -1,7 +1,7 @@
 package org.wildflowergardening.backend.core.wildflowergardening.domain;
 
 public enum LocationStatus {
-  IN_SHELTER, OUTING;
+  IN_SHELTER, OUT_SHELTER;
 
   public static LocationStatus from(String value) {
     try {

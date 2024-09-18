@@ -14,7 +14,7 @@ public class UpdateLocationRequest {
   @Schema(description = "IN_SHELTER:재실중, OUTING:외출중", example = "IN_SHELTER")
   private LocationStatus locationStatus;
 
-  @Schema(description = "위치 확인 일시", example = "2024-06-03 00:00:01.123123", type = "string")
+/*  @Schema(description = "위치 확인 일시", example = "2024-06-03 00:00:01.123123", type = "string")
   @Setter
-  private LocalDateTime trackedAt;
+  private LocalDateTime trackedAt;*/
 }

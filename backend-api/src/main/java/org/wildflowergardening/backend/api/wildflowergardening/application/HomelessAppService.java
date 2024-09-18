@@ -35,10 +35,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberF
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.EmergencyLog;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
 
 @Service
 @RequiredArgsConstructor
@@ -268,7 +265,7 @@ public class HomelessAppService {
             Long homelessId, Long shelterId, UpdateLocationRequest request
     ) {
         return locationTrackingService.createOrUpdate(
-                homelessId, shelterId, request.getLocationStatus(), request.getTrackedAt()
+                homelessId, shelterId, request.getLocationStatus()
         );
     }
 
@@ -293,5 +290,16 @@ public class HomelessAppService {
                 .longitude(request.getLocation().getLng())
                 .build());
 
+    }
+
+    public String getStatusLocationByHomelessId(long homelessId){
+        LocationTracking locationTracking = locationTrackingService.getLocationByHomelessId(homelessId);
+
+        LocationStatus status = locationTracking.getLocationStatus();
+        if(status==LocationStatus.IN_SHELTER){
+            return "IN_SHELTER";
+        }else{
+            return "OUT_SHELTER";
+        }
     }
 }

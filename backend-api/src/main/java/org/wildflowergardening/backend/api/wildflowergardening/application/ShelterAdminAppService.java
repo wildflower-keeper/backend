@@ -3,56 +3,31 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import io.micrometer.common.util.StringUtils;
+
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ChiefOfficerResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessByAdminRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerCreateRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.EmergencyCount;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.LocationTrackingCount;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.SleepoverCount;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterAdminSleepoverResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterPinResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyLogItem;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
-import org.wildflowergardening.backend.core.wildflowergardening.application.ChiefOfficerService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.DutyOfficerService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessCommandService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterPinService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
-import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.*;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.DutyOfficer;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationStatus;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterPin;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
@@ -60,241 +35,268 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.User
 @RequiredArgsConstructor
 public class ShelterAdminAppService {
 
-  private final SessionService sessionService;
-  private final ShelterService shelterService;
-  private final PasswordEncoder passwordEncoder;
-  private final ShelterPinService shelterPinService;
-  private final HomelessFilterPagerProvider homelessFilterPagerProvider;
-  private final SleepoverService sleepoverService;
-  private final HomelessQueryService homelessQueryService;
-  private final LocationTrackingService locationTrackingService;
-  private final HomelessCommandService homelessCommandService;
-  private final ChiefOfficerService chiefOfficerService;
-  private final DutyOfficerService dutyOfficerService;
+    private final SessionService sessionService;
+    private final ShelterService shelterService;
+    private final PasswordEncoder passwordEncoder;
+    private final ShelterPinService shelterPinService;
+    private final HomelessFilterPagerProvider homelessFilterPagerProvider;
+    private final SleepoverService sleepoverService;
+    private final HomelessQueryService homelessQueryService;
+    private final LocationTrackingService locationTrackingService;
+    private final HomelessCommandService homelessCommandService;
+    private final ChiefOfficerService chiefOfficerService;
+    private final DutyOfficerService dutyOfficerService;
+    private final EmergencyService emergencyService;
 
-  public SessionResponse login(ShelterLoginRequest dto) {
-    Optional<Shelter> shelterOptional = shelterService.getShelterById(dto.getId());
+    public SessionResponse login(ShelterLoginRequest dto) {
+        Optional<Shelter> shelterOptional = shelterService.getShelterById(dto.getId());
 
-    if (shelterOptional.isEmpty() || !passwordEncoder.matches(
-        dto.getPw(), shelterOptional.get().getPassword()
-    )) {
-      throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
+        if (shelterOptional.isEmpty() || !passwordEncoder.matches(
+                dto.getPw(), shelterOptional.get().getPassword()
+        )) {
+            throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
+        }
+
+        Shelter shelter = shelterOptional.get();
+        LocalDateTime now = LocalDateTime.now();
+
+        byte[] randomBytes = new byte[80];
+        new SecureRandom().nextBytes(randomBytes);
+        Session session = Session.builder()
+                .token(Base64.getUrlEncoder().encodeToString(randomBytes).substring(0, 80))
+                .userRole(UserRole.SHELTER)
+                .userId(shelter.getId())
+                .username(shelter.getName())
+                .createdAt(now)
+                .expiredAt(now.plusMinutes(30))
+                .build();
+
+        session = sessionService.save(session);
+
+        return SessionResponse.builder()
+                .authToken(session.getToken())
+                .expiredAt(session.getExpiredAt())
+                .build();
     }
 
-    Shelter shelter = shelterOptional.get();
-    LocalDateTime now = LocalDateTime.now();
+    public ShelterPinResponse getPin(Long shelterId) {
+        ShelterPin shelterPin = shelterPinService.getShelterPin(shelterId);
+        return ShelterPinResponse.builder()
+                .pin(shelterPin.getPin())
+                .expiredAt(shelterPin.calcExpiredAt())
+                .build();
+    }
 
-    byte[] randomBytes = new byte[80];
-    new SecureRandom().nextBytes(randomBytes);
-    Session session = Session.builder()
-        .token(Base64.getUrlEncoder().encodeToString(randomBytes).substring(0, 80))
-        .userRole(UserRole.SHELTER)
-        .userId(shelter.getId())
-        .username(shelter.getName())
-        .createdAt(now)
-        .expiredAt(now.plusMinutes(30))
-        .build();
+    public void logout(Long shelterId) {
+        sessionService.deleteAllBy(UserRole.SHELTER, shelterId);
+    }
 
-    session = sessionService.save(session);
+    public List<ChiefOfficerResponse> getChiefOfficers(Long shelterId) {
+        return chiefOfficerService.getAll(shelterId).stream()
+                .map(chiefOfficer -> ChiefOfficerResponse.builder()
+                        .chiefOfficerId(chiefOfficer.getId())
+                        .name(chiefOfficer.getName())
+                        .phoneNumber(chiefOfficer.getPhoneNumber())
+                        .build())
+                .toList();
+    }
 
-    return SessionResponse.builder()
-        .authToken(session.getToken())
-        .expiredAt(session.getExpiredAt())
-        .build();
-  }
+    public NumberPageResponse<HomelessResponse> getHomelessPage(HomelessPageRequest pageRequest) {
+        return homelessFilterPagerProvider.from(pageRequest.getFilterType())
+                .getPage(pageRequest);
+    }
 
-  public ShelterPinResponse getPin(Long shelterId) {
-    ShelterPin shelterPin = shelterPinService.getShelterPin(shelterId);
-    return ShelterPinResponse.builder()
-        .pin(shelterPin.getPin())
-        .expiredAt(shelterPin.calcExpiredAt())
-        .build();
-  }
+    public HomelessCountResponse countHomeless(Long shelterId, LocalDateTime targetDateTime) {
+        long totalHomelessCount = homelessQueryService.count(shelterId);
 
-  public void logout(Long shelterId) {
-    sessionService.deleteAllBy(UserRole.SHELTER, shelterId);
-  }
+        // 외박
+        LocalDate sleepoverTargetDate = targetDateTime.toLocalDate();
+        long sleepoverCount = sleepoverService.count(shelterId, sleepoverTargetDate);
 
-  public List<ChiefOfficerResponse> getChiefOfficers(Long shelterId) {
-    return chiefOfficerService.getAll(shelterId).stream()
-        .map(chiefOfficer -> ChiefOfficerResponse.builder()
-            .chiefOfficerId(chiefOfficer.getId())
-            .name(chiefOfficer.getName())
-            .phoneNumber(chiefOfficer.getPhoneNumber())
-            .build())
-        .toList();
-  }
+        // 외출
+        LocalDateTime lastLocationTrackedAfter = targetDateTime.minusHours(1);
+        Map<Long, LocationTracking> lastLocationMap =        // map key : Homeless id
+                locationTrackingService.getAllLastByLastTrackedAfter(
+                        shelterId, lastLocationTrackedAfter
+                );
+        long trackedCount = lastLocationMap.size();
+        long inShelterCount = lastLocationMap.values().stream()
+                .filter(locationTracking ->
+                        locationTracking.getLocationStatus() == LocationStatus.IN_SHELTER)
+                .count();
+        long outingCount = lastLocationMap.values().stream()
+                .filter(locationTracking ->
+                        locationTracking.getLocationStatus() == LocationStatus.OUTING)
+                .count();
 
-  public NumberPageResponse<HomelessResponse> getHomelessPage(HomelessPageRequest pageRequest) {
-    return homelessFilterPagerProvider.from(pageRequest.getFilterType())
-        .getPage(pageRequest);
-  }
+        return HomelessCountResponse.builder()
+                .totalHomelessCount(totalHomelessCount)
+                .sleepoverCount(
+                        SleepoverCount.builder()
+                                .targetDate(sleepoverTargetDate)
+                                .count(sleepoverCount)
+                                .build()
+                )
+                .locationTrackingCount(
+                        LocationTrackingCount.builder()
+                                .locationTrackedHomelessCount(trackedCount)
+                                .locationTrackedAfter(lastLocationTrackedAfter)
+                                .outingCount(outingCount)
+                                .inShelterCount(inShelterCount)
+                                .build()
+                )
+                .emergencyCount(
+                        EmergencyCount.builder()
+                                .emergencyOccurredAfter(targetDateTime.minusHours(24))
+                                .count(1L)
+                                .build()
+                )
+                .build();
+    }
 
-  public HomelessCountResponse countHomeless(Long shelterId, LocalDateTime targetDateTime) {
-    long totalHomelessCount = homelessQueryService.count(shelterId);
+    public NumberPageResponse<ShelterAdminSleepoverResponse> getPage(
+            Long shelterId, int pageNumber, int pageSize
+    ) {
+        NumberPageResult<Sleepover> result = sleepoverService.getPage(shelterId, pageNumber, pageSize);
 
-    // 외박
-    LocalDate sleepoverTargetDate = targetDateTime.toLocalDate();
-    long sleepoverCount = sleepoverService.count(shelterId, sleepoverTargetDate);
+        return NumberPageResponse.<ShelterAdminSleepoverResponse>builder()
+                .items(result.getItems().stream()
+                        .map(sleepover -> ShelterAdminSleepoverResponse.builder()
+                                .sleepoverId(sleepover.getId())
+                                .homelessId(sleepover.getHomelessId())
+                                .homelessName(sleepover.getHomelessName())
+                                .homelessRoom(sleepover.getHomelessRoom())
+                                .homelessPhoneNumber(sleepover.getHomelessPhoneNumber())
+                                .emergencyContact(sleepover.getEmergencyContact())
+                                .reason(sleepover.getReason())
+                                .startDate(sleepover.getStartDate())
+                                .endDate(sleepover.getEndDate())
+                                .createdAt(sleepover.getCreatedAt())
+                                .build())
+                        .collect(Collectors.toList()))
+                .pagination(PageInfoResponse.of(result.getPagination()))
+                .build();
+    }
 
-    // 외출
-    LocalDateTime lastLocationTrackedAfter = targetDateTime.minusHours(1);
-    Map<Long, LocationTracking> lastLocationMap =        // map key : Homeless id
-        locationTrackingService.getAllLastByLastTrackedAfter(
-            shelterId, lastLocationTrackedAfter
+    @Transactional
+    public void updateHomelessInfo(
+            Long shelterId, Long homelessId, UpdateHomelessRequest request
+    ) {
+        Homeless homeless = homelessQueryService.getOneById(homelessId)
+                .orElseThrow(() -> new IllegalArgumentException("not exist homeless"));
+
+        if (!homeless.getShelter().getId().equals(shelterId)) {
+            throw new ForbiddenException("");
+        }
+        homeless.setName(
+                StringUtils.isBlank(request.getName())
+                        ? homeless.getName()
+                        : request.getName()
         );
-    long trackedCount = lastLocationMap.size();
-    long inShelterCount = lastLocationMap.values().stream()
-        .filter(locationTracking ->
-            locationTracking.getLocationStatus() == LocationStatus.IN_SHELTER)
-        .count();
-    long outingCount = lastLocationMap.values().stream()
-        .filter(locationTracking ->
-            locationTracking.getLocationStatus() == LocationStatus.OUTING)
-        .count();
-
-    return HomelessCountResponse.builder()
-        .totalHomelessCount(totalHomelessCount)
-        .sleepoverCount(
-            SleepoverCount.builder()
-                .targetDate(sleepoverTargetDate)
-                .count(sleepoverCount)
-                .build()
-        )
-        .locationTrackingCount(
-            LocationTrackingCount.builder()
-                .locationTrackedHomelessCount(trackedCount)
-                .locationTrackedAfter(lastLocationTrackedAfter)
-                .outingCount(outingCount)
-                .inShelterCount(inShelterCount)
-                .build()
-        )
-        .emergencyCount(
-            EmergencyCount.builder()
-                .emergencyOccurredAfter(targetDateTime.minusHours(24))
-                .count(1L)
-                .build()
-        )
-        .build();
-  }
-
-  public NumberPageResponse<ShelterAdminSleepoverResponse> getPage(
-      Long shelterId, int pageNumber, int pageSize
-  ) {
-    NumberPageResult<Sleepover> result = sleepoverService.getPage(shelterId, pageNumber, pageSize);
-
-    return NumberPageResponse.<ShelterAdminSleepoverResponse>builder()
-        .items(result.getItems().stream()
-            .map(sleepover -> ShelterAdminSleepoverResponse.builder()
-                .sleepoverId(sleepover.getId())
-                .homelessId(sleepover.getHomelessId())
-                .homelessName(sleepover.getHomelessName())
-                .homelessRoom(sleepover.getHomelessRoom())
-                .homelessPhoneNumber(sleepover.getHomelessPhoneNumber())
-                .emergencyContact(sleepover.getEmergencyContact())
-                .reason(sleepover.getReason())
-                .startDate(sleepover.getStartDate())
-                .endDate(sleepover.getEndDate())
-                .createdAt(sleepover.getCreatedAt())
-                .build())
-            .collect(Collectors.toList()))
-        .pagination(PageInfoResponse.of(result.getPagination()))
-        .build();
-  }
-
-  @Transactional
-  public void updateHomelessInfo(
-      Long shelterId, Long homelessId, UpdateHomelessRequest request
-  ) {
-    Homeless homeless = homelessQueryService.getOneById(homelessId)
-        .orElseThrow(() -> new IllegalArgumentException("not exist homeless"));
-
-    if (!homeless.getShelter().getId().equals(shelterId)) {
-      throw new ForbiddenException("");
+        homeless.setRoom(
+                StringUtils.isBlank(request.getRoom())
+                        ? homeless.getRoom()
+                        : request.getRoom()
+        );
+        homeless.setPhoneNumber(
+                StringUtils.isBlank(request.getPhoneNumber())
+                        ? homeless.getPhoneNumber()
+                        : PhoneNumberFormatter.format(request.getPhoneNumber())
+        );
+        homeless.setBirthDate(
+                request.getBirthDate() == null
+                        ? homeless.getBirthDate()
+                        : request.getBirthDate()
+        );
+        homeless.setAdmissionDate(
+                request.getAdmissionDate() == null
+                        ? homeless.getAdmissionDate()
+                        : request.getAdmissionDate()
+        );
     }
-    homeless.setName(
-        StringUtils.isBlank(request.getName())
-            ? homeless.getName()
-            : request.getName()
-    );
-    homeless.setRoom(
-        StringUtils.isBlank(request.getRoom())
-            ? homeless.getRoom()
-            : request.getRoom()
-    );
-    homeless.setPhoneNumber(
-        StringUtils.isBlank(request.getPhoneNumber())
-            ? homeless.getPhoneNumber()
-            : PhoneNumberFormatter.format(request.getPhoneNumber())
-    );
-    homeless.setBirthDate(
-        request.getBirthDate() == null
-            ? homeless.getBirthDate()
-            : request.getBirthDate()
-    );
-    homeless.setAdmissionDate(
-        request.getAdmissionDate() == null
-            ? homeless.getAdmissionDate()
-            : request.getAdmissionDate()
-    );
-  }
 
-  public void deleteHomeless(Long homelessId, Long shelterId) {
-    homelessCommandService.deleteHomeless(homelessId, shelterId);
-  }
+    public void deleteHomeless(Long homelessId, Long shelterId) {
+        homelessCommandService.deleteHomeless(homelessId, shelterId);
+    }
 
-  public Long createChiefOfficer(Long shelterId, String name, String phoneNumber) {
-    return chiefOfficerService.create(shelterId, name, phoneNumber);
-  }
+    public Long createChiefOfficer(Long shelterId, String name, String phoneNumber) {
+        return chiefOfficerService.create(shelterId, name, phoneNumber);
+    }
 
-  public void updateChiefOfficer(
-      Long shelterId, Long chiefOfficerId, String name, String phoneNumber
-  ) {
-    chiefOfficerService.update(shelterId, chiefOfficerId, name, phoneNumber);
-  }
+    public void updateChiefOfficer(
+            Long shelterId, Long chiefOfficerId, String name, String phoneNumber
+    ) {
+        chiefOfficerService.update(shelterId, chiefOfficerId, name, phoneNumber);
+    }
 
-  public void deleteChiefOfficer(Long shelterId, Long chiefOfficerId) {
-    chiefOfficerService.delete(shelterId, chiefOfficerId);
-  }
+    public void deleteChiefOfficer(Long shelterId, Long chiefOfficerId) {
+        chiefOfficerService.delete(shelterId, chiefOfficerId);
+    }
 
-  public void createDutyOfficers(Long shelterId, List<DutyOfficerCreateRequest> requests) {
-    dutyOfficerService.create(
-        requests.stream()
-            .map(request -> DutyOfficer.builder()
-                .shelterId(shelterId)
+    public void createDutyOfficers(Long shelterId, List<DutyOfficerCreateRequest> requests) {
+        dutyOfficerService.create(
+                requests.stream()
+                        .map(request -> DutyOfficer.builder()
+                                .shelterId(shelterId)
+                                .name(request.getName())
+                                .phoneNumber(PhoneNumberFormatter.format(request.getPhoneNumber()))
+                                .targetDate(request.getTargetDate())
+                                .build())
+                        .toList()
+        );
+    }
+
+    public List<DutyOfficerResponse> getDutyOfficers(Long shelterId, LocalDate startDate,
+                                                     LocalDate endDate) {
+        return dutyOfficerService.getList(shelterId, startDate, endDate).stream()
+                .map(dutyOfficer -> DutyOfficerResponse.builder()
+                        .dutyOfficerId(dutyOfficer.getId())
+                        .name(dutyOfficer.getName())
+                        .phoneNumber(dutyOfficer.getPhoneNumber())
+                        .targetDate(dutyOfficer.getTargetDate())
+                        .build())
+                .toList();
+    }
+
+    @Transactional
+    public Long createHomeless(Long shelterId, CreateHomelessByAdminRequest request) {
+        Shelter shelter = shelterService.getShelterById(request.getShelterId())
+                .orElseThrow(() -> new IllegalStateException("id=" + shelterId + "인 센터가 존재하지 않습니다."));
+
+        return homelessCommandService.create(Homeless.builder()
                 .name(request.getName())
+                .shelter(shelter)
+                .deviceId(null)
+                .room(request.getRoom())
+                .birthDate(request.getBirthDate())
                 .phoneNumber(PhoneNumberFormatter.format(request.getPhoneNumber()))
-                .targetDate(request.getTargetDate())
-                .build())
-            .toList()
-    );
-  }
+                .admissionDate(request.getAdmissionDate())
+                .build());
+    }
 
-  public List<DutyOfficerResponse> getDutyOfficers(Long shelterId, LocalDate startDate,
-      LocalDate endDate) {
-    return dutyOfficerService.getList(shelterId, startDate, endDate).stream()
-        .map(dutyOfficer -> DutyOfficerResponse.builder()
-            .dutyOfficerId(dutyOfficer.getId())
-            .name(dutyOfficer.getName())
-            .phoneNumber(dutyOfficer.getPhoneNumber())
-            .targetDate(dutyOfficer.getTargetDate())
-            .build())
-        .toList();
-  }
+    //전체 위급 상황 발생 내역 조회
+    public EmergencyResponse getEmergencyListByShelterId(Long shelterId) {
+        List<EmergencyLog> allList = emergencyService.getEmergencyLogByShelterId(shelterId);
 
-  @Transactional
-  public Long createHomeless(Long shelterId, CreateHomelessByAdminRequest request) {
-    Shelter shelter = shelterService.getShelterById(request.getShelterId())
-        .orElseThrow(() -> new IllegalStateException("id=" + shelterId + "인 센터가 존재하지 않습니다."));
+        List<EmergencyLogItem> list = new ArrayList<>();
+        for (EmergencyLog log : allList) {
+            EmergencyLogItem item = EmergencyLogItem.builder()
+                    .id(log.getId())
+                    .name(log.getHomless().getName())
+                    .phNumber(log.getHomless().getPhoneNumber())
+                    .date(log.getCreatedAt())
+                    .location(Location.builder()
+                            .lat(log.getLatitude())
+                            .lng(log.getLongitude()).build())
+                    .build();
+            list.add(item);
+        }
 
-    return homelessCommandService.create(Homeless.builder()
-        .name(request.getName())
-        .shelter(shelter)
-        .deviceId(null)
-        .room(request.getRoom())
-        .birthDate(request.getBirthDate())
-        .phoneNumber(PhoneNumberFormatter.format(request.getPhoneNumber()))
-        .admissionDate(request.getAdmissionDate())
-        .build());
-  }
+        return EmergencyResponse.builder()
+                .result(String.valueOf(list.size()))
+                .logs(list)
+                .build();
+    }
+
+
 }

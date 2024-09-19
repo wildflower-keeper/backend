@@ -126,7 +126,7 @@ public class ShelterAdminAppService {
                 .count();
         long outingCount = lastLocationMap.values().stream()
                 .filter(locationTracking ->
-                        locationTracking.getLocationStatus() == LocationStatus.OUTING)
+                        locationTracking.getLocationStatus() == LocationStatus.OUT_SHELTER)
                 .count();
 
         return HomelessCountResponse.builder()

@@ -11,6 +11,7 @@ public enum WildflowerExceptionType implements ExceptionType {
   SHELTER_ADMIN_CHIEF_OFFICER_NOT_FOUND("책임자 정보가 존재하지 않습니다."),
   HOMELESS_APP_CREATE_ACCOUNT_SHELTER_ID_PIN_INVALID("센터 ID 또는 PIN 번호가 올바르지 않습니다."),
   HOMELESS_APP_ESSENTIAL_TERMS_NOT_AGREED("필수 약관이 동의되지 않았습니다."),
+  HOMELESS_APP_NOT_DATA_LOCATION("위치 정보가 존재하지 않습니다."),
   WILDFLOWER_ADMIN_AUTHENTICATION_FAILED("들꽃지기 관리자 인증에 실패했습니다.")
   ;
 

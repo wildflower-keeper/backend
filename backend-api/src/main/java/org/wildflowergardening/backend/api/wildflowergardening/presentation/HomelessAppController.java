@@ -151,9 +151,6 @@ public class HomelessAppController {
     public ResponseEntity<Long> updateLocationStatus(
             @RequestBody @Valid UpdateLocationRequest request
     ) {
-        if (request.getTrackedAt() == null) {
-            request.setTrackedAt(LocalDateTime.now());
-        }
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
         Long locationTrackingId = homelessAppService.createOrUpdateLocationTracking(
                 homelessContext.getHomelessId(), homelessContext.getShelterId(), request
@@ -208,7 +205,22 @@ public class HomelessAppController {
             @RequestBody @Valid EmergencyRequest request
     ) {
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
-        homelessAppService.saveEmergencyLog(homelessContext.getHomelessId(), homelessContext.getShelterId(),request );
+        homelessAppService.saveEmergencyLog(homelessContext.getHomelessId(), homelessContext.getShelterId(), request);
         return ResponseEntity.ok().build();
     }
+
+    @HomelessAuthorized
+    @Operation(summary = "위치 상태 조회", description = "재실 중이면 IN_SHELTER, 외출 중이면 OUT_SHELTER 반환")
+    @Parameters(@Parameter(
+            name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "access-token-example"
+    ))
+    @GetMapping("/api/v1/homeless-app/location")
+    public ResponseEntity<String> getLocationStatus() {
+        HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+        String result = homelessAppService.getStatusLocationByHomelessId(homelessContext.getHomelessId());
+        return ResponseEntity.ok(result);
+    }
+
 }

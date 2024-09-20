@@ -39,7 +39,7 @@ public class Shelter {
     @Comment("센터명")
     private String name;
 
-    @Column(name = "phone_call", unique = true)
+    @Column(name = "phone_number", unique = true)
     @Comment("센터 전화번호")
     private String phoneNumber;
 

@@ -10,6 +10,4 @@ import java.util.List;
 public class EmergencyResponse {
     String result;
     List<EmergencyLogItem> logs;
-
-
 }

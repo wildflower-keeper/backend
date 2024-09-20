@@ -9,7 +9,9 @@ import jakarta.validation.Valid;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,8 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.resonse.LocationStatusResponse;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
@@ -217,10 +221,11 @@ public class HomelessAppController {
             example = "access-token-example"
     ))
     @GetMapping("/api/v1/homeless-app/location")
-    public ResponseEntity<String> getLocationStatus() {
+    public ResponseEntity<LocationStatusResponse> getLocationStatus() {
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
         String result = homelessAppService.getStatusLocationByHomelessId(homelessContext.getHomelessId());
-        return ResponseEntity.ok(result);
+
+        return ResponseEntity.ok(LocationStatusResponse.builder().locationStatus(result).build());
     }
 
 }

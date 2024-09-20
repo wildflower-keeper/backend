@@ -200,6 +200,7 @@ public class HomelessAppService {
                 .id(homeless.getId())
                 .homelessName(homeless.getName())
                 .shelterId(homeless.getShelter().getId())
+                .shelterPhone(homeless.getShelter().getPhoneNumber())
                 .shelterName(homeless.getShelter().getName())
                 .upcomingSleepover(upcomingSleepoverOptional.orElse(null))
                 .build();
@@ -292,13 +293,13 @@ public class HomelessAppService {
 
     }
 
-    public String getStatusLocationByHomelessId(long homelessId){
+    public String getStatusLocationByHomelessId(long homelessId) {
         LocationTracking locationTracking = locationTrackingService.getLocationByHomelessId(homelessId);
 
         LocationStatus status = locationTracking.getLocationStatus();
-        if(status==LocationStatus.IN_SHELTER){
+        if (status == LocationStatus.IN_SHELTER) {
             return "IN_SHELTER";
-        }else{
+        } else {
             return "OUT_SHELTER";
         }
     }

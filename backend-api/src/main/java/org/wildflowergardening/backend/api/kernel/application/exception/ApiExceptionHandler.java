@@ -12,39 +12,43 @@ import org.wildflowergardening.backend.core.kernel.application.exception.CustomE
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-  @ExceptionHandler({ApplicationLogicException.class})
-  public ResponseEntity<ErrorResponse> handleApplicationLogicException(
-      CustomException e
-  ) {
-    return ResponseEntity.ok(ErrorResponse.builder()
-        .errorCode(e.getExceptionType().code())
-        .description(e.getExceptionType().message())
-        .build());
-  }
+    @ExceptionHandler({ApplicationLogicException.class})
+    public ResponseEntity<ErrorResponse> handleApplicationLogicException(
+            CustomException e
+    ) {
+        return ResponseEntity.ok(ErrorResponse.builder()
+                .errorCode(e.getExceptionType().code())
+                .description(e.getExceptionType().message())
+                .build());
+    }
 
-  @ExceptionHandler({ForbiddenException.class})
-  public ResponseEntity<String> handleForbiddenException(
-      ForbiddenException e
-  ) {
-    return ResponseEntity.status(HttpStatus.FORBIDDEN)
-        .body(e.getMessage());
-  }
+    @ExceptionHandler({ForbiddenException.class})
+    public ResponseEntity<ErrorResponse> handleForbiddenException(
+            ForbiddenException e
+    ) {
+        ErrorResponse errorResponse = ErrorResponse.builder().errorCode(String.valueOf(HttpStatus.FORBIDDEN))
+                .description(e.getMessage())
+                .build();
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
 
-  @ExceptionHandler({MethodArgumentNotValidException.class})
-  public ResponseEntity<String> handleMethodArgumentNotValidException(
-      MethodArgumentNotValidException e
-  ) {
-    FieldError fieldError = e.getBindingResult().getFieldError();
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<String> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e
+    ) {
+        FieldError fieldError = e.getBindingResult().getFieldError();
 
-    return ResponseEntity.badRequest()
-        .body(fieldError != null ? fieldError.getDefaultMessage() : null);
-  }
+        return ResponseEntity.badRequest()
+                .body(fieldError != null ? fieldError.getDefaultMessage() : null);
+    }
 
-  @ExceptionHandler({IllegalArgumentException.class})
-  public ResponseEntity<String> handleIllegalArgumentException(
-      IllegalArgumentException e
-  ) {
-    return ResponseEntity.badRequest()
-        .body(e.getMessage());
-  }
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
+            IllegalArgumentException e
+    ) {
+        ErrorResponse errorResponse = ErrorResponse.builder().errorCode("400")
+                .description(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 }

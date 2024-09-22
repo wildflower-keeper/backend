@@ -33,7 +33,9 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.U
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
+import org.wildflowergardening.backend.core.kernel.application.exception.CustomException;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
 
@@ -83,7 +85,7 @@ public class HomelessAppService {
         // 약관동의 요청 validation
         for (Long termsIdToAgree : termsIdsToAgree) {
             if (!allTermsId.contains(termsIdToAgree)) {
-                throw new IllegalArgumentException("존재하지 않는 약관에 동의하였습니다.");
+                throw new IllegalArgumentException("존재하지 않는 약관에 동의하셨습니다.");
             }
         }
 

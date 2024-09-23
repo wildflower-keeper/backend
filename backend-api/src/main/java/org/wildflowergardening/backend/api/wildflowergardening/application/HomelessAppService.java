@@ -65,6 +65,7 @@ public class HomelessAppService {
                 .toList();
     }
 
+    @Transactional
     public HomelessTokenResponse createHomeless(CreateHomelessRequest request) {
         Optional<Shelter> shelterOptional = shelterService.getShelterById(request.getShelterId());
 
@@ -115,6 +116,9 @@ public class HomelessAppService {
                 .homelessName(request.getName())
                 .shelterId(request.getShelterId())
                 .build());
+
+        //기본 재실 상태값 생성
+        locationTrackingService.createOrUpdate(homelessId, request.getShelterId(), LocationStatus.IN_SHELTER);
 
         return HomelessTokenResponse.builder()
                 .homelessId(homelessId)

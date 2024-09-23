@@ -15,4 +15,5 @@ public interface LocationTrackingRepository extends JpaRepository<LocationTracki
 
     List<LocationTracking> findAllByHomelessIdInAndTrackedAtAfter(
             List<Long> homelessId, LocalDateTime trackedAt);
+    List<LocationTracking> findAllByOrderByHomelessIdAsc();
 }

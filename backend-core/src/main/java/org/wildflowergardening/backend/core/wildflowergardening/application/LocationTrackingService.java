@@ -99,8 +99,8 @@ public class LocationTrackingService {
     }
 
     @Transactional(readOnly = true)
-    public Map<Long, LocationTracking> findAll(){
-        List<LocationTracking> locationTrackingList = locationTrackingRepository.findAll();
+    public Map<Long, LocationTracking> findAllByOrderByHomelessIdAsc(){
+        List<LocationTracking> locationTrackingList = locationTrackingRepository.findAllByOrderByHomelessIdAsc();
 
         return locationTrackingList.stream().collect(Collectors.toMap(
                 LocationTracking::getHomelessId,

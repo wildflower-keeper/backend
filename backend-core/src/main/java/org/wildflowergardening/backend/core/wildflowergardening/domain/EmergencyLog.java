@@ -31,11 +31,11 @@ public class EmergencyLog {
     @Comment("생성일시")
     private LocalDateTime createdAt;
 
-    @Column(name = "latitude", columnDefinition = "decimal(10,8)", nullable = false)
+    @Column(name = "latitude", columnDefinition = "decimal(10,8)")
     @Comment("위도")
     private BigDecimal latitude;
 
-    @Column(name = "longitude", columnDefinition = "decimal(11,8)", nullable = false)
+    @Column(name = "longitude", columnDefinition = "decimal(11,8)")
     @Comment("경도")
     private BigDecimal longitude;
 

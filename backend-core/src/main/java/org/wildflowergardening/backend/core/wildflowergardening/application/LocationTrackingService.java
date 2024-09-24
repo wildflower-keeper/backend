@@ -17,6 +17,8 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationS
 import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTrackingRepository;
 
+import javax.xml.stream.Location;
+
 import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.HOMELESS_APP_ESSENTIAL_TERMS_NOT_AGREED;
 import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.HOMELESS_APP_NOT_DATA_LOCATION;
 
@@ -31,7 +33,7 @@ public class LocationTrackingService {
             Long homelessId, Long shelterId, LocationStatus locationStatus
     ) {
         Optional<LocationTracking> lastLocationOptional = locationTrackingRepository
-                .findTopByHomelessIdOrderByIdDesc(homelessId);
+                .findTopByHomelessIdOrderByLastUpdatedAtDesc(homelessId);
         LocalDateTime curTime = LocalDateTime.now();
         if (lastLocationOptional.isEmpty()) {
             return locationTrackingRepository.save(LocationTracking.builder()
@@ -87,13 +89,24 @@ public class LocationTrackingService {
     @Transactional(readOnly = true)
     public LocationTracking getLocationByHomelessId(long homelessId) {
         Optional<LocationTracking> lastLocationTracking = locationTrackingRepository
-                .findTopByHomelessIdOrderByIdDesc(homelessId);
+                .findTopByHomelessIdOrderByLastUpdatedAtDesc(homelessId);
 
         if (lastLocationTracking.isEmpty()) {
             throw new ApplicationLogicException(HOMELESS_APP_NOT_DATA_LOCATION);
         }
 
         return lastLocationTracking.get();
-
     }
+
+    @Transactional(readOnly = true)
+    public Map<Long, LocationTracking> findAllByOrderByHomelessIdAsc(){
+        List<LocationTracking> locationTrackingList = locationTrackingRepository.findAllByOrderByHomelessIdAsc();
+
+        return locationTrackingList.stream().collect(Collectors.toMap(
+                LocationTracking::getHomelessId,
+                Function.identity()
+        ));
+    }
+
+
 }

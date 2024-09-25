@@ -6,7 +6,7 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
 logging:
   config: classpath:log4j2/log4j2-prod.xml
 admin:

@@ -170,7 +170,7 @@ public class ShelterAdminAppController {
     @Operation(summary = "통계 데이터 조회 ", description = ""
             + "외박신청 : 기준일시에서 기준일의 외박자수<br/>"
             + "위치확인 : 기준일시로부터 한시간 전 이후 데이터<br/>"
-            + "긴급상황 : 기준일시로부터 24시간동안의 발생수 (무조건 0명 내려가도록 구현되어있음)")
+            + "긴급상황 : 기준일시로부터 24시간동안의 발생수")
     public ResponseEntity<HomelessCountResponse> getHomelessCount(
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) @Parameter(description = "기준일시", example = "2024-05-24 18:00:00.000000") LocalDateTime targetDateTime
     ) {

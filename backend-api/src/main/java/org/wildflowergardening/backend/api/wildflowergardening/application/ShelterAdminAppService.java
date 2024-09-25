@@ -119,6 +119,10 @@ public class ShelterAdminAppService {
                 locationTrackingService.getAllLastByLastTrackedAfter(
                         shelterId, lastLocationTrackedAfter
                 );
+
+        //긴급상황
+        List<EmergencyLog> emergencyLogList = emergencyService.getEmergencyListOneDay(targetDateTime);
+
         long trackedCount = lastLocationMap.size();
         long inShelterCount = lastLocationMap.values().stream()
                 .filter(locationTracking ->
@@ -148,7 +152,7 @@ public class ShelterAdminAppService {
                 .emergencyCount(
                         EmergencyCount.builder()
                                 .emergencyOccurredAfter(targetDateTime.minusHours(24))
-                                .count(1L)
+                                .count((long) emergencyLogList.size())
                                 .build()
                 )
                 .build();

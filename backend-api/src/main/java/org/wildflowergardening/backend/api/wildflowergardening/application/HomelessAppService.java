@@ -16,6 +16,7 @@ import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.UncheckedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
@@ -65,7 +66,7 @@ public class HomelessAppService {
                 .toList();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public HomelessTokenResponse createHomeless(CreateHomelessRequest request) {
         Optional<Shelter> shelterOptional = shelterService.getShelterById(request.getShelterId());
 
@@ -299,8 +300,8 @@ public class HomelessAppService {
 
     }
 
-    public String getStatusLocationByHomelessId(long homelessId) {
-        LocationTracking locationTracking = locationTrackingService.getLocationByHomelessId(homelessId);
+    public String getStatusLocationByHomelessId(long homelessId, long shelterId) {
+        LocationTracking locationTracking = locationTrackingService.getLocationByHomelessId(homelessId, shelterId);
 
         LocationStatus status = locationTracking.getLocationStatus();
         if (status == LocationStatus.IN_SHELTER) {

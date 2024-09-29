@@ -137,7 +137,7 @@ public class ShelterAdminAppController {
             example = "session-token-example"
     ))
     @GetMapping("/api/v1/shelter-admin/homeless-people")
-    @Operation(summary = "노숙인 목록 조회", description = "필터유형(필터값) NONE() LOCATION_STATUS(IN_SHELTER,OUTING) SLEEPOVER() NAME(노숙인성함)")
+    @Operation(summary = "노숙인 목록 조회", description = "필터유형(필터값) NONE() LOCATION_STATUS(IN_SHELTER,OUT_SHELTER) SLEEPOVER() NAME(노숙인성함)")
     public ResponseEntity<NumberPageResponse<HomelessResponse>> getHomelessPage(
             @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "NAME") HomelessFilterType filterType,
             @RequestParam(required = false) @Parameter(description = "필터 값", example = "민수") String filterValue,

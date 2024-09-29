@@ -223,7 +223,7 @@ public class HomelessAppController {
     @GetMapping("/api/v1/homeless-app/location")
     public ResponseEntity<LocationStatusResponse> getLocationStatus() {
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
-        String result = homelessAppService.getStatusLocationByHomelessId(homelessContext.getHomelessId());
+        String result = homelessAppService.getStatusLocationByHomelessId(homelessContext.getHomelessId(), homelessContext.getShelterId());
 
         return ResponseEntity.ok(LocationStatusResponse.builder().locationStatus(result).build());
     }

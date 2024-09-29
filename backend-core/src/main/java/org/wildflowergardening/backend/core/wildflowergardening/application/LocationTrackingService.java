@@ -13,9 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.core.kernel.application.exception.ExceptionType;
 import org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationStatus;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTrackingRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
 
 import javax.xml.stream.Location;
 
@@ -27,6 +25,7 @@ import static org.wildflowergardening.backend.core.kernel.application.exception.
 public class LocationTrackingService {
 
     private final LocationTrackingRepository locationTrackingRepository;
+    private final HomelessRepository homelessRepository;
 
     @Transactional
     public Long createOrUpdate(
@@ -87,19 +86,26 @@ public class LocationTrackingService {
     }
 
     @Transactional(readOnly = true)
-    public LocationTracking getLocationByHomelessId(long homelessId) {
+    public LocationTracking getLocationByHomelessId(long homelessId, long shelterId) {
         Optional<LocationTracking> lastLocationTracking = locationTrackingRepository
                 .findTopByHomelessIdOrderByLastUpdatedAtDesc(homelessId);
 
         if (lastLocationTracking.isEmpty()) {
-            throw new ApplicationLogicException(HOMELESS_APP_NOT_DATA_LOCATION);
+            LocalDateTime curTime = LocalDateTime.now();
+            locationTrackingRepository.save(LocationTracking.builder()
+                    .homelessId(homelessId)
+                    .shelterId(shelterId)
+                    .locationStatus(LocationStatus.IN_SHELTER)
+                    .trackedAt(curTime)
+                    .build());
+            return LocationTracking.builder().locationStatus(LocationStatus.IN_SHELTER).build();
         }
 
         return lastLocationTracking.get();
     }
 
     @Transactional(readOnly = true)
-    public Map<Long, LocationTracking> findAllByOrderByHomelessIdAsc(){
+    public Map<Long, LocationTracking> findAllByOrderByHomelessIdAsc() {
         List<LocationTracking> locationTrackingList = locationTrackingRepository.findAllByOrderByHomelessIdAsc();
 
         return locationTrackingList.stream().collect(Collectors.toMap(

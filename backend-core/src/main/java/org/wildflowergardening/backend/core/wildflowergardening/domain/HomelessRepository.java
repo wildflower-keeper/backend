@@ -11,7 +11,7 @@ public interface HomelessRepository extends JpaRepository<Homeless, Long> {
 
   Optional<Homeless> findByPhoneNumberOrDeviceId(String phoneNumber, String deviceId);
   Optional<Homeless> findByDeviceId(String deviceId);
-
+  Optional<Homeless> findByNameAndRoom(String name, String room);
   Page<Homeless> findAllByShelterId(Long shelterId, Pageable pageable);
 
   @Query(" select h from Homeless h where h.shelter.id = :shelterId and h.name like %:name%")

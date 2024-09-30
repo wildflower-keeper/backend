@@ -113,5 +113,14 @@ public class LocationTrackingService {
         ));
     }
 
+    @Transactional(readOnly = true)
+    public Map<Long, LocationTracking> findAllByShelterId(Long shelterId){
+        List<LocationTracking> locationTrackingList = locationTrackingRepository.findAllByShelterIdOrderByHomelessId(shelterId);
+        return locationTrackingList.stream().collect(Collectors.toMap(
+                LocationTracking::getHomelessId,
+                Function.identity()
+        ));
+    }
+
 
 }

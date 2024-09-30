@@ -108,15 +108,14 @@ public class ShelterAdminAppService {
 
     public HomelessCountResponse countHomeless(Long shelterId, LocalDateTime targetDateTime) {
         long totalHomelessCount = homelessQueryService.count(shelterId);
-
-
+        
         // 외박
         LocalDate sleepoverTargetDate = targetDateTime.toLocalDate();
         long sleepoverCount = sleepoverService.count(shelterId, sleepoverTargetDate);
 
         // 외출
         Map<Long, LocationTracking> lastLocationMap =        // map key : Homeless id
-                locationTrackingService.findAllByOrderByHomelessIdAsc();
+                locationTrackingService.findAllByShelterId(shelterId);
 
         //긴급상황
         List<EmergencyLog> emergencyLogList = emergencyService.getEmergencyListOneDay(targetDateTime);

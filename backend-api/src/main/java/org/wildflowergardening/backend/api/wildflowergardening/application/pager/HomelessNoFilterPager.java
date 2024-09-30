@@ -39,17 +39,16 @@ public class HomelessNoFilterPager implements HomelessFilterPager {
         Set<Long> sleepoverHomelessIds = sleepoverService.filterSleepoverHomelessIds(
                 homelessIds, pageRequest.getTargetDateTime().toLocalDate()
         );
-/*    Map<Long, LocationTracking> lastTrackingMap = locationTrackingService.getAllLastTrackedAfter(
+    Map<Long, LocationTracking> lastTrackingMap = locationTrackingService.getAllLastTrackedAfter(
         homelessIds, pageRequest.getTargetDateTime().minusHours(1)
-    );*/
+    );
 
-        Map<Long, LocationTracking> allTrakingMap = locationTrackingService.findAllByOrderByHomelessIdAsc();
         return NumberPageResponse.<HomelessResponse>builder()
                 .items(
                         result.getItems().stream()
                                 .sorted(Comparator.comparing(Homeless::getCreatedAt))
                                 .map(homeless -> HomelessResponse.from(homeless,
-                                        allTrakingMap.getOrDefault(homeless.getId(), null),
+                                        lastTrackingMap.getOrDefault(homeless.getId(), null),
                                         sleepoverHomelessIds.contains(homeless.getId())))
                                 .collect(Collectors.toList())
                 )

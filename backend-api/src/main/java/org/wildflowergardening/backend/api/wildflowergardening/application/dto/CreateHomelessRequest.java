@@ -25,7 +25,6 @@ public class CreateHomelessRequest {
   @Schema(description = "센터 pin", example = "1234")
   private String shelterPin;
 
-  @NotEmpty
   @Size(max = 255, message = "디바이스 id는 255자 이내로 입력해주세요.")
   @Schema(description = "노숙인의 디바이스 id", example = "test_device_id")
   private String deviceId;
@@ -33,8 +32,9 @@ public class CreateHomelessRequest {
   @Schema(description = "동의하는 약관 ids", nullable = true, example = "[1]")
   private HashSet<Long> termsIdsToAgree;
 
+  @NotBlank(message = "방 번호가 비었습니다.")
   @Size(max = 255, message = "방번호는 255자 이내로 입력해주세요.")
-  @Schema(description = "노숙인 방번호 (선택사항)", example = "방번호 (선택사항)", nullable = true)
+  @Schema(description = "노숙인 방번호", example = "방번호", nullable = true)
   private String room;
 
   @Schema(description = "노숙인 생년월일 (선택사항)", example = "1970-05-15", nullable = true)

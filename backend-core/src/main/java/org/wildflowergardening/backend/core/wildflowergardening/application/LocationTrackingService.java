@@ -25,7 +25,6 @@ import static org.wildflowergardening.backend.core.kernel.application.exception.
 public class LocationTrackingService {
 
     private final LocationTrackingRepository locationTrackingRepository;
-    private final HomelessRepository homelessRepository;
 
     @Transactional
     public Long createOrUpdate(

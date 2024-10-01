@@ -118,7 +118,7 @@ public class ShelterAdminAppService {
                 locationTrackingService.findAllByShelterId(shelterId);
 
         //긴급상황
-        List<EmergencyLog> emergencyLogList = emergencyService.getEmergencyListOneDay(targetDateTime);
+        List<EmergencyLog> emergencyLogList = emergencyService.getEmergencyListOneDay(shelterId, targetDateTime);
 
         long trackedCount = lastLocationMap.size();
         long inShelterCount = lastLocationMap.values().stream()

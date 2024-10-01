@@ -46,7 +46,7 @@ public class EmergencyLog {
 
     @Column(name = "shelter_id", nullable = false)
     @Comment("보호소 id")
-    private Long shelter_id;
+    private Long shelterId;
 
 
 }

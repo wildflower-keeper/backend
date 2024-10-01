@@ -38,8 +38,8 @@ public class HomelessNameFilterPager implements HomelessFilterPager {
     Set<Long> sleepoverHomelessIds = sleepoverService.filterSleepoverHomelessIds(
         homelessIds, pageRequest.getTargetDateTime().toLocalDate()
     );
-    Map<Long, LocationTracking> lastTrackingMap = locationTrackingService.getAllLastTrackedAfter(
-        homelessIds, pageRequest.getTargetDateTime().minusHours(1)
+    Map<Long, LocationTracking> lastTrackingMap = locationTrackingService.getAll(
+        homelessIds
     );
     return NumberPageResponse.<HomelessResponse>builder()
         .items(

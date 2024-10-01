@@ -27,3 +27,7 @@ INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, 
 
 
 -- 위치 기록
+INSERT INTO wildflower_gardening.location_tracking
+(created_at, homeless_id, last_updated_at, shelter_id, tracked_at, location_status)
+VALUES
+    ('2024-09-25 13:49:29.250967', 1, '2024-09-25 13:49:29.250967', 1, '2024-09-25 13:49:29.250967', 'IN_SHELTER');

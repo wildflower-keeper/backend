@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.Location;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
@@ -39,8 +38,8 @@ public class HomelessNoFilterPager implements HomelessFilterPager {
         Set<Long> sleepoverHomelessIds = sleepoverService.filterSleepoverHomelessIds(
                 homelessIds, pageRequest.getTargetDateTime().toLocalDate()
         );
-    Map<Long, LocationTracking> lastTrackingMap = locationTrackingService.getAllLastTrackedAfter(
-        homelessIds, pageRequest.getTargetDateTime().minusHours(1)
+    Map<Long, LocationTracking> lastTrackingMap = locationTrackingService.getAll(
+        homelessIds
     );
 
         return NumberPageResponse.<HomelessResponse>builder()

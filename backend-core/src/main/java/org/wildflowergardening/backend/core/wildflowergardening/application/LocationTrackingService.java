@@ -10,15 +10,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
-import org.wildflowergardening.backend.core.kernel.application.exception.ExceptionType;
-import org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
-
-import javax.xml.stream.Location;
-
-import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.HOMELESS_APP_ESSENTIAL_TERMS_NOT_AGREED;
-import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.HOMELESS_APP_NOT_DATA_LOCATION;
 
 @Service
 @RequiredArgsConstructor
@@ -85,6 +77,19 @@ public class LocationTrackingService {
     }
 
     @Transactional(readOnly = true)
+    public Map<Long, LocationTracking> getAll(
+            List<Long> homelessIds
+    ) {
+        List<LocationTracking> locationTrackingList = locationTrackingRepository
+                .findAllByHomelessIdIn(homelessIds);
+
+        return locationTrackingList.stream().collect(Collectors.toMap(
+                LocationTracking::getHomelessId,
+                Function.identity()
+        ));
+    }
+
+    @Transactional(readOnly = true)
     public LocationTracking getLocationByHomelessId(long homelessId, long shelterId) {
         Optional<LocationTracking> lastLocationTracking = locationTrackingRepository
                 .findTopByHomelessIdOrderByLastUpdatedAtDesc(homelessId);
@@ -114,7 +119,7 @@ public class LocationTrackingService {
     }
 
     @Transactional(readOnly = true)
-    public Map<Long, LocationTracking> findAllByShelterId(Long shelterId){
+    public Map<Long, LocationTracking> findAllByShelterId(Long shelterId) {
         List<LocationTracking> locationTrackingList = locationTrackingRepository.findAllByShelterIdOrderByHomelessId(shelterId);
         return locationTrackingList.stream().collect(Collectors.toMap(
                 LocationTracking::getHomelessId,

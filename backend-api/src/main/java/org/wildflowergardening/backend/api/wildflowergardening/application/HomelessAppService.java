@@ -129,42 +129,24 @@ public class HomelessAppService {
 
     @Transactional
     public HomelessTokenResponse getToken(HomelessTokenRequest request) {
-        Homeless homeless = homelessQueryService.getOneById(request.getHomelessId())
-                .orElseThrow(() -> new ForbiddenException(""));
 
-        if (homeless.getShelter().getId().equals(request.getShelterId())
-                && shelterPinService.matches(request.getShelterId(), request.getShelterPin())
-                && homeless.getName().equals(request.getHomelessName())
-        ) {
-            String requestDeviceId = request.getDeviceId();
-            String requestPhoneNumber = PhoneNumberFormatter.format(request.getPhoneNumber());
-
-            if (!StringUtils.isEmpty(requestDeviceId) && requestDeviceId.equals(homeless.getDeviceId())) {
-                String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
-                        .homelessId(homeless.getId())
-                        .homelessName(homeless.getName())
-                        .shelterId(homeless.getShelter().getId())
-                        .build());
-                return HomelessTokenResponse.builder()
-                        .homelessId(homeless.getId())
-                        .accessToken(token)
-                        .build();
-            }
-            if (!StringUtils.isEmpty(requestPhoneNumber) && requestPhoneNumber.equals(
-                    homeless.getPhoneNumber())) {
-                homeless.setDeviceId(request.getDeviceId());
-                String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
-                        .homelessId(homeless.getId())
-                        .homelessName(homeless.getName())
-                        .shelterId(homeless.getShelter().getId())
-                        .build());
-                return HomelessTokenResponse.builder()
-                        .homelessId(homeless.getId())
-                        .accessToken(token)
-                        .build();
-            }
+        if (!shelterPinService.matches(request.getShelterId(), request.getShelterPin())) {
+            throw new ForbiddenException("핀 번호가 일치하지 않습니다.");
         }
-        throw new ForbiddenException("");
+
+        Homeless homeless = homelessQueryService.getHomelessByNameShelterIdRoom(request.getHomelessName(), request.getShelterId(), request.getRoom())
+                .orElseThrow(() -> new ForbiddenException("이름, 센터, 방번호를 확인해주세요."));
+
+        String token = homelessAppJwtProvider.createToken(HomelessUserContext.builder()
+                .homelessId(homeless.getId())
+                .homelessName(homeless.getName())
+                .shelterId(homeless.getShelter().getId())
+                .build());
+
+        return HomelessTokenResponse.builder()
+                .homelessId(homeless.getId())
+                .accessToken(token)
+                .build();
     }
 
     public HomelessAppMainResponse getHomelessMainInfo(Long homelessId) {

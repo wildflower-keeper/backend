@@ -11,10 +11,6 @@ public class HomelessTokenRequest {
 
   @NotNull
   @Schema(example = "1")
-  private Long homelessId;
-
-  @NotNull
-  @Schema(example = "1")
   private Long shelterId;
 
   @NotNull
@@ -25,10 +21,14 @@ public class HomelessTokenRequest {
   @Schema(example = "홍길동")
   private String homelessName;
 
-  @Schema(example = "test_device_id_1")
+  @Schema(example = "test_device_id_1(생략가능)")
   private String deviceId;
 
+  @NotNull
+  @Schema(example = "B동303호")
+  private String room;
+
   @Size(max = 50)
-  @Schema(example = "01012341234")
+  @Schema(example = "01012341234(생략가능)")
   private String phoneNumber;
 }

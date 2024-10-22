@@ -351,7 +351,7 @@ public class ShelterAdminAppController {
     ))
     @Operation(summary = "노숙인 생성")
     @PostMapping("/api/v1/shelter-admin/homeless")
-    public ResponseEntity<Long> createHomeless(@RequestBody CreateHomelessByAdminRequest request) {
+    public ResponseEntity<Long> createHomeless(@RequestBody @Valid CreateHomelessByAdminRequest request) {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         Long homelessId = shelterAdminAppService.createHomeless(shelterContext.getShelterId(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(homelessId);

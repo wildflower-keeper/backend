@@ -24,7 +24,7 @@ public class CreateHomelessByAdminRequest {
   @Schema(description = "센터 pin", example = "1234")
   private String shelterPin;
 
-  @NotBlank(message = "방 번호가 비었습니다.")
+  @NotBlank(message = "방 번호는 필수 사항입니다.")
   @Size(max = 255, message = "방번호는 255자 이내로 입력해주세요.")
   @Schema(description = "노숙인 방번호", example = "방번호 (선택사항)", nullable = true)
   private String room;

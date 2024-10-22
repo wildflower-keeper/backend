@@ -1,5 +1,6 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application;
 
+import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.HOMELESS_APP_CREATE_ACCOUNT_SHELTER_ID_PIN_INVALID;
 import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import io.micrometer.common.util.StringUtils;
@@ -263,6 +264,10 @@ public class ShelterAdminAppService {
     public Long createHomeless(Long shelterId, CreateHomelessByAdminRequest request) {
         Shelter shelter = shelterService.getShelterById(request.getShelterId())
                 .orElseThrow(() -> new IllegalStateException("id=" + shelterId + "인 센터가 존재하지 않습니다."));
+
+        if(!shelterPinService.matches(shelter.getId(),request.getShelterPin())){
+            throw  new ApplicationLogicException(HOMELESS_APP_CREATE_ACCOUNT_SHELTER_ID_PIN_INVALID);
+        }
 
         return homelessCommandService.create(Homeless.builder()
                 .name(request.getName())

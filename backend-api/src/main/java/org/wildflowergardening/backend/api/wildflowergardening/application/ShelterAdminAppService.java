@@ -299,5 +299,14 @@ public class ShelterAdminAppService {
                 .build();
     }
 
+    public void updateHomelessLocationStatus(Long sheterId, Long homelessId, UpdateLocationRequest request){
+        Homeless homeless = homelessQueryService.getOneById(homelessId)
+                .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
+        if(homeless.getShelter().getId()!= sheterId){
+            throw new ForbiddenException("수정 권한이 없습니다.");
+        }
+        locationTrackingService.createOrUpdate(homelessId, sheterId, request.getLocationStatus());
+    }
+
 
 }

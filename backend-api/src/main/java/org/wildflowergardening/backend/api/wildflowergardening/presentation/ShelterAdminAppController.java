@@ -367,8 +367,8 @@ public class ShelterAdminAppController {
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
-    @Operation(summary = "노숙인 위치 상태 수정")
-    @PutMapping("/api/v1/shelter-admin/location-status/{homelessId}")
+    @Operation(summary = "노숙인 재실 여부 변경")
+    @PutMapping("/api/v1/shelter-admin/{homelessId}/in-out")
     public ResponseEntity<Void> updateLocationStatus(@PathVariable Long homelessId, @RequestBody UpdateLocationRequest locationStatus) {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         shelterAdminAppService.updateHomelessLocationStatus(shelterContext.getShelterId(), homelessId, locationStatus);

@@ -123,11 +123,11 @@ public class ShelterAdminAppService {
         long trackedCount = lastLocationMap.size();
         long inShelterCount = lastLocationMap.values().stream()
                 .filter(locationTracking ->
-                        locationTracking.getLocationStatus() == LocationStatus.IN_SHELTER)
+                        locationTracking.getInOutStatus() == InOutStatus.IN_SHELTER)
                 .count();
         long outingCount = lastLocationMap.values().stream()
                 .filter(locationTracking ->
-                        locationTracking.getLocationStatus() == LocationStatus.OUT_SHELTER)
+                        locationTracking.getInOutStatus() == InOutStatus.OUT_SHELTER)
                 .count();
 
         return HomelessCountResponse.builder()
@@ -299,7 +299,7 @@ public class ShelterAdminAppService {
                 .build();
     }
 
-    public void updateHomelessLocationStatus(Long sheterId, Long homelessId, UpdateLocationRequest request){
+    public void updateHomelessInOutStatus(Long sheterId, Long homelessId, UpdateLocationRequest request){
         Homeless homeless = homelessQueryService.getOneById(homelessId)
                 .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
         if(homeless.getShelter().getId()!= sheterId){

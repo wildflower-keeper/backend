@@ -48,7 +48,6 @@ import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateChiefOfficerRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationStatus;
 
 @RestController
 @RequiredArgsConstructor
@@ -126,7 +125,7 @@ public class ShelterAdminAppController {
             example = "session-token-example"
     ))
     @GetMapping("/api/v1/shelter-admin/homeless-people")
-    @Operation(summary = "노숙인 목록 조회", description = "필터유형(필터값) NONE() LOCATION_STATUS(IN_SHELTER,OUT_SHELTER) SLEEPOVER() NAME(노숙인성함)")
+    @Operation(summary = "노숙인 목록 조회", description = "필터유형(필터값) NONE() InOut_STATUS(IN_SHELTER,OUT_SHELTER) SLEEPOVER() NAME(노숙인성함)")
     public ResponseEntity<NumberPageResponse<HomelessResponse>> getHomelessPage(
             @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "NAME") HomelessFilterType filterType,
             @RequestParam(required = false) @Parameter(description = "필터 값", example = "민수") String filterValue,
@@ -369,9 +368,9 @@ public class ShelterAdminAppController {
     ))
     @Operation(summary = "노숙인 재실 여부 변경")
     @PutMapping("/api/v1/shelter-admin/{homelessId}/in-out")
-    public ResponseEntity<Void> updateLocationStatus(@PathVariable Long homelessId, @RequestBody UpdateLocationRequest locationStatus) {
+    public ResponseEntity<Void> updateInOutStatus(@PathVariable Long homelessId, @RequestBody UpdateLocationRequest inOutStatus) {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
-        shelterAdminAppService.updateHomelessLocationStatus(shelterContext.getShelterId(), homelessId, locationStatus);
+        shelterAdminAppService.updateHomelessInOutStatus(shelterContext.getShelterId(), homelessId, inOutStatus);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

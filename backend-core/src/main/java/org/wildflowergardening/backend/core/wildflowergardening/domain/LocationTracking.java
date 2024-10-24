@@ -50,7 +50,7 @@ public class LocationTracking {
   @Column(name = "location_status", nullable = false)
   @Comment("위치 상태")
   @Setter
-  private LocationStatus locationStatus;
+  private InOutStatus inOutStatus;
 
   @Column(name = "tracked_at", nullable = false)
   @Comment("위치 확인 일시")

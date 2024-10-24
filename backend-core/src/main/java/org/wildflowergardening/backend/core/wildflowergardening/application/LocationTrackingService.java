@@ -20,7 +20,7 @@ public class LocationTrackingService {
 
     @Transactional
     public Long createOrUpdate(
-            Long homelessId, Long shelterId, LocationStatus locationStatus
+            Long homelessId, Long shelterId, InOutStatus inOutStatus
     ) {
         Optional<LocationTracking> lastLocationOptional = locationTrackingRepository
                 .findTopByHomelessIdOrderByLastUpdatedAtDesc(homelessId);
@@ -29,14 +29,14 @@ public class LocationTrackingService {
             return locationTrackingRepository.save(LocationTracking.builder()
                             .homelessId(homelessId)
                             .shelterId(shelterId)
-                            .locationStatus(locationStatus)
+                            .inOutStatus(inOutStatus)
                             .trackedAt(curTime)
                             .build())
                     .getId();
         }
         LocationTracking locationTracking = lastLocationOptional.get();
 
-        locationTracking.setLocationStatus(locationStatus);
+        locationTracking.setInOutStatus(inOutStatus);
         locationTracking.setTrackedAt(curTime);
 
         return locationTracking.getId();
@@ -99,10 +99,10 @@ public class LocationTrackingService {
             locationTrackingRepository.save(LocationTracking.builder()
                     .homelessId(homelessId)
                     .shelterId(shelterId)
-                    .locationStatus(LocationStatus.IN_SHELTER)
+                    .inOutStatus(InOutStatus.IN_SHELTER)
                     .trackedAt(curTime)
                     .build());
-            return LocationTracking.builder().locationStatus(LocationStatus.IN_SHELTER).build();
+            return LocationTracking.builder().inOutStatus(InOutStatus.IN_SHELTER).build();
         }
 
         return lastLocationTracking.get();

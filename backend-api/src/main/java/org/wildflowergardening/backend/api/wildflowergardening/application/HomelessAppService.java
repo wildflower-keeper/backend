@@ -15,8 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.UncheckedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
@@ -34,9 +32,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.U
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
-import org.wildflowergardening.backend.core.kernel.application.exception.CustomException;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
 
@@ -119,7 +115,7 @@ public class HomelessAppService {
                 .build());
 
         //기본 재실 상태값 생성
-        locationTrackingService.createOrUpdate(homelessId, request.getShelterId(), LocationStatus.IN_SHELTER);
+        locationTrackingService.createOrUpdate(homelessId, request.getShelterId(), InOutStatus.IN_SHELTER);
 
         return HomelessTokenResponse.builder()
                 .homelessId(homelessId)
@@ -285,8 +281,8 @@ public class HomelessAppService {
     public String getStatusLocationByHomelessId(long homelessId, long shelterId) {
         LocationTracking locationTracking = locationTrackingService.getLocationByHomelessId(homelessId, shelterId);
 
-        LocationStatus status = locationTracking.getLocationStatus();
-        if (status == LocationStatus.IN_SHELTER) {
+        InOutStatus status = locationTracking.getInOutStatus();
+        if (status == InOutStatus.IN_SHELTER) {
             return "IN_SHELTER";
         } else {
             return "OUT_SHELTER";

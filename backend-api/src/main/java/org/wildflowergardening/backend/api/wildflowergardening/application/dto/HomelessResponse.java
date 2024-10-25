@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationStatus;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.InOutStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
 
 @Getter
@@ -28,7 +28,7 @@ public class HomelessResponse {
   private Boolean targetDateSleepover;
 
   @Schema(description = "마지막 위치 상태")
-  private LocationStatus lastLocationStatus;
+  private InOutStatus lastLocationStatus;
 
   @Schema(description = "마지막 위치 확인 일시")
   private LocalDateTime lastLocationTrackedAt;
@@ -42,8 +42,8 @@ public class HomelessResponse {
   public static HomelessResponse from(
       Homeless homeless, LocationTracking lastLocationTracking, boolean targetDateSleepover
   ) {
-    LocationStatus locationStatus =
-        lastLocationTracking != null ? lastLocationTracking.getLocationStatus() : null;
+    InOutStatus locationStatus =
+        lastLocationTracking != null ? lastLocationTracking.getInOutStatus() : null;
     LocalDateTime lastLocationTrackedAt =
         lastLocationTracking != null ? lastLocationTracking.getTrackedAt() : null;
 

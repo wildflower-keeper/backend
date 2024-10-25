@@ -46,9 +46,10 @@ public class ApiExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
             IllegalArgumentException e
     ) {
-        ErrorResponse errorResponse = ErrorResponse.builder().errorCode("400")
+        ErrorResponse errorResponse = ErrorResponse.builder().errorCode(String.valueOf(HttpStatus.BAD_REQUEST))
                 .description(e.getMessage())
                 .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        return ResponseEntity.badRequest()
+                .body(errorResponse);
     }
 }

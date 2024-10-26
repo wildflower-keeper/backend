@@ -31,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
             "https://api.wildflower-gardening.com"
         )
         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-        .allowedHeaders("auth-token",  "Content-Type", "x-auth-token", "X-CSRF-TOKEN", "accept")
+        .allowedHeaders("auth-token", "Content-Type", "X-Requested-With", "Accept", "Origin")
             .allowCredentials(true)
         .maxAge(3_600);
   }

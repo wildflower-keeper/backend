@@ -32,7 +32,6 @@ public class WebConfig implements WebMvcConfigurer {
         )
         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
         .allowedHeaders("auth-token", "Content-Type", "X-Requested-With", "Accept", "Origin")
-            .allowCredentials(true)
         .maxAge(3_600);
   }
 

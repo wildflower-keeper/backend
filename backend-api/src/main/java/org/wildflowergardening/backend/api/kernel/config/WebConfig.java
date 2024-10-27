@@ -27,14 +27,13 @@ public class WebConfig implements WebMvcConfigurer {
   public FilterRegistrationBean<CorsFilter> corsFilterFilterRegistrationBean(){
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-            "http://localhost:8081",
-            "http://127.0.0.1:8081",
-            "https://wildflower-gardening.com",
-            "https://www.wildflower-gardening.com",
-            "http://wildflower-gardening.com",
-            "http://www.wildflower-gardening.com",
+            "http://localhost:3000", "http://127.0.0.1:3000",
+            "http://localhost:80", "http://127.0.0.1:80",
+            "http://localhost:8081", "http://127.0.0.1:8081",
+            "https://wildflower-gardening.com", "https://www.wildflower-gardening.com",
+            "https://wildflower-gardening.com:443", "https://www.wildflower-gardening.com:443",
+            "http://wildflower-gardening.com", "http://www.wildflower-gardening.com",
+            "http://wildflower-gardening.com:80", "http://www.wildflower-gardening.com:80",
             "https://api.wildflower-gardening.com"
     ));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

@@ -1,5 +1,6 @@
 package org.wildflowergardening.backend.api.kernel.config;
 
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -40,7 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("auth-token", "Content-Type", "X-Requested-With", "Accept", "Origin"));
-    configuration.setAllowCredentials(true); // 인증 정보 허용 설정 추가
+//    configuration.setAllowCredentials(true); // 인증 정보 허용 설정 추가
     configuration.setMaxAge(3600L); // 캐시 유효 기간 설정
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -48,11 +49,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     FilterRegistrationBean<CorsFilter> filterBean = new FilterRegistrationBean<>(new CorsFilter(source));
     filterBean.setOrder(0); // 필터 순서 설정
+    filterBean.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ERROR);
     return filterBean;
   }
 
 
-  @Override
+/*  @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
         .allowedOriginPatterns(
@@ -68,7 +70,7 @@ public class WebConfig implements WebMvcConfigurer {
         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
         .allowedHeaders("auth-token", "Content-Type", "X-Requested-With", "Accept", "Origin")
         .maxAge(3_600);
-  }
+  }*/
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {

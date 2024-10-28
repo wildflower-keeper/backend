@@ -262,7 +262,8 @@ public class ShelterAdminAppService {
     @Transactional
     public Long createHomeless(Long shelterId, CreateHomelessByAdminRequest request) {
         Shelter shelter = shelterService.getShelterById(request.getShelterId())
-                .orElseThrow(() -> new IllegalStateException("id=" + shelterId + "인 센터가 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("id=" + shelterId + "인 센터가 존재하지 않습니다."));
+
 
         return homelessCommandService.create(Homeless.builder()
                 .name(request.getName())

@@ -31,6 +31,11 @@ public class HomelessQueryService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<Homeless> getOneByIdAndShelter(Long id, Long shelterId) {
+        return homelessRepository.findByIdAndShelterId(id, shelterId);
+    }
+
+    @Transactional(readOnly = true)
     public Optional<Homeless> getHomelessByNameShelterIdRoom(String name, Long shelterId, String room) {
         return homelessRepository.findByNameAndShelterIdAndRoom(name, shelterId, room);
     }

@@ -108,7 +108,7 @@ public class ShelterAdminAppService {
 
     public HomelessCountResponse countHomeless(Long shelterId, LocalDateTime targetDateTime) {
         long totalHomelessCount = homelessQueryService.count(shelterId);
-        
+
         // 외박
         LocalDate sleepoverTargetDate = targetDateTime.toLocalDate();
         long sleepoverCount = sleepoverService.count(shelterId, sleepoverTargetDate);
@@ -300,12 +300,10 @@ public class ShelterAdminAppService {
                 .build();
     }
 
-    public void updateHomelessInOutStatus(Long sheterId, Long homelessId, UpdateLocationRequest request){
-        Homeless homeless = homelessQueryService.getOneById(homelessId)
+    public void updateHomelessInOutStatus(Long sheterId, Long homelessId, UpdateLocationRequest request) {
+        Homeless homeless = homelessQueryService.getOneByIdAndShelter(homelessId, sheterId)
                 .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
-        if(homeless.getShelter().getId()!= sheterId){
-            throw new ForbiddenException("수정 권한이 없습니다.");
-        }
+        
         locationTrackingService.createOrUpdate(homelessId, sheterId, request.getLocationStatus());
     }
 

@@ -42,19 +42,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateChiefOfficerRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessByAdminRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.DutyOfficerCreateRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessFilterType;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessPageRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.SessionResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterAdminSleepoverResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterPinResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateHomelessRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateChiefOfficerRequest;
@@ -137,7 +125,7 @@ public class ShelterAdminAppController {
             example = "session-token-example"
     ))
     @GetMapping("/api/v1/shelter-admin/homeless-people")
-    @Operation(summary = "노숙인 목록 조회", description = "필터유형(필터값) NONE() LOCATION_STATUS(IN_SHELTER,OUT_SHELTER) SLEEPOVER() NAME(노숙인성함)")
+    @Operation(summary = "노숙인 목록 조회", description = "필터유형(필터값) NONE() InOut_STATUS(IN_SHELTER,OUT_SHELTER) SLEEPOVER() NAME(노숙인성함)")
     public ResponseEntity<NumberPageResponse<HomelessResponse>> getHomelessPage(
             @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "NAME") HomelessFilterType filterType,
             @RequestParam(required = false) @Parameter(description = "필터 값", example = "민수") String filterValue,
@@ -370,6 +358,20 @@ public class ShelterAdminAppController {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         EmergencyResponse response = shelterAdminAppService.getEmergencyListByShelterId(shelterContext.getShelterId());
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @Operation(summary = "노숙인 재실 여부 변경")
+    @PutMapping("/api/v1/shelter-admin/{homelessId}/in-out")
+    public ResponseEntity<Void> updateInOutStatus(@PathVariable Long homelessId, @RequestBody UpdateLocationRequest inOutStatus) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        shelterAdminAppService.updateHomelessInOutStatus(shelterContext.getShelterId(), homelessId, inOutStatus);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

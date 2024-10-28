@@ -38,6 +38,7 @@ public class WildflowerAdminService {
                 .name(dto.getName())
                 .phoneNumber(PhoneNumberFormatter.format(dto.getPhoneNumber()))
                 .password(passwordEncoder.encode(dto.getPassword()))
+                .email(dto.getEmail())
                 .latitude(dto.getLatitude())
                 .longitude(dto.getLongitude())
                 .build();

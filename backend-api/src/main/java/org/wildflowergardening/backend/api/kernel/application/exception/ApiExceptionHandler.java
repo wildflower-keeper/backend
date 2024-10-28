@@ -52,4 +52,12 @@ public class ApiExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(errorResponse);
     }
+
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder().errorCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                .description(e.getMessage())
+                .build();
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
 }

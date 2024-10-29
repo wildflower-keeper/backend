@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
   private final HomelessAuthInterceptor homelessAuthInterceptor;
   private final ShelterPublicAuthInterceptor shelterPublicAuthInterceptor;
 
-  @Bean
+/*  @Bean
   public FilterRegistrationBean<CorsFilter> corsFilterFilterRegistrationBean(){
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(Arrays.asList(
@@ -51,10 +51,10 @@ public class WebConfig implements WebMvcConfigurer {
     filterBean.setOrder(0); // 필터 순서 설정
     filterBean.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ERROR);
     return filterBean;
-  }
+  }*/
 
 
-/*  @Override
+  @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
         .allowedOriginPatterns(
@@ -70,7 +70,7 @@ public class WebConfig implements WebMvcConfigurer {
         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
         .allowedHeaders("auth-token", "Content-Type", "X-Requested-With", "Accept", "Origin")
         .maxAge(3_600);
-  }*/
+  }
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {

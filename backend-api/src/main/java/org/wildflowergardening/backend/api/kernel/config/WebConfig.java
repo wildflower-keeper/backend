@@ -31,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
     configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:3000", "http://127.0.0.1:3000",
             "http://localhost:80", "http://127.0.0.1:80",
-            "http://localhost:8081", "http://127.0.0.1:8081",
+            "http://localhost:8080", "http://127.0.0.1:8080",
             "https://wildflower-gardening.com", "https://www.wildflower-gardening.com",
             "https://wildflower-gardening.com:443", "https://www.wildflower-gardening.com:443",
             "http://wildflower-gardening.com", "http://www.wildflower-gardening.com",

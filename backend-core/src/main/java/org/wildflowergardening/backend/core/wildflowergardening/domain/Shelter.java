@@ -48,6 +48,11 @@ public class Shelter {
     @Setter
     private String password;
 
+    @Column(name = "email", nullable = false)
+    @Comment("이메일")
+    @Setter
+    private String email;
+
     @Column(name = "latitude", columnDefinition = "decimal(10,8)", nullable = false)
     @Comment("위도")
     private BigDecimal latitude;

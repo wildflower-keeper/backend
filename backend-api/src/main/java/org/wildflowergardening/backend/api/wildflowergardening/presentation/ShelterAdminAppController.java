@@ -46,8 +46,10 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateChiefOfficerRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,6 +68,20 @@ public class ShelterAdminAppController {
             @RequestBody @Valid ShelterLoginRequest shelterLoginRequest
     ) {
         return ResponseEntity.ok(shelterAdminAppService.login(shelterLoginRequest));
+    }
+
+    @PostMapping("/api/v1/shelter-admin/verification-code")
+    @Operation(summary = "이메일로 인증 번호 전송")
+    public ResponseEntity<? extends BaseResponseBody> sendCode(@RequestBody @Valid ShelterLoginRequest request) {
+        shelterAdminAppService.sendCode(request);
+        return ResponseEntity.ok().body(new BaseResponseBody<>(200, "메일 전송 성공"));
+    }
+
+    @PostMapping("/api/v1/shelter-admin/auth-token")
+    @Operation(summary = "관리자 토큰 발급")
+    public ResponseEntity<SessionResponse> getToken(@RequestBody @Valid VerificationCodeRequest request) {
+        SessionResponse response = shelterAdminAppService.checkCode(request);
+        return ResponseEntity.ok(response);
     }
 
     @ShelterAuthorized

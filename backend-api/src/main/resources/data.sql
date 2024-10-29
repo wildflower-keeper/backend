@@ -5,7 +5,7 @@
 INSERT INTO wildflower_gardening.homeless_terms (deprecated_date, is_essential, start_date, created_at, id, title, detail) VALUES (null, true, '2024-06-01', '2024-06-04 22:34:49.497696', 1, '위치정보 수집 동의', 'blablablablablablablablablablablablablablablablablablablablablablablabla');
 
 -- 센터 계정
-INSERT INTO wildflower_gardening.shelter (latitude, longitude, created_at, id, last_updated_at, name, password, phone_number) VALUES (90.00000000, 180.00000000, '2024-05-24 13:00:39.553443', 1, '2024-05-24 13:00:39.553443', '테스트 센터명 1', '{bcrypt}$2a$10$GIfRKyTHl1Qv4b7fklKj2OFiPN90orA16pqgRHvZ6jR6vpSg3Zghq','01012341234');
+INSERT INTO wildflower_gardening.shelter (latitude, longitude, created_at, id, last_updated_at, name, password, phone_number, email) VALUES (90.00000000, 180.00000000, '2024-05-24 13:00:39.553443', 1, '2024-05-24 13:00:39.553443', '테스트 센터명 1', '{bcrypt}$2a$10$GIfRKyTHl1Qv4b7fklKj2OFiPN90orA16pqgRHvZ6jR6vpSg3Zghq','01012341234','hara0822@naver.com');
 
 -- 센터 핀 번호
 INSERT INTO shelter_pin (pin, created_at, last_updated_at, shelter_id) VALUES ('1234', NOW(), NOW(), 1);

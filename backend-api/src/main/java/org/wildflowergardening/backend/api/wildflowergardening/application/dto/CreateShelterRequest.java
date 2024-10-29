@@ -28,6 +28,10 @@ public class CreateShelterRequest {
     @Schema(description = "센터명", example = "password_example")
     private String password;
 
+    @NotBlank(message = "이메일이 비어있습니다.")
+    @Schema(description = "이메일", example = "test@test.com")
+    private String email;
+
     @NotNull(message = "위도가 null 일 수 없습니다.")
     @DecimalMax(value = "90", message = "위도 최댓값은 90 입니다.")
     @DecimalMin(value = "-90", message = "위도 최솟값은 -90 입니다.")

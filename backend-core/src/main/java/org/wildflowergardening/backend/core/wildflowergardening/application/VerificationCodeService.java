@@ -8,6 +8,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Verificat
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,12 @@ public class VerificationCodeService {
                 .build();
 
         return verificationCodeRepository.save(verificationCode).getId();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<VerificationCode> checkCode(long shelterId) {
+        LocalDateTime curTime = LocalDateTime.now();
+        return verificationCodeRepository.findFirstValidCodeByShelterId(shelterId, curTime);
     }
 
 }

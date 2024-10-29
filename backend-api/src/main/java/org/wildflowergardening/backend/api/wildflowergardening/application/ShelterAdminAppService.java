@@ -23,6 +23,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.N
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyLogItem;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
+import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
@@ -62,6 +63,33 @@ public class ShelterAdminAppService {
         Shelter shelter = shelterOptional.get();
         LocalDateTime now = LocalDateTime.now();
 
+        byte[] randomBytes = new byte[80];
+        new SecureRandom().nextBytes(randomBytes);
+        Session session = Session.builder()
+                .token(Base64.getUrlEncoder().encodeToString(randomBytes).substring(0, 80))
+                .userRole(UserRole.SHELTER)
+                .userId(shelter.getId())
+                .username(shelter.getName())
+                .createdAt(now)
+                .expiredAt(now.plusMinutes(30))
+                .build();
+
+        session = sessionService.save(session);
+
+        return SessionResponse.builder()
+                .authToken(session.getToken())
+                .expiredAt(session.getExpiredAt())
+                .build();
+    }
+
+    public SessionResponse checkCode(VerificationCodeRequest request) {
+        Long shelterId = request.getId();
+        String code = request.getCode();
+        if (!mailService.checkVerificationCode(shelterId, code)) {
+            throw new IllegalArgumentException("유효하지 않은 인증 코드");
+        }
+        Shelter shelter = shelterService.getShelterById(shelterId).orElseThrow(() -> new RuntimeException("센터 조회 시 오류가 발생했습니다"));
+        LocalDateTime now = LocalDateTime.now();
         byte[] randomBytes = new byte[80];
         new SecureRandom().nextBytes(randomBytes);
         Session session = Session.builder()

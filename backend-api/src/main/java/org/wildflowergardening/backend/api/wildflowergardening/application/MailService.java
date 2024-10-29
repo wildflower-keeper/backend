@@ -13,6 +13,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.wildflowergardening.backend.api.wildflowergardening.util.RandomCodeGenerator;
 import org.wildflowergardening.backend.core.wildflowergardening.application.VerificationCodeService;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.VerificationCode;
 
 import javax.swing.*;
 
@@ -41,10 +42,19 @@ public class MailService {
             verificationCodeService.create(shelterId, code);
 
         } catch (MessagingException e) {
-            throw new RuntimeException("메일 전송 실패",e);
+            throw new RuntimeException("메일 전송 실패", e);
         }
     }
 
     //TODO : 인증 코드 확인(boolean)
+    public boolean checkVerificationCode(Long shelterId, String code) {
+        VerificationCode originCode = verificationCodeService.checkCode(shelterId).orElseThrow(() -> new IllegalArgumentException("인증 코드를 다시 발급 받아 주세요."));
+        if (!originCode.getCode().equals(code)) {
+            return false;
+        }
+
+        originCode.setUsed(true);   //사용한 코드로 체크
+        return true;
+    }
 
 }

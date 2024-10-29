@@ -49,7 +49,6 @@ import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 
 @RestController
 @RequiredArgsConstructor
@@ -70,13 +69,12 @@ public class ShelterAdminAppController {
         return ResponseEntity.ok(shelterAdminAppService.login(shelterLoginRequest));
     }
 
-    @PostMapping("/api/v1/sheter-admin/verification-code")
+    @PostMapping("/api/v1/shelter-admin/verification-code")
     @Operation(summary = "이메일로 인증 번호 전송")
     public ResponseEntity<? extends BaseResponseBody> sendCode(@RequestBody @Valid ShelterLoginRequest request){
         shelterAdminAppService.sendCode(request);
         return ResponseEntity.ok().body(new BaseResponseBody<>(200, "메일 전송 성공"));
     }
-
 
     @ShelterAuthorized
     @Parameters(@Parameter(

@@ -24,7 +24,7 @@ public class MailService {
     private final VerificationCodeService verificationCodeService;
 
     @Transactional
-    public void sendVerificationCodeMail(Long shterId, String email) {
+    public void sendVerificationCodeMail(Long shelterId, String email) {
         MimeMessage message = javaMailSender.createMimeMessage();
         String code = RandomCodeGenerator.generate();
         try {
@@ -35,15 +35,13 @@ public class MailService {
             context.setVariable("code", code);
 
             String htmlContent = templateEngine.process("mailFormat", context);
-            mimeMessageHelper.setText(htmlContent);
+            mimeMessageHelper.setText(htmlContent, true);
 
             javaMailSender.send(message);
-
-            //TODO : 데이터베이스에 저장
-            verificationCodeService.create(shterId, code);
+            verificationCodeService.create(shelterId, code);
 
         } catch (MessagingException e) {
-            throw new RuntimeException("메일 전송 실패");
+            throw new RuntimeException("메일 전송 실패",e);
         }
     }
 

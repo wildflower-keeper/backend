@@ -12,7 +12,7 @@ public class RandomCodeGenerator {
         for (int i = 0; i < LENGTH; i++) {
             int n = random.nextInt(36);
             if (n > 25) sb.append(n - 25);
-            else sb.append((char) (n + 97));
+            else sb.append((char) ('A'+n));
         }
 
         return sb.toString();

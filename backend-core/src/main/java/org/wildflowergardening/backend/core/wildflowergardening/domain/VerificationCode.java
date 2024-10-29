@@ -41,5 +41,6 @@ public class VerificationCode {
 
     @Column(name = "is_used", nullable = false)
     @Builder.Default
+    @Setter
     private boolean isUsed = false;
 }

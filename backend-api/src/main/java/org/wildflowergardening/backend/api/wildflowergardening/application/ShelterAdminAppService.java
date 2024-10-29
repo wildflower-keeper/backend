@@ -47,6 +47,8 @@ public class ShelterAdminAppService {
     private final ChiefOfficerService chiefOfficerService;
     private final DutyOfficerService dutyOfficerService;
     private final EmergencyService emergencyService;
+    private final MailService mailService;
+
 
     public SessionResponse login(ShelterLoginRequest dto) {
         Optional<Shelter> shelterOptional = shelterService.getShelterById(dto.getId());
@@ -77,6 +79,17 @@ public class ShelterAdminAppService {
                 .authToken(session.getToken())
                 .expiredAt(session.getExpiredAt())
                 .build();
+    }
+
+    public void sendCode(ShelterLoginRequest request) {
+        Shelter shelter = shelterService.getShelterById(request.getId()).orElseThrow(() -> new IllegalArgumentException("없는 보호소 입니다."));
+
+        //비밀번호 맞는지 확인
+        if (!passwordEncoder.matches(request.getPw(), shelter.getPassword())) {
+            throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
+        }
+
+        mailService.sendVerificationCodeMail(shelter.getId(), shelter.getEmail());
     }
 
     public ShelterPinResponse getPin(Long shelterId) {
@@ -303,7 +316,7 @@ public class ShelterAdminAppService {
     public void updateHomelessInOutStatus(Long sheterId, Long homelessId, UpdateLocationRequest request) {
         Homeless homeless = homelessQueryService.getOneByIdAndShelter(homelessId, sheterId)
                 .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
-        
+
         locationTrackingService.createOrUpdate(homelessId, sheterId, request.getLocationStatus());
     }
 

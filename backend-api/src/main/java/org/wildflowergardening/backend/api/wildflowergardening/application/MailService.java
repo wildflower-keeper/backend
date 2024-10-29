@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.wildflowergardening.backend.api.wildflowergardening.util.RandomCodeGenerator;
+import org.wildflowergardening.backend.core.wildflowergardening.application.VerificationCodeService;
 
 import javax.swing.*;
 
@@ -20,16 +21,16 @@ import javax.swing.*;
 public class MailService {
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
+    private final VerificationCodeService verificationCodeService;
 
     @Transactional
-    public void sendMail(String email) {
+    public void sendVerificationCodeMail(Long shterId, String email) {
         MimeMessage message = javaMailSender.createMimeMessage();
         String code = RandomCodeGenerator.generate();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, "UTF-8");
             mimeMessageHelper.setTo(email);
             mimeMessageHelper.setSubject("[들꽃지기] 로그인 인증번호 안내");
-
             Context context = new Context();
             context.setVariable("code", code);
 
@@ -39,6 +40,7 @@ public class MailService {
             javaMailSender.send(message);
 
             //TODO : 데이터베이스에 저장
+            verificationCodeService.create(shterId, code);
 
         } catch (MessagingException e) {
             throw new RuntimeException("메일 전송 실패");
@@ -46,4 +48,5 @@ public class MailService {
     }
 
     //TODO : 인증 코드 확인(boolean)
+
 }

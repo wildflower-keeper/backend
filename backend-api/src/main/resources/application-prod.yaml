@@ -7,6 +7,18 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: none
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PW}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
 logging:
   config: classpath:log4j2/log4j2-prod.xml
 admin:

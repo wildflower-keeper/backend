@@ -25,4 +25,7 @@ public class UpdateHomelessRequest {
 
   @Schema(example = "2024-06-01", type = "string")
   private LocalDate admissionDate;
+
+  @Schema(example = "복숭아 알러지", type = "string")
+  private String memo;
 }

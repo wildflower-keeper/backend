@@ -44,12 +44,14 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateChiefOfficerRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 
 @RestController
 @RequiredArgsConstructor
@@ -163,6 +165,23 @@ public class ShelterAdminAppController {
                 .build();
         return ResponseEntity.ok(shelterAdminAppService.getHomelessPage(pageRequest));
     }
+
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @Operation(summary = "노숙인 계정 조회")
+    @GetMapping("/api/v1/shelter-admin/homeless/{homelessId}")
+    public ResponseEntity<HomelessDetailResponse> getHomeless(
+            @PathVariable Long homelessId,
+            @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) @Parameter(description = "외박 신청 및 재실/외출여부 조회 기준 일시", example = "2024-06-30 18:00:00.000000") LocalDate targetDateTime
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        return ResponseEntity.ok(shelterAdminAppService.getHomeless(shelterContext.getShelterId(), homelessId, targetDateTime));
+    }
+
 
     @ShelterAuthorized
     @Parameters(@Parameter(

@@ -68,6 +68,11 @@ public class Homeless {
     @Setter
     private String phoneNumber;
 
+    @Column(name = "memo")
+    @Comment("메모")
+    @Setter
+    private String memo;
+
     @Column(name = "admission_date", nullable = true)
     @Comment("센터 입소일")
     @Setter

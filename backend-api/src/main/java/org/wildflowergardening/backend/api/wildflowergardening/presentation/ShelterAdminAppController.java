@@ -176,12 +176,12 @@ public class ShelterAdminAppController {
     @GetMapping("/api/v1/shelter-admin/homeless/{homelessId}")
     public ResponseEntity<HomelessDetailResponse> getHomeless(
             @PathVariable Long homelessId,
-            @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) @Parameter(description = "외박 신청 및 재실/외출여부 조회 기준 일시", example = "2024-06-30 18:00:00.000000") LocalDateTime targetDateTime
+            @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) @Parameter(description = "외박 신청 및 재실/외출여부 조회 기준 일시", example = "2024-06-30 18:00:00.000000") LocalDate targetDateTime
     ) {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
-        return ResponseEntity.ok(HomelessDetailResponse.builder().build());
+        return ResponseEntity.ok(shelterAdminAppService.getHomeless(shelterContext.getShelterId(), homelessId, targetDateTime));
     }
-    
+
 
     @ShelterAuthorized
     @Parameters(@Parameter(

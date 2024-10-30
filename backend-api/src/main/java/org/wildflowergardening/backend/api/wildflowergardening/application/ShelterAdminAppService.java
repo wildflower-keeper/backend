@@ -148,11 +148,26 @@ public class ShelterAdminAppService {
                 .getPage(pageRequest);
     }
 
-    public HomelessDetailResponse getHomeless(Long shelterId, Long homelessId, LocalDateTime targetDate){
+    public HomelessDetailResponse getHomeless(Long shelterId, Long homelessId, LocalDate targetDate) {
         Homeless homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId).orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+        // TODO : targetdate를 기준으로 외박 신청 여부(true/false)로 반환
+        boolean isSleepOverDate = sleepoverService.exist(homelessId, targetDate);
 
+        // TODO : 마지막 위치 상태, 마지막 위치 확인 일시
+        LocationTracking locationTracking = locationTrackingService.getLocationByHomelessId(homelessId, shelterId);
 
-        return HomelessDetailResponse.builder().build();
+        return HomelessDetailResponse.builder()
+                .id(homeless.getId())
+                .name(homeless.getName())
+                .room(homeless.getRoom())
+                .birthDate(homeless.getBirthDate())
+                .targetDateSleepover(isSleepOverDate)
+                .lastLocationStatus(locationTracking.getInOutStatus())
+                .lastLocationTrackedAt(locationTracking.getLastUpdatedAt())
+                .phoneNumber(homeless.getPhoneNumber())
+                .admissionDate(homeless.getAdmissionDate())
+                .memo(homeless.getMemo())
+                .build();
     }
 
     public HomelessCountResponse countHomeless(Long shelterId, LocalDateTime targetDateTime) {

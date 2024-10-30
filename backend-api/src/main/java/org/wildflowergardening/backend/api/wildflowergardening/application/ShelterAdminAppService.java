@@ -22,6 +22,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyLogItem;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
@@ -147,6 +148,13 @@ public class ShelterAdminAppService {
                 .getPage(pageRequest);
     }
 
+    public HomelessDetailResponse getHomeless(Long shelterId, Long homelessId, LocalDateTime targetDate){
+        Homeless homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId).orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+
+
+        return HomelessDetailResponse.builder().build();
+    }
+
     public HomelessCountResponse countHomeless(Long shelterId, LocalDateTime targetDateTime) {
         long totalHomelessCount = homelessQueryService.count(shelterId);
 
@@ -255,6 +263,11 @@ public class ShelterAdminAppService {
                         ? homeless.getAdmissionDate()
                         : request.getAdmissionDate()
         );
+        homeless.setMemo(
+                request.getMemo() == null
+                        ? homeless.getMemo()
+                        : request.getMemo()
+        );
     }
 
     public void deleteHomeless(Long homelessId, Long shelterId) {
@@ -314,6 +327,7 @@ public class ShelterAdminAppService {
                 .birthDate(request.getBirthDate())
                 .phoneNumber(PhoneNumberFormatter.format(request.getPhoneNumber()))
                 .admissionDate(request.getAdmissionDate())
+                .memo(request.getMemo())
                 .build());
     }
 

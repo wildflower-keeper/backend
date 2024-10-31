@@ -1,5 +1,6 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application;
 
+import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_CODE_INVALID;
 import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
 
 import io.micrometer.common.util.StringUtils;
@@ -11,6 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,7 +89,7 @@ public class ShelterAdminAppService {
         Long shelterId = request.getId();
         String code = request.getCode();
         if (!mailService.checkVerificationCode(shelterId, code)) {
-            throw new IllegalArgumentException("유효하지 않은 인증 코드");
+            throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_CODE_INVALID);
         }
         Shelter shelter = shelterService.getShelterById(shelterId).orElseThrow(() -> new RuntimeException("센터 조회 시 오류가 발생했습니다"));
         LocalDateTime now = LocalDateTime.now();

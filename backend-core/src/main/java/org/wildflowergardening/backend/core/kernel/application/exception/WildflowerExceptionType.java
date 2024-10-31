@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum WildflowerExceptionType implements ExceptionType {
   SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID("센터 ID 또는 Password 가 올바르지 않습니다."),
+  SHELTER_ADMIN_LOGIN_CODE_INVALID("이메일 인증 코드가 유효하지 않습니다"),
   SHELTER_ADMIN_CHIEF_OFFICERS_TOO_MANY("책임자 수가 많아서 더이상 생성할 수 없습니다."),
   SHELTER_ADMIN_CHIEF_OFFICER_PHONE_NUMBER_ALREADY_EXISTS("해당 전화번호로 책임자 정보가 이미 존재합니다."),
   SHELTER_ADMIN_CHIEF_OFFICER_NOT_FOUND("책임자 정보가 존재하지 않습니다."),

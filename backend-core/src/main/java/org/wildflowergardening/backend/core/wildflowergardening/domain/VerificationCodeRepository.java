@@ -13,7 +13,8 @@ public interface VerificationCodeRepository extends JpaRepository<VerificationCo
             "WHERE v.shelterId = :shelterId " +
             "AND v.expiredAt > :currentDate " +
             "AND v.isUsed = false " +
-            "ORDER BY v.createdAt DESC")
+            "ORDER BY v.createdAt DESC " +
+            "limit 1")
     Optional<VerificationCode> findFirstValidCodeByShelterId(
             @Param("shelterId") Long shelterId,
             @Param("currentDate") LocalDateTime currentDate

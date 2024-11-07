@@ -1,8 +1,5 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application;
 
-import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_CODE_INVALID;
-import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID;
-
 import io.micrometer.common.util.StringUtils;
 
 import java.security.SecureRandom;
@@ -12,7 +9,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +18,12 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.LocationTrackingCount;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.SleepoverCount;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterLoginReq;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyLogItem;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
-import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
@@ -34,6 +31,8 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.dto.
 import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
+
+import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -86,12 +85,12 @@ public class ShelterAdminAppService {
     }
 
     public SessionResponse checkCode(VerificationCodeRequest request) {
-        Long shelterId = request.getId();
+        String email = request.getEmail();
         String code = request.getCode();
-        if (!mailService.checkVerificationCode(shelterId, code)) {
+        if (!mailService.checkVerificationCode(email, code)) {
             throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_CODE_INVALID);
         }
-        Shelter shelter = shelterService.getShelterById(shelterId).orElseThrow(() -> new RuntimeException("센터 조회 시 오류가 발생했습니다"));
+        Shelter shelter = shelterService.getShelterByEmail(email).orElseThrow(() -> new RuntimeException("센터 조회 시 오류가 발생했습니다"));
         LocalDateTime now = LocalDateTime.now();
         byte[] randomBytes = new byte[80];
         new SecureRandom().nextBytes(randomBytes);
@@ -112,15 +111,14 @@ public class ShelterAdminAppService {
                 .build();
     }
 
-    public void sendCode(ShelterLoginRequest request) {
-        Shelter shelter = shelterService.getShelterById(request.getId()).orElseThrow(() -> new IllegalArgumentException("없는 보호소 입니다."));
-
+    public void sendCode(ShelterLoginReq request) {
+        Shelter shelter = shelterService.getShelterByEmail(request.getEmail()).orElseThrow(() -> new ApplicationLogicException(SHELTER_ADMIN_LOGIN_EMAIL_INVALID));
         //비밀번호 맞는지 확인
         if (!passwordEncoder.matches(request.getPw(), shelter.getPassword())) {
             throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
         }
 
-        mailService.sendVerificationCodeMail(shelter.getId(), shelter.getEmail());
+        mailService.sendVerificationCodeMail(shelter.getEmail());
     }
 
     public ShelterPinResponse getPin(Long shelterId) {

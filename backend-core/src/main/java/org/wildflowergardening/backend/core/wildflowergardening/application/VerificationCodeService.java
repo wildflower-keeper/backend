@@ -7,7 +7,6 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Verificat
 import org.wildflowergardening.backend.core.wildflowergardening.domain.VerificationCodeRepository;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
@@ -18,10 +17,10 @@ public class VerificationCodeService {
 
     //TODO: 인증 코드 생성하기
     @Transactional
-    public Long create(Long shelterId, String code) {
+    public Long create(String email, String code) {
         LocalDateTime curTime = LocalDateTime.now();
         VerificationCode verificationCode = VerificationCode.builder()
-                .shelterId(shelterId)
+                .email(email)
                 .code(code)
                 .expiredAt(curTime.plusMinutes(VALIDATION_TIME))
                 .build();
@@ -30,9 +29,9 @@ public class VerificationCodeService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<VerificationCode> checkCode(long shelterId) {
+    public Optional<VerificationCode> checkCode(String email) {
         LocalDateTime curTime = LocalDateTime.now();
-        return verificationCodeRepository.findFirstValidCodeByShelterId(shelterId, curTime);
+        return verificationCodeRepository.findFirstValidCodeByEmail(email, curTime);
     }
 
 }

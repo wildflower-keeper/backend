@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request;
+package org.wildflowergardening.backend.api.wildflowergardening.application.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -8,9 +8,9 @@ import lombok.Getter;
 
 @Getter
 public class VerificationCodeRequest {
-    @NotNull(message = "센터 id가 null입니다.")
-    @Schema(description = "센터 id", example = "1")
-    private Long id;
+    @NotNull(message = "email이 null입니다.")
+    @Schema(description = "email", example = "1")
+    private String email;
 
     @NotEmpty(message = "인증 코드가 비었습니다.")
     @Size(max = 11, message = "인증 코드를 10자 이내로 입력해주세요.")

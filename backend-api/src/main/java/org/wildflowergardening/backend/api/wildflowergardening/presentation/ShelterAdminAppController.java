@@ -43,15 +43,15 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterLoginReq;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateChiefOfficerRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 
 @RestController
 @RequiredArgsConstructor
@@ -74,7 +74,7 @@ public class ShelterAdminAppController {
 
     @PostMapping("/api/v1/shelter-admin/verification-code")
     @Operation(summary = "이메일로 인증 번호 전송")
-    public ResponseEntity<? extends BaseResponseBody> sendCode(@RequestBody @Valid ShelterLoginRequest request) {
+    public ResponseEntity<? extends BaseResponseBody> sendCode(@RequestBody @Valid ShelterLoginReq request) {
         shelterAdminAppService.sendCode(request);
         return ResponseEntity.ok().body(new BaseResponseBody<>(200, "메일 전송 성공"));
     }

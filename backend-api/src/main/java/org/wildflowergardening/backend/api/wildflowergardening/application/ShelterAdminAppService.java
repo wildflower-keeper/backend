@@ -226,6 +226,12 @@ public class ShelterAdminAppService {
     ) {
         NumberPageResult<Sleepover> result = sleepoverService.getPage(shelterId, pageNumber, pageSize);
 
+        List<Long> homelessIds = result.getItems().stream()
+                .map(Sleepover::getHomelessId)
+                .collect(Collectors.toList());
+
+        Map<Long, LocationTracking> locationTrackingMap = locationTrackingService.getAll(homelessIds);
+
         return NumberPageResponse.<ShelterAdminSleepoverResponse>builder()
                 .items(result.getItems().stream()
                         .map(sleepover -> ShelterAdminSleepoverResponse.builder()
@@ -234,6 +240,7 @@ public class ShelterAdminAppService {
                                 .homelessName(sleepover.getHomelessName())
                                 .homelessRoom(sleepover.getHomelessRoom())
                                 .homelessPhoneNumber(sleepover.getHomelessPhoneNumber())
+                                .status(locationTrackingMap.get(sleepover.getHomelessId()).getInOutStatus())
                                 .emergencyContact(sleepover.getEmergencyContact())
                                 .reason(sleepover.getReason())
                                 .startDate(sleepover.getStartDate())

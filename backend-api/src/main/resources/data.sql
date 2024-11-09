@@ -20,7 +20,7 @@ INSERT INTO wildflower_gardening.homeless (admission_date, birth_date, created_a
 INSERT INTO wildflower_gardening.homeless (admission_date, birth_date, created_at, id, last_updated_at, shelter_id, device_id, name, phone_number, room) VALUES (null, null, '2024-05-24 13:12:01.155215', 7, '2024-05-24 13:12:15.130980', 1, 'test_device_id_7', '유민수', null, 'C동 202호');
 
 -- 외박 신청 장부
-INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id, emergency_contact, homeless_name, homeless_phone_number, reason) VALUES (2, '2024-06-17', '2024-06-15', '2024-06-16 23:51:42.874313', null, 1, 1, 1, 'string', '홍길동', '01000000000', 'string');
+INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id, emergency_contact, homeless_name, homeless_phone_number, reason) VALUES (2, '2024-11-13', '2024-11-10', '2024-06-16 23:51:42.874313', null, 1, 1, 1, 'string', '홍길동', '01000000000', 'string');
 INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id, emergency_contact, homeless_name, homeless_phone_number, reason) VALUES (2, '2024-06-18', '2024-06-17', '2024-06-16 23:51:47.759026', '2024-06-16 23:52:21.186527', 1, 2, 1, 'string', '홍길동', '01000000000', 'string');
 INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id, emergency_contact, homeless_name, homeless_phone_number, reason) VALUES (2, '2024-06-19', '2024-06-18', '2024-06-16 23:51:50.945526', null, 1, 3, 1, 'string', '홍길동', '01000000000', 'string');
 INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, created_at, deleted_at, homeless_id, id, shelter_id, emergency_contact, homeless_name, homeless_phone_number, reason) VALUES (2, '2024-06-30', '2024-06-15', '2024-06-16 23:56:16.316122', null, 2, 4, 1, 'string', '임꺽정', '01000000001', 'string');
@@ -30,4 +30,28 @@ INSERT INTO wildflower_gardening.sleepover (creator_type, end_date, start_date, 
 INSERT INTO wildflower_gardening.location_tracking
 (created_at, homeless_id, last_updated_at, shelter_id, tracked_at, location_status)
 VALUES
-    ('2024-09-25 13:49:29.250967', 1, '2024-09-25 13:49:29.250967', 1, '2024-09-25 13:49:29.250967', 'IN_SHELTER');
+    ('2024-09-25 13:49:29.250967', 1, '2024-09-25 13:49:29.250967', 1, '2024-09-25 13:49:29.250967', 'OUT_SHELTER');
+INSERT INTO wildflower_gardening.location_tracking
+(created_at, homeless_id, last_updated_at, shelter_id, tracked_at, location_status)
+VALUES
+    ('2024-09-25 13:49:29.250967', 2, '2024-09-25 13:49:29.250967', 2, '2024-09-25 13:49:29.250967', 'OUT_SHELTER');
+INSERT INTO wildflower_gardening.location_tracking
+(created_at, homeless_id, last_updated_at, shelter_id, tracked_at, location_status)
+VALUES
+    ('2024-09-25 13:49:29.250967', 3, '2024-09-25 13:49:29.250967', 3, '2024-09-25 13:49:29.250967', 'IN_SHELTER');
+INSERT INTO wildflower_gardening.location_tracking
+(created_at, homeless_id, last_updated_at, shelter_id, tracked_at, location_status)
+VALUES
+    ('2024-09-25 13:49:29.250967', 4, '2024-09-25 13:49:29.250967', 4, '2024-09-25 13:49:29.250967', 'OUT_SHELTER');
+INSERT INTO wildflower_gardening.location_tracking
+(created_at, homeless_id, last_updated_at, shelter_id, tracked_at, location_status)
+VALUES
+    ('2024-09-25 13:49:29.250967', 5, '2024-09-25 13:49:29.250967', 5, '2024-09-25 13:49:29.250967', 'OUT_SHELTER');
+INSERT INTO wildflower_gardening.location_tracking
+(created_at, homeless_id, last_updated_at, shelter_id, tracked_at, location_status)
+VALUES
+    ('2024-09-25 13:49:29.250967', 6, '2024-09-25 13:49:29.250967', 6, '2024-09-25 13:49:29.250967', 'OUT_SHELTER');
+INSERT INTO wildflower_gardening.location_tracking
+(created_at, homeless_id, last_updated_at, shelter_id, tracked_at, location_status)
+VALUES
+    ('2024-09-25 13:49:29.250967', 7, '2024-09-25 13:49:29.250967', 7, '2024-09-25 13:49:29.250967', 'OUT_SHELTER');

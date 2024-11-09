@@ -1,4 +1,9 @@
 spring:
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
   datasource:
     url: 'jdbc:mysql://localhost:13306/wildflower_gardening?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&zeroDateTimeBehavior=convertToNull&cacheDefaultTimezone=false'
     username: ${RDS_USERNAME}
@@ -20,9 +25,9 @@ spring:
       mail:
         smtp:
           auth: true
-          timeout : 5000
+          timeout: 5000
           starttls:
-            enable : true
+            enable: true
 logging:
   config: classpath:log4j2/log4j2-prod.xml
 admin:

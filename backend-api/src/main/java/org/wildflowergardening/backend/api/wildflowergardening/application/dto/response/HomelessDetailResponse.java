@@ -43,6 +43,15 @@ public class HomelessDetailResponse {
     @Schema(description = "메모", example = "복숭아 알러지")
     private String memo;
 
+    @Schema(description = "외박 기간", example = "2024-05-23")
+    private String sleepoverDate;
+
+    @Schema(description = "외박 사유", example = "쉼터 공원")
+    private String description;
+
+    @Schema(description = "비상 연락망", example = "비상연락망")
+    private String emergencyPhoneNumber;
+
     public static HomelessDetailResponse from(
             Homeless homeless, LocationTracking lastLocationTracking, boolean targetDateSleepover
     ) {

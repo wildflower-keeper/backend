@@ -19,7 +19,7 @@ public class LocationStatusCheckScheduler {
     private final Job locationStatusCheckJob;
     private static final Logger logger = LoggerFactory.getLogger(LocationStatusCheckScheduler.class);
 
-    @Scheduled(cron = "0 0 0 * * ?")  // 매일 정오에 실행
+    @Scheduled(cron = "0 17 13 * * ?")  // 매일 정오에 실행
     public void runLocationStatusCheckJob() throws Exception {
         logger.info("Starting locationStatusCheckJob");
         JobParameters jobParameters = new JobParametersBuilder()

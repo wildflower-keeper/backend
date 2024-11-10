@@ -1,6 +1,7 @@
 package org.wildflowergardening.backend.core.wildflowergardening.application;
 
 import java.util.Optional;
+import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -63,6 +64,17 @@ public class HomelessQueryService {
         Page<Homeless> homelessPage = homelessRepository.findAllByShelterIdAndNameLike(
                 shelterId, name, pageRequest
         );
+        return NumberPageResult.<Homeless>builder()
+                .items(homelessPage.getContent())
+                .pagination(PageInfoResult.of(homelessPage))
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public NumberPageResult<Homeless> getPage(Set<Long> homelessIds, int pageNumber, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize,
+                Sort.by(Direction.DESC, "id"));
+        Page<Homeless> homelessPage = homelessRepository.findByIdIn(homelessIds, pageRequest);
         return NumberPageResult.<Homeless>builder()
                 .items(homelessPage.getContent())
                 .pagination(PageInfoResult.of(homelessPage))

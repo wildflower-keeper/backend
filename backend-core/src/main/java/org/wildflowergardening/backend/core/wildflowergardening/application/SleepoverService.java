@@ -2,10 +2,9 @@ package org.wildflowergardening.backend.core.wildflowergardening.application;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,10 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.PageInfoResult;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.HomelessRepository;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.SleepoverRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
 
 @Service
 @RequiredArgsConstructor
@@ -95,6 +91,16 @@ public class SleepoverService {
                 .items(sleepoverPage.getContent())
                 .pagination(PageInfoResult.of(sleepoverPage))
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Long, Sleepover> getSleepoverByHomelessIds(List<Long> homelessIds, LocalDate date) {
+        List<Sleepover> sleepovers = sleepoverRepository.filterSleepoverByHomelessIds(homelessIds, date);
+
+        return sleepovers.stream().collect(Collectors.toMap(
+                Sleepover::getHomelessId,
+                Function.identity()
+        ));
     }
 
     @Transactional(readOnly = true)

@@ -149,4 +149,9 @@ public class LocationTrackingService {
         return locationTrackingRepository.findByHomelessIdInAndInOutStatusNot(homelessIds, InOutStatus.OVERNIGHT_STAY);
     }
 
+    @Transactional(readOnly = true)
+    public Set<Long> getHomelessIdsByInOutStatus(Long shelterId, InOutStatus status) {
+        return locationTrackingRepository.findHomelessIdByShelterIdAndInOutStatus(shelterId, status);
+    }
+
 }

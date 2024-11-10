@@ -52,6 +52,7 @@ public class ShelterAdminAppService {
     private final DutyOfficerService dutyOfficerService;
     private final EmergencyService emergencyService;
     private final MailService mailService;
+    private final DailyHomelessCountsService dailyHomelessCountsService;
 
 
     public SessionResponse login(ShelterLoginRequest dto) {
@@ -295,7 +296,12 @@ public class ShelterAdminAppService {
         );
     }
 
+    @Transactional
     public void deleteHomeless(Long homelessId, Long shelterId) {
+        LocalDate targetDate = LocalDate.now();
+        DailyHomelessCounts dailyHomelessCounts = dailyHomelessCountsService.getHomelessCountsByDate(shelterId, targetDate)
+                .orElseThrow(() -> new RuntimeException("해당 날짜에 대한 데이터가 없습니다."));
+        dailyHomelessCounts.setCount(dailyHomelessCounts.getCount() + 1);
         homelessCommandService.deleteHomeless(homelessId, shelterId);
     }
 
@@ -342,7 +348,11 @@ public class ShelterAdminAppService {
     public Long createHomeless(Long shelterId, CreateHomelessByAdminRequest request) {
         Shelter shelter = shelterService.getShelterById(request.getShelterId())
                 .orElseThrow(() -> new IllegalArgumentException("id=" + shelterId + "인 센터가 존재하지 않습니다."));
+        LocalDate targetDate = LocalDate.now();
+        DailyHomelessCounts dailyHomelessCounts = dailyHomelessCountsService.getHomelessCountsByDate(shelterId, targetDate)
+                .orElseThrow(() -> new RuntimeException("해당 날짜에 대한 데이터가 없습니다."));
 
+        dailyHomelessCounts.setCount(dailyHomelessCounts.getCount() + 1);
 
         return homelessCommandService.create(Homeless.builder()
                 .name(request.getName())
@@ -380,12 +390,18 @@ public class ShelterAdminAppService {
                 .build();
     }
 
-    public void updateHomelessInOutStatus(Long sheterId, Long homelessId, UpdateLocationRequest request) {
-        Homeless homeless = homelessQueryService.getOneByIdAndShelter(homelessId, sheterId)
+    public void updateHomelessInOutStatus(Long shelterId, Long homelessId, UpdateLocationRequest request) {
+        Homeless homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId)
                 .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
 
-        locationTrackingService.createOrUpdate(homelessId, sheterId, request.getLocationStatus());
+        locationTrackingService.createOrUpdate(homelessId, shelterId, request.getLocationStatus());
     }
 
+    public List<Long> monthlyHomelessCounts(Long shelterId, LocalDate date) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        return dailyHomelessCountsService.getMonthlyCounts(shelterId, date);
+    }
 
 }

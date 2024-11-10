@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.DailyHomelessCounts;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.DailyHomelessCountsRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,12 +18,12 @@ public class DailyHomelessCountsService {
     private final DailyHomelessCountsRepository dailyHomelessCountsRepository;
 
     @Transactional
-    public Long create(Long shelterId, Long count, LocalDate now) {
-        return dailyHomelessCountsRepository.save(DailyHomelessCounts.builder()
+    public DailyHomelessCounts getOrCreateDailyHomelessCount(Long shelterId, LocalDate targetDate) {
+        Optional<DailyHomelessCounts> countsOptional = dailyHomelessCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate);
+        return countsOptional.orElseGet(() -> DailyHomelessCounts.builder()
                 .shelterId(shelterId)
-                .recordedDate(now)
-                .count(count)
-                .build()).getId();
+                .recordedDate(targetDate)
+                .build());
     }
 
     @Transactional(readOnly = true)

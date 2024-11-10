@@ -130,11 +130,11 @@ public class LocationTrackingService {
     }
 
     /**
-     * @return set(외출 후 당일 ( 0시 기준) 복귀 하지 않은 homelessId
+     * @return set(외출 후 당일 ( 4시간) 복귀 하지 않은 homelessId
      */
     @Transactional(readOnly = true)
     public List<LocationTracking> getUnreturnedOutingsHomelessIds(LocalDateTime now) {
-        LocalDateTime startTime = now.toLocalDate().atStartOfDay();
+        LocalDateTime startTime = now.minusHours(24);
         return locationTrackingRepository.findByLastUpdatedAtBeforeAndInOutStatus(startTime, InOutStatus.OUT_SHELTER);
     }
 

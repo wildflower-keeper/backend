@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
     scanBasePackages = "org.wildflowergardening.backend",
     exclude = {SecurityAutoConfiguration.class}
 )
-@EnableScheduling
 public class BackendApiApplication {
 
   public static void main(String[] args) {

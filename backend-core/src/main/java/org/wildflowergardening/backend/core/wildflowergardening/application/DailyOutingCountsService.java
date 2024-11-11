@@ -29,11 +29,15 @@ public class DailyOutingCountsService {
 
     @Transactional
     public DailyOutingCounts getOrCreateDailyOutingCounts(Long shelterId, LocalDate targetDate) {
-        Optional<DailyOutingCounts> countsOptional = dailyOutingCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate);
-        return countsOptional.orElseGet(() -> DailyOutingCounts.builder()
-                .shelterId(shelterId)
-                .recordedDate(targetDate)
-                .build());
+        return dailyOutingCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate)
+                .orElseGet(() -> {
+                    DailyOutingCounts newCount = DailyOutingCounts.builder()
+                            .shelterId(shelterId)
+                            .recordedDate(targetDate)
+                            .count(0L)
+                            .build();
+                    return dailyOutingCountsRepository.save(newCount);
+                });
     }
 
     @Transactional(readOnly = true)

@@ -199,6 +199,7 @@ public class HomelessAppService {
                 .build();
     }
 
+    @Transactional
     public Long createSleepover(CreateSleepoverDto dto) {
         if (!dto.getEndDate().isAfter(dto.getStartDate())) {
             throw new IllegalArgumentException("외박신청 종료일은 시작일의 다음날 이후여야 합니다.");
@@ -266,6 +267,7 @@ public class HomelessAppService {
                 .toList();
     }
 
+    @Transactional
     public Long createOrUpdateLocationTracking(
             Long homelessId, Long shelterId, UpdateLocationRequest request
     ) {
@@ -286,6 +288,7 @@ public class HomelessAppService {
                 .isEmpty();
     }
 
+    @Transactional
     public void deleteSleepover(Long homelessId, Long sleepoverId, Long shelterId) {
         Sleepover sleepover = sleepoverService.delete(homelessId, sleepoverId);
 
@@ -298,6 +301,7 @@ public class HomelessAppService {
         }
     }
 
+    @Transactional
     public void saveEmergencyLog(long homelessId, long shelterId, EmergencyRequest request) {
 
         Homeless homeless = homelessQueryService.getOneById(homelessId)

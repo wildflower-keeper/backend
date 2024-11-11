@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.DailyEmergencyCounts;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.DailyEmergencyCountsRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.DailyHomelessCounts;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,11 +29,15 @@ public class DailyEmergencyCountsService {
 
     @Transactional
     public DailyEmergencyCounts getOrCreateDailyEmergencyCounts(Long shelterId, LocalDate targetDate) {
-        Optional<DailyEmergencyCounts> countsOptional = dailyEmergencyCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate);
-        return countsOptional.orElseGet(() -> DailyEmergencyCounts.builder()
-                .shelterId(shelterId)
-                .recordedDate(targetDate)
-                .build());
+        return dailyEmergencyCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate)
+                .orElseGet(() -> {
+                    DailyEmergencyCounts newCount = DailyEmergencyCounts.builder()
+                            .shelterId(shelterId)
+                            .recordedDate(targetDate)
+                            .count(0L)
+                            .build();
+                    return dailyEmergencyCountsRepository.save(newCount);
+                });
     }
 
     @Transactional(readOnly = true)

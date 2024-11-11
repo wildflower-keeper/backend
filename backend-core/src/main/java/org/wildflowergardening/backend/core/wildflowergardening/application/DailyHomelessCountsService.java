@@ -20,11 +20,15 @@ public class DailyHomelessCountsService {
 
     @Transactional
     public DailyHomelessCounts getOrCreateDailyHomelessCount(Long shelterId, LocalDate targetDate) {
-        Optional<DailyHomelessCounts> countsOptional = dailyHomelessCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate);
-        return countsOptional.orElseGet(() -> DailyHomelessCounts.builder()
-                .shelterId(shelterId)
-                .recordedDate(targetDate)
-                .build());
+        return dailyHomelessCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate)
+                .orElseGet(() -> {
+                    DailyHomelessCounts newCount = DailyHomelessCounts.builder()
+                            .shelterId(shelterId)
+                            .recordedDate(targetDate)
+                            .count(0L)
+                            .build();
+                    return dailyHomelessCountsRepository.save(newCount);
+                });
     }
 
     @Transactional(readOnly = true)

@@ -18,21 +18,24 @@ public class DailySleepoverCountsService {
     private final DailySleepoverCountsRepository dailySleepoverCountsRepository;
 
     @Transactional
-    public Long create(Long shelterId, Long count, LocalDate now) {
+    public Long create(Long shelterId, LocalDate now) {
         return dailySleepoverCountsRepository.save(DailySleepoverCounts.builder()
                 .shelterId(shelterId)
                 .recordedDate(now)
-                .count(count)
                 .build()).getId();
     }
 
     @Transactional
     public DailySleepoverCounts getOrCreateDailySleepoverCounts(Long shelterId, LocalDate targetDate) {
-        Optional<DailySleepoverCounts> countsOptional = dailySleepoverCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate);
-        return countsOptional.orElseGet(() -> DailySleepoverCounts.builder()
-                .shelterId(shelterId)
-                .recordedDate(targetDate)
-                .build());
+        return dailySleepoverCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate)
+                .orElseGet(() -> {
+                    DailySleepoverCounts newCount = DailySleepoverCounts.builder()
+                            .shelterId(shelterId)
+                            .recordedDate(targetDate)
+                            .count(0L)
+                            .build();
+                    return dailySleepoverCountsRepository.save(newCount);
+                });
     }
 
     @Transactional(readOnly = true)

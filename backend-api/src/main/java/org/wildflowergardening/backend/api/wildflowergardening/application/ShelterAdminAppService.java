@@ -392,6 +392,7 @@ public class ShelterAdminAppService {
                 .build();
     }
 
+    @Transactional
     public void updateHomelessInOutStatus(Long shelterId, Long homelessId, UpdateLocationRequest request) {
         Homeless homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId)
                 .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));

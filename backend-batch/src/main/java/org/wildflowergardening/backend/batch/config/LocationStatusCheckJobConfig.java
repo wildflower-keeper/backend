@@ -7,6 +7,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -15,11 +16,13 @@ import org.wildflowergardening.backend.batch.tasklet.UnreturnedOutingCheckTaskle
 import org.wildflowergardening.backend.batch.tasklet.UnreturnedOvernightStayTasklet;
 
 @Configuration
-@EnableBatchProcessing
+@EnableBatchProcessing(dataSourceRef = "batchDataSource")
 @RequiredArgsConstructor
 public class LocationStatusCheckJobConfig {
     private final JobRepository jobRepository;
-    private final PlatformTransactionManager transactionManager;
+
+    @Qualifier("batchTransactionManager")
+    private final PlatformTransactionManager batchTransactionManager;
     private final UnreturnedOutingCheckTasklet unreturnedOutingCheckTasklet;
     private final UnreturnedOvernightStayTasklet unreturnedOvernightStayTasklet;
     private final SleepOverCheckTasklet sleepOverCheckTasklet;
@@ -36,21 +39,21 @@ public class LocationStatusCheckJobConfig {
     @Bean
     public Step outingUnReturnCheckStep() {
         return new StepBuilder("outingUnReturnCheckStep", jobRepository)
-                .tasklet(unreturnedOutingCheckTasklet, transactionManager)
+                .tasklet(unreturnedOutingCheckTasklet, batchTransactionManager)
                 .build();
     }
 
     @Bean
     public Step overnightUnReturnCheckStep() {
         return new StepBuilder("overnightUnReturnCheckStep", jobRepository)
-                .tasklet(unreturnedOvernightStayTasklet, transactionManager)
+                .tasklet(unreturnedOvernightStayTasklet, batchTransactionManager)
                 .build();
     }
 
     @Bean
     public Step sleepOverCheckStep() {
         return new StepBuilder("sleepOverCheckStep", jobRepository)
-                .tasklet(sleepOverCheckTasklet, transactionManager)
+                .tasklet(sleepOverCheckTasklet, batchTransactionManager)
                 .build();
     }
 }

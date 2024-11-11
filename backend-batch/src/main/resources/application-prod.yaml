@@ -18,4 +18,4 @@ spring:
     jdbc:
       initialize-schema: always
 server:
-  port: 8081
+  port: 8083

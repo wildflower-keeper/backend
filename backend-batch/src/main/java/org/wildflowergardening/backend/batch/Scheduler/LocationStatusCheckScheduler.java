@@ -21,12 +21,10 @@ public class LocationStatusCheckScheduler {
 
     @Scheduled(cron = "0 0 0 * * ?")  // 매일 정오에 실행
     public void runLocationStatusCheckJob() throws Exception {
-        logger.info("Starting locationStatusCheckJob");
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
         jobLauncher.run(locationStatusCheckJob, jobParameters);
-        logger.info("Finished locationStatusCheckJob");
     }
 
 }

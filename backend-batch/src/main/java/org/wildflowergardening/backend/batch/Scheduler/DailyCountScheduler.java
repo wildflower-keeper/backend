@@ -23,11 +23,9 @@ public class DailyCountScheduler {
 
     @Scheduled(cron = "0 0 0 * * ?")  // 매일 정오에 실행
     public void runDailyCountJob() throws Exception {
-        logger.info("starting dailyCountJob");
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
         jobLauncher.run(dailyCountJob, jobParameters);
-        logger.info("finished dailyCountJob");
     }
 }

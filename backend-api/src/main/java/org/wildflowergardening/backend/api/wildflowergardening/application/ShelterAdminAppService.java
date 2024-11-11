@@ -53,6 +53,7 @@ public class ShelterAdminAppService {
     private final EmergencyService emergencyService;
     private final MailService mailService;
     private final DailyHomelessCountsService dailyHomelessCountsService;
+    private final DailyOutingCountsService dailyOutingCountsService;
 
 
     public SessionResponse login(ShelterLoginRequest dto) {
@@ -394,6 +395,12 @@ public class ShelterAdminAppService {
                 .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
 
         locationTrackingService.createOrUpdate(homelessId, shelterId, request.getLocationStatus());
+
+        if (request.getLocationStatus() == InOutStatus.OUT_SHELTER) {
+            LocalDate targetDate = LocalDate.now();
+            DailyOutingCounts dailyOutingCounts = dailyOutingCountsService.getOrCreateDailyOutingCounts(shelterId, targetDate);
+            dailyOutingCounts.setCount(dailyOutingCounts.getCount() + 1);
+        }
     }
 
     public List<Long> monthlyHomelessCounts(Long shelterId, LocalDate date) {

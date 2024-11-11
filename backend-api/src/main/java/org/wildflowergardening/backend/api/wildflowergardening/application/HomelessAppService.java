@@ -51,6 +51,7 @@ public class HomelessAppService {
     private final LocationTrackingService locationTrackingService;
     private final EmergencyService emergencyService;
     private final DailyHomelessCountsService dailyHomelessCountsService;
+    private final DailyOutingCountsService dailyOutingCountsService;
 
     public List<HomelessTermsResponse> getAllTerms() {
         return homelessTermsService.findAll(LocalDate.now()).stream()
@@ -255,9 +256,16 @@ public class HomelessAppService {
     public Long createOrUpdateLocationTracking(
             Long homelessId, Long shelterId, UpdateLocationRequest request
     ) {
-        return locationTrackingService.createOrUpdate(
-                homelessId, shelterId, request.getLocationStatus()
-        );
+        Long result = locationTrackingService.createOrUpdate(
+                homelessId, shelterId, request.getLocationStatus());
+
+        if (request.getLocationStatus() == InOutStatus.OUT_SHELTER) {
+            LocalDate targetDate = LocalDate.now();
+            DailyOutingCounts dailyOutingCounts = dailyOutingCountsService.getOrCreateDailyOutingCounts(shelterId, targetDate);
+            dailyOutingCounts.setCount(dailyOutingCounts.getCount() + 1);
+        }
+
+        return result;
     }
 
     public boolean isSleepoverTonight(Long homelessId) {

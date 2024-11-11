@@ -26,6 +26,15 @@ public class DailyOutingCountsService {
                 .build()).getId();
     }
 
+    @Transactional
+    public DailyOutingCounts getOrCreateDailyOutingCounts(Long shelterId, LocalDate targetDate) {
+        Optional<DailyOutingCounts> countsOptional = dailyOutingCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate);
+        return countsOptional.orElseGet(() -> DailyOutingCounts.builder()
+                .shelterId(shelterId)
+                .recordedDate(targetDate)
+                .build());
+    }
+
     @Transactional(readOnly = true)
     public List<Long> getMonthlyCounts(Long shelterId, LocalDate now) {
         LocalDate startDate = LocalDate.of(now.getYear(), now.getMonth(), 1);

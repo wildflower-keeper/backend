@@ -3,8 +3,8 @@ package org.wildflowergardening.backend.core.wildflowergardening.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.DailySleepoverCounts;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.DailySleepoverCountsRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.DailyEmergencyCounts;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.DailyEmergencyCountsRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,12 +14,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class DailySleepoverCountsService {
-    private final DailySleepoverCountsRepository dailySleepoverCountsRepository;
+public class DailyEmergencyCountsService {
+    private final DailyEmergencyCountsRepository dailyEmergencyCountsRepository;
 
     @Transactional
     public Long create(Long shelterId, Long count, LocalDate now) {
-        return dailySleepoverCountsRepository.save(DailySleepoverCounts.builder()
+        return dailyEmergencyCountsRepository.save(DailyEmergencyCounts.builder()
                 .shelterId(shelterId)
                 .recordedDate(now)
                 .count(count)
@@ -27,9 +27,9 @@ public class DailySleepoverCountsService {
     }
 
     @Transactional
-    public DailySleepoverCounts getOrCreateDailySleepoverCounts(Long shelterId, LocalDate targetDate) {
-        Optional<DailySleepoverCounts> countsOptional = dailySleepoverCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate);
-        return countsOptional.orElseGet(() -> DailySleepoverCounts.builder()
+    public DailyEmergencyCounts getOrCreateDailyEmergencyCounts(Long shelterId, LocalDate targetDate) {
+        Optional<DailyEmergencyCounts> countsOptional = dailyEmergencyCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate);
+        return countsOptional.orElseGet(() -> DailyEmergencyCounts.builder()
                 .shelterId(shelterId)
                 .recordedDate(targetDate)
                 .build());
@@ -40,10 +40,10 @@ public class DailySleepoverCountsService {
         LocalDate startDate = LocalDate.of(now.getYear(), now.getMonth(), 1);
         LocalDate endDate = startDate.plusMonths(1).minusDays(1);
 
-        List<DailySleepoverCounts> dailySleepoverCountsList = dailySleepoverCountsRepository.findByShelterIdAndRecordedDateIsBetween(shelterId, startDate, endDate);
+        List<DailyEmergencyCounts> dailyEmergencyList = dailyEmergencyCountsRepository.findByShelterIdAndRecordedDateIsBetween(shelterId, startDate, endDate);
         List<Long> result = new ArrayList<>(Collections.nCopies(endDate.getDayOfMonth(), 0L));
 
-        for (DailySleepoverCounts count : dailySleepoverCountsList) {
+        for (DailyEmergencyCounts count : dailyEmergencyList) {
             int dayOfMonth = count.getRecordedDate().getDayOfMonth();
             result.set(dayOfMonth - 1, count.getCount());
         }
@@ -52,7 +52,7 @@ public class DailySleepoverCountsService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<DailySleepoverCounts> getSleepoverCountsByDate(Long shelterId, LocalDate now) {
-        return dailySleepoverCountsRepository.findByShelterIdAndRecordedDate(shelterId, now);
+    public Optional<DailyEmergencyCounts> getEmergencyCountsByDate(Long shelterId, LocalDate now) {
+        return dailyEmergencyCountsRepository.findByShelterIdAndRecordedDate(shelterId, now);
     }
 }

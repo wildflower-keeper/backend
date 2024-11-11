@@ -52,6 +52,8 @@ public class HomelessAppService {
     private final EmergencyService emergencyService;
     private final DailyHomelessCountsService dailyHomelessCountsService;
     private final DailyOutingCountsService dailyOutingCountsService;
+    private final DailySleepoverCountsService dailySleepoverCountsService;
+    private final DailyEmergencyCountsService dailyEmergencyCountsService;
 
     public List<HomelessTermsResponse> getAllTerms() {
         return homelessTermsService.findAll(LocalDate.now()).stream()
@@ -208,6 +210,17 @@ public class HomelessAppService {
                 || dto.getEndDate().isAfter(Sleepover.calcMaxEndDate(now))) {
             throw new IllegalArgumentException("외박 신청 가능한 일자 범위를 벗어났습니다.");
         }
+
+
+        LocalDate currentDate = dto.getStartDate();
+        while (!currentDate.isAfter(dto.getEndDate())) {
+            DailySleepoverCounts dailySleepoverCounts = dailySleepoverCountsService.getOrCreateDailySleepoverCounts(dto.getShelterId(), currentDate);
+            dailySleepoverCounts.setCount(dailySleepoverCounts.getCount() + 1);
+
+            currentDate = currentDate.plusDays(1);
+        }
+
+
         return sleepoverService.create(dto);
     }
 
@@ -273,14 +286,27 @@ public class HomelessAppService {
                 .isEmpty();
     }
 
-    public void deleteSleepover(Long homelessId, Long sleepoverId) {
-        sleepoverService.delete(homelessId, sleepoverId);
+    public void deleteSleepover(Long homelessId, Long sleepoverId, Long shelterId) {
+        Sleepover sleepover = sleepoverService.delete(homelessId, sleepoverId);
+
+        LocalDate currentDate = sleepover.getStartDate();
+        while (!currentDate.isAfter(sleepover.getEndDate())) {
+            DailySleepoverCounts dailySleepoverCounts = dailySleepoverCountsService.getOrCreateDailySleepoverCounts(shelterId, currentDate);
+            dailySleepoverCounts.setCount(dailySleepoverCounts.getCount() - 1);
+
+            currentDate = currentDate.plusDays(1);
+        }
     }
 
     public void saveEmergencyLog(long homelessId, long shelterId, EmergencyRequest request) {
 
         Homeless homeless = homelessQueryService.getOneById(homelessId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+
+        LocalDate targetDate = LocalDate.now();
+        DailyEmergencyCounts dailyEmergencyCounts = dailyEmergencyCountsService.getOrCreateDailyEmergencyCounts(shelterId, targetDate);
+
+        dailyEmergencyCounts.setCount(dailyEmergencyCounts.getCount() + 1);
 
         emergencyService.save(EmergencyLog.builder()
                 .homless(homeless)

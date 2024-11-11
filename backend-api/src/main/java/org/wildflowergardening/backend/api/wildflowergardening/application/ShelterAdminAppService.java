@@ -54,6 +54,8 @@ public class ShelterAdminAppService {
     private final MailService mailService;
     private final DailyHomelessCountsService dailyHomelessCountsService;
     private final DailyOutingCountsService dailyOutingCountsService;
+    private final DailyEmergencyCountsService dailyEmergencyCountsService;
+    private final DailySleepoverCountsService dailySleepoverCountsService;
 
 
     public SessionResponse login(ShelterLoginRequest dto) {
@@ -415,6 +417,22 @@ public class ShelterAdminAppService {
             targetDate = LocalDate.now();
         }
         return dailyOutingCountsService.getMonthlyCounts(shelterId, targetDate);
+    }
+
+    public List<Long> monthlyEmergencyCounts(Long shelterId, LocalDate targetDate) {
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
+        }
+
+        return dailyEmergencyCountsService.getMonthlyCounts(shelterId, targetDate);
+    }
+
+    public List<Long> monthlySleepoverCounts(Long shelterId, LocalDate targetDate) {
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
+        }
+
+        return dailySleepoverCountsService.getMonthlyCounts(shelterId, targetDate);
     }
 
 }

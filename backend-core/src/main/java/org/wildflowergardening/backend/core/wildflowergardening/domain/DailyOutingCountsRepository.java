@@ -16,6 +16,6 @@ public interface DailyOutingCountsRepository extends JpaRepository<DailyOutingCo
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
-
+    List<DailyOutingCounts> findByShelterIdAndRecordedDateIsBetween(Long shelterId, LocalDate startDate, LocalDate endDate);
     Optional<DailyOutingCounts> findByShelterIdAndRecordedDate(Long shelterId, LocalDate now);
 }

@@ -412,6 +412,7 @@ public class ShelterAdminAppController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @ShelterAuthorized
     @Parameters(@Parameter(
             name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -427,18 +428,51 @@ public class ShelterAdminAppController {
         return ResponseEntity.ok().body(result);
     }
 
+    @ShelterAuthorized
     @Parameters(@Parameter(
             name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
-    @Operation(summary = "한달 동안 외출 욋수 증감 조회")
+    @Operation(summary = "한달 동안 외출 횟수 증감 조회")
     @GetMapping("/api/v1/shelter-admin/monthly/outing-counts")
     public ResponseEntity<List<Long>> getMonthlyOutingCounts(
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) @Parameter(description = "통계 자료 조회 일시", example = "2024-06-30") LocalDate targetDate
     ) {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         List<Long> result = shelterAdminAppService.monthlyOutingCounts(shelterContext.getShelterId(), targetDate);
+        return ResponseEntity.ok().body(result);
+    }
+
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @Operation(summary = "한달 동안 긴습 상황 발생 횟수 증감 조회")
+    @GetMapping("/api/v1/shelter-admin/monthly/emergency-counts")
+    public ResponseEntity<List<Long>> getMonthlyEmergencyCounts(
+            @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) @Parameter(description = "통계 자료 조회 일시", example = "2024-06-30") LocalDate targetDate
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        List<Long> result = shelterAdminAppService.monthlyEmergencyCounts(shelterContext.getShelterId(), targetDate);
+        return ResponseEntity.ok().body(result);
+    }
+
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @Operation(summary = "한달 동안 외박 신청 횟수 증감 조회")
+    @GetMapping("/api/v1/shelter-admin/monthly/sleepover-counts")
+    public ResponseEntity<List<Long>> getMonthlySleepoverCounts(
+            @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) @Parameter(description = "통계 자료 조회 일시", example = "2024-06-30") LocalDate targetDate
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        List<Long> result = shelterAdminAppService.monthlySleepoverCounts(shelterContext.getShelterId(), targetDate);
         return ResponseEntity.ok().body(result);
     }
 

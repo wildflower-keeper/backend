@@ -61,6 +61,7 @@ public class SleepoverService {
                 homelessId, periodEnd, periodStart);
     }
 
+
     /**
      * @param candidateHomelessIds targetDate 에 외박신청했는지 알고싶은 노숙인 ids
      * @param sleepoverTargetDate  외박 신청 확인 기준일
@@ -140,7 +141,7 @@ public class SleepoverService {
     }
 
     @Transactional
-    public void delete(Long homelessId, Long sleepoverId) {
+    public Sleepover delete(Long homelessId, Long sleepoverId) {
         Sleepover sleepover = sleepoverRepository.findByIdAndHomelessId(sleepoverId, homelessId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "id=" + sleepoverId + "인 외박신청 내역이 존재하지 않습니다."));
@@ -149,6 +150,7 @@ public class SleepoverService {
             throw new IllegalArgumentException("기간이 진행된 외박신청을 취소할 수 없습니다.");
         }
         sleepover.toSoftDeleted();
+        return sleepover;
     }
 
     @Transactional(readOnly = true)

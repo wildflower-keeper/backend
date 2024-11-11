@@ -19,6 +19,8 @@ public interface DailySleepoverCountsRepository extends JpaRepository<DailySleep
             @Param("endDate") LocalDate endDate
     );
 
+    List<DailySleepoverCounts> findByShelterIdAndRecordedDateIsBetween(Long shelterId, LocalDate startDate, LocalDate endDate);
+
     Optional<DailySleepoverCounts> findByShelterIdAndRecordedDate(Long shelterId, LocalDate now);
 
 }

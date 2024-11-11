@@ -419,7 +419,7 @@ public class ShelterAdminAppController {
             example = "session-token-example"
     ))
     @Operation(summary = "한달 동안 유저 증감 조회")
-    @GetMapping("/api/v1/shelter-admin/monthly/user-counts")
+    @GetMapping("/api/v1/shelter-admin/monthly/homeless-counts")
     public ResponseEntity<List<Long>> getMonthlyUserCounts(
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) @Parameter(description = "통계 자료 조회 일시", example = "2024-06-30") LocalDate targetDate
     ) {

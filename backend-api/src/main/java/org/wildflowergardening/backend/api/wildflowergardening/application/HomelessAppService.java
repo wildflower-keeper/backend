@@ -50,6 +50,7 @@ public class HomelessAppService {
     private final HomelessAppJwtProvider homelessAppJwtProvider;
     private final LocationTrackingService locationTrackingService;
     private final EmergencyService emergencyService;
+    private final DailyHomelessCountsService dailyHomelessCountsService;
 
     public List<HomelessTermsResponse> getAllTerms() {
         return homelessTermsService.findAll(LocalDate.now()).stream()
@@ -116,6 +117,10 @@ public class HomelessAppService {
 
         //기본 재실 상태값 생성
         locationTrackingService.createOrUpdate(homelessId, request.getShelterId(), InOutStatus.IN_SHELTER);
+
+        LocalDate targetDate = LocalDate.now();
+        DailyHomelessCounts counts = dailyHomelessCountsService.getOrCreateDailyHomelessCount(request.getShelterId(), targetDate);
+        counts.setCount(homelessQueryService.count(request.getShelterId()));
 
         return HomelessTokenResponse.builder()
                 .homelessId(homelessId)

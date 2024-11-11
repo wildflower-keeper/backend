@@ -299,10 +299,9 @@ public class ShelterAdminAppService {
     @Transactional
     public void deleteHomeless(Long homelessId, Long shelterId) {
         LocalDate targetDate = LocalDate.now();
-        DailyHomelessCounts dailyHomelessCounts = dailyHomelessCountsService.getHomelessCountsByDate(shelterId, targetDate)
-                .orElseThrow(() -> new RuntimeException("해당 날짜에 대한 데이터가 없습니다."));
-        dailyHomelessCounts.setCount(dailyHomelessCounts.getCount() + 1);
         homelessCommandService.deleteHomeless(homelessId, shelterId);
+        DailyHomelessCounts counts = dailyHomelessCountsService.getOrCreateDailyHomelessCount(shelterId, targetDate);
+        counts.setCount(homelessQueryService.count(shelterId));
     }
 
     public Long createChiefOfficer(Long shelterId, String name, String phoneNumber) {
@@ -349,12 +348,7 @@ public class ShelterAdminAppService {
         Shelter shelter = shelterService.getShelterById(request.getShelterId())
                 .orElseThrow(() -> new IllegalArgumentException("id=" + shelterId + "인 센터가 존재하지 않습니다."));
         LocalDate targetDate = LocalDate.now();
-        DailyHomelessCounts dailyHomelessCounts = dailyHomelessCountsService.getHomelessCountsByDate(shelterId, targetDate)
-                .orElseThrow(() -> new RuntimeException("해당 날짜에 대한 데이터가 없습니다."));
-
-        dailyHomelessCounts.setCount(dailyHomelessCounts.getCount() + 1);
-
-        return homelessCommandService.create(Homeless.builder()
+        long result = homelessCommandService.create(Homeless.builder()
                 .name(request.getName())
                 .shelter(shelter)
                 .deviceId(null)
@@ -364,6 +358,11 @@ public class ShelterAdminAppService {
                 .admissionDate(request.getAdmissionDate())
                 .memo(request.getMemo())
                 .build());
+
+        DailyHomelessCounts counts = dailyHomelessCountsService.getOrCreateDailyHomelessCount(shelterId, targetDate);
+        counts.setCount(homelessQueryService.count(shelterId));
+
+        return result;
     }
 
     //전체 위급 상황 발생 내역 조회

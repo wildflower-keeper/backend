@@ -3,6 +3,10 @@ spring:
     url: 'jdbc:mysql://database-1.c7y82yo8yc2i.ap-northeast-2.rds.amazonaws.com/wildflower_gardening?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&zeroDateTimeBehavior=convertToNull&cacheDefaultTimezone=false'
     username: ${RDS_USERNAME}
     password: ${RDS_PW}
+  datasource-batch:
+    url: 'jdbc:mysql://database-1.c7y82yo8yc2i.ap-northeast-2.rds.amazonaws.com/wildflower_bath?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&zeroDateTimeBehavior=convertToNull&cacheDefaultTimezone=false'
+    username: ${RDS_USERNAME}
+    password: ${RDS_PW}
   jpa:
     show-sql: true
     hibernate:

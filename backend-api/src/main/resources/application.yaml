@@ -10,9 +10,6 @@ spring:
   datasource:
     hikari:
       maximum-pool-size: 20
-  batch:
-    jdbc:
-      initialize-schema: always
   jpa:
     properties:
       hibernate:

@@ -23,6 +23,7 @@ public class DailyCountTasklet implements Tasklet {
     private final DailyEmergencyCountsService dailyEmergencyCountsService;
     private final ShelterService shelterService;
     private final HomelessQueryService homelessQueryService;
+
     
 
     @Override

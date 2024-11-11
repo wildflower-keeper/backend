@@ -1,9 +1,4 @@
 spring:
-  batch:
-    job:
-      enabled: false
-    jdbc:
-      initialize-schema: always
   datasource:
     url: 'jdbc:mysql://localhost:13306/wildflower_gardening?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&zeroDateTimeBehavior=convertToNull&cacheDefaultTimezone=false'
     username: ${RDS_USERNAME}

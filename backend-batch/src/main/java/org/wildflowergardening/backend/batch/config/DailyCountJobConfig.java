@@ -7,19 +7,19 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.wildflowergardening.backend.batch.tasklet.DailyCountTasklet;
-import org.wildflowergardening.backend.batch.tasklet.UnreturnedOutingCheckTasklet;
-import org.wildflowergardening.backend.batch.tasklet.UnreturnedOvernightStayTasklet;
 
 @Configuration
-@EnableBatchProcessing
+@EnableBatchProcessing(dataSourceRef = "batchDataSource")
 @RequiredArgsConstructor
 public class DailyCountJobConfig {
     private final JobRepository jobRepository;
-    private final PlatformTransactionManager transactionManager;
+    @Qualifier("batchTransactionManager")
+    private final PlatformTransactionManager batchTransactionManager;
     private final DailyCountTasklet dailyCountTasklet;
 
     @Bean
@@ -32,7 +32,7 @@ public class DailyCountJobConfig {
     @Bean
     public Step createDailyCountsStep() {
         return new StepBuilder("createDailyCountsStep", jobRepository)
-                .tasklet(dailyCountTasklet, transactionManager)
+                .tasklet(dailyCountTasklet, batchTransactionManager)
                 .build();
     }
 }

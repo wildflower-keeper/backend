@@ -403,11 +403,18 @@ public class ShelterAdminAppService {
         }
     }
 
-    public List<Long> monthlyHomelessCounts(Long shelterId, LocalDate date) {
-        if (date == null) {
-            date = LocalDate.now();
+    public List<Long> monthlyHomelessCounts(Long shelterId, LocalDate targetDate) {
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
         }
-        return dailyHomelessCountsService.getMonthlyCounts(shelterId, date);
+        return dailyHomelessCountsService.getMonthlyCounts(shelterId, targetDate);
+    }
+
+    public List<Long> monthlyOutingCounts(Long shelterId, LocalDate targetDate) {
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
+        }
+        return dailyOutingCountsService.getMonthlyCounts(shelterId, targetDate);
     }
 
 }

@@ -21,7 +21,7 @@ public class DailyCountScheduler {
     private final Job dailyCountJob;
     private static final Logger logger = LoggerFactory.getLogger(LocationStatusCheckScheduler.class);
 
-    @Scheduled(cron = "0 46 13 * * ?")  // 매일 정오에 실행
+    @Scheduled(cron = "0 0 0 * * ?")  // 매일 정오에 실행
     public void runDailyCountJob() throws Exception {
         logger.info("starting dailyCountJob");
         JobParameters jobParameters = new JobParametersBuilder()

@@ -1,8 +1,22 @@
+server:
+  port: 8081
 spring:
+  application:
+    name: backend-batch
   profiles:
     default: local
   config:
     import: application-core.yaml
+  datasource:
+    hikari:
+      maximum-pool-size: 20
   batch:
     jdbc:
-      initialize-schema: never
+      initialize-schema: always
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  sql:
+    init:
+      mode: never

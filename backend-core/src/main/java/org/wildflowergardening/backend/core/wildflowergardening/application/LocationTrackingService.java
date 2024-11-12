@@ -1,9 +1,11 @@
 package org.wildflowergardening.backend.core.wildflowergardening.application;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -127,5 +129,29 @@ public class LocationTrackingService {
         ));
     }
 
+    /**
+     * @return set(외출 후 당일 ( 4시간) 복귀 하지 않은 homelessId
+     */
+    @Transactional(readOnly = true)
+    public List<LocationTracking> getUnreturnedOutingsHomelessIds(LocalDateTime now) {
+        LocalDateTime startTime = now.minusHours(24);
+        return locationTrackingRepository.findByLastUpdatedAtBeforeAndInOutStatus(startTime, InOutStatus.OUT_SHELTER);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LocationTracking> getUnreturnedSleepoversHomelessIds(Set<Long> homelessIds, LocalDateTime now) {
+        LocalDateTime startTime = now.toLocalDate().atStartOfDay();
+        return locationTrackingRepository.findByHomelessIdInAndLastUpdatedAtBeforeAndInOutStatus(homelessIds, startTime, InOutStatus.OVERNIGHT_STAY);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LocationTracking> getSleepoverHomeless(Set<Long> homelessIds) {
+        return locationTrackingRepository.findByHomelessIdInAndInOutStatusNot(homelessIds, InOutStatus.OVERNIGHT_STAY);
+    }
+
+    @Transactional(readOnly = true)
+    public Set<Long> getHomelessIdsByInOutStatus(Long shelterId, InOutStatus status) {
+        return locationTrackingRepository.findHomelessIdByShelterIdAndInOutStatus(shelterId, status);
+    }
 
 }

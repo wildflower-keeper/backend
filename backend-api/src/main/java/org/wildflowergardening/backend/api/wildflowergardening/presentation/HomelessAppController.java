@@ -192,7 +192,7 @@ public class HomelessAppController {
             @PathVariable @Parameter(description = "외박신청내역 id", example = "1") Long sleepoverId
     ) {
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
-        homelessAppService.deleteSleepover(homelessContext.getHomelessId(), sleepoverId);
+        homelessAppService.deleteSleepover(homelessContext.getHomelessId(), sleepoverId, homelessContext.getShelterId());
         return ResponseEntity.ok().build();
     }
 

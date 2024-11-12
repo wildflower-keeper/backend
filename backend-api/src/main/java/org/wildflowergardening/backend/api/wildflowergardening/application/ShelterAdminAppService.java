@@ -52,6 +52,10 @@ public class ShelterAdminAppService {
     private final DutyOfficerService dutyOfficerService;
     private final EmergencyService emergencyService;
     private final MailService mailService;
+    private final DailyHomelessCountsService dailyHomelessCountsService;
+    private final DailyOutingCountsService dailyOutingCountsService;
+    private final DailyEmergencyCountsService dailyEmergencyCountsService;
+    private final DailySleepoverCountsService dailySleepoverCountsService;
 
 
     public SessionResponse login(ShelterLoginRequest dto) {
@@ -226,6 +230,12 @@ public class ShelterAdminAppService {
     ) {
         NumberPageResult<Sleepover> result = sleepoverService.getPage(shelterId, pageNumber, pageSize);
 
+        List<Long> homelessIds = result.getItems().stream()
+                .map(Sleepover::getHomelessId)
+                .collect(Collectors.toList());
+
+        Map<Long, LocationTracking> locationTrackingMap = locationTrackingService.getAll(homelessIds);
+
         return NumberPageResponse.<ShelterAdminSleepoverResponse>builder()
                 .items(result.getItems().stream()
                         .map(sleepover -> ShelterAdminSleepoverResponse.builder()
@@ -234,7 +244,9 @@ public class ShelterAdminAppService {
                                 .homelessName(sleepover.getHomelessName())
                                 .homelessRoom(sleepover.getHomelessRoom())
                                 .homelessPhoneNumber(sleepover.getHomelessPhoneNumber())
-                                .emergencyContact(sleepover.getEmergencyContact())
+                                .status(Optional.ofNullable(locationTrackingMap.get(sleepover.getHomelessId()))
+                                        .map(LocationTracking::getInOutStatus)
+                                        .orElse(InOutStatus.IN_SHELTER))
                                 .reason(sleepover.getReason())
                                 .startDate(sleepover.getStartDate())
                                 .endDate(sleepover.getEndDate())
@@ -287,8 +299,12 @@ public class ShelterAdminAppService {
         );
     }
 
+    @Transactional
     public void deleteHomeless(Long homelessId, Long shelterId) {
+        LocalDate targetDate = LocalDate.now();
         homelessCommandService.deleteHomeless(homelessId, shelterId);
+        DailyHomelessCounts counts = dailyHomelessCountsService.getOrCreateDailyHomelessCount(shelterId, targetDate);
+        counts.setCount(homelessQueryService.count(shelterId));
     }
 
     public Long createChiefOfficer(Long shelterId, String name, String phoneNumber) {
@@ -334,9 +350,8 @@ public class ShelterAdminAppService {
     public Long createHomeless(Long shelterId, CreateHomelessByAdminRequest request) {
         Shelter shelter = shelterService.getShelterById(request.getShelterId())
                 .orElseThrow(() -> new IllegalArgumentException("id=" + shelterId + "인 센터가 존재하지 않습니다."));
-
-
-        return homelessCommandService.create(Homeless.builder()
+        LocalDate targetDate = LocalDate.now();
+        long result = homelessCommandService.create(Homeless.builder()
                 .name(request.getName())
                 .shelter(shelter)
                 .deviceId(null)
@@ -346,6 +361,11 @@ public class ShelterAdminAppService {
                 .admissionDate(request.getAdmissionDate())
                 .memo(request.getMemo())
                 .build());
+
+        DailyHomelessCounts counts = dailyHomelessCountsService.getOrCreateDailyHomelessCount(shelterId, targetDate);
+        counts.setCount(homelessQueryService.count(shelterId));
+
+        return result;
     }
 
     //전체 위급 상황 발생 내역 조회
@@ -372,12 +392,48 @@ public class ShelterAdminAppService {
                 .build();
     }
 
-    public void updateHomelessInOutStatus(Long sheterId, Long homelessId, UpdateLocationRequest request) {
-        Homeless homeless = homelessQueryService.getOneByIdAndShelter(homelessId, sheterId)
+    @Transactional
+    public void updateHomelessInOutStatus(Long shelterId, Long homelessId, UpdateLocationRequest request) {
+        Homeless homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId)
                 .orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
 
-        locationTrackingService.createOrUpdate(homelessId, sheterId, request.getLocationStatus());
+        locationTrackingService.createOrUpdate(homelessId, shelterId, request.getLocationStatus());
+
+        if (request.getLocationStatus() == InOutStatus.OUT_SHELTER) {
+            LocalDate targetDate = LocalDate.now();
+            DailyOutingCounts dailyOutingCounts = dailyOutingCountsService.getOrCreateDailyOutingCounts(shelterId, targetDate);
+            dailyOutingCounts.setCount(dailyOutingCounts.getCount() + 1);
+        }
     }
 
+    public List<Long> monthlyHomelessCounts(Long shelterId, LocalDate targetDate) {
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
+        }
+        return dailyHomelessCountsService.getMonthlyCounts(shelterId, targetDate);
+    }
+
+    public List<Long> monthlyOutingCounts(Long shelterId, LocalDate targetDate) {
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
+        }
+        return dailyOutingCountsService.getMonthlyCounts(shelterId, targetDate);
+    }
+
+    public List<Long> monthlyEmergencyCounts(Long shelterId, LocalDate targetDate) {
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
+        }
+
+        return dailyEmergencyCountsService.getMonthlyCounts(shelterId, targetDate);
+    }
+
+    public List<Long> monthlySleepoverCounts(Long shelterId, LocalDate targetDate) {
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
+        }
+
+        return dailySleepoverCountsService.getMonthlyCounts(shelterId, targetDate);
+    }
 
 }

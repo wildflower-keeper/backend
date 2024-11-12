@@ -1,6 +1,8 @@
 package org.wildflowergardening.backend.core.wildflowergardening.domain;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,4 +30,6 @@ public interface HomelessRepository extends JpaRepository<Homeless, Long> {
     long countByShelterId(Long shelterId);
 
     Optional<Homeless> findByIdAndShelterId(Long id, Long shelter_id);
+
+    Page<Homeless> findByIdIn(Set<Long> homelessIds, Pageable pageable);
 }

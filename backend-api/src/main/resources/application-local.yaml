@@ -20,9 +20,9 @@ spring:
       mail:
         smtp:
           auth: true
-          timeout : 5000
+          timeout: 5000
           starttls:
-            enable : true
+            enable: true
 logging:
   config: classpath:log4j2/log4j2-prod.xml
 admin:

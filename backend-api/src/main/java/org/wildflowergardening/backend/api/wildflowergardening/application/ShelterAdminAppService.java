@@ -303,6 +303,7 @@ public class ShelterAdminAppService {
     public void deleteHomeless(Long homelessId, Long shelterId) {
         LocalDate targetDate = LocalDate.now();
         homelessCommandService.deleteHomeless(homelessId, shelterId);
+        locationTrackingService.deleteInoutStatus(homelessId, shelterId);
         DailyHomelessCounts counts = dailyHomelessCountsService.getOrCreateDailyHomelessCount(shelterId, targetDate);
         counts.setCount(homelessQueryService.count(shelterId));
     }

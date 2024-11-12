@@ -154,4 +154,16 @@ public class LocationTrackingService {
         return locationTrackingRepository.findHomelessIdByShelterIdAndInOutStatus(shelterId, status);
     }
 
+    @Transactional
+    public void deleteInoutStatus(Long homelessId, Long shelterId) {
+        Optional<LocationTracking> locationTrackingOptional
+                = locationTrackingRepository.findByHomelessIdAndShelterId(homelessId, shelterId);
+
+        if (locationTrackingOptional.isEmpty()) {
+            throw new IllegalArgumentException("위치 정보가 존재하지 않습니다.");
+        }
+
+        locationTrackingRepository.delete(locationTrackingOptional.get());
+    }
+
 }

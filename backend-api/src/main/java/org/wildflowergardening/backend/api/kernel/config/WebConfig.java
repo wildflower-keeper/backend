@@ -25,35 +25,6 @@ public class WebConfig implements WebMvcConfigurer {
   private final HomelessAuthInterceptor homelessAuthInterceptor;
   private final ShelterPublicAuthInterceptor shelterPublicAuthInterceptor;
 
-/*  @Bean
-  public FilterRegistrationBean<CorsFilter> corsFilterFilterRegistrationBean(){
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:3000", "http://127.0.0.1:3000",
-            "http://localhost:80", "http://127.0.0.1:80",
-            "http://localhost:8080", "http://127.0.0.1:8080",
-            "https://wildflower-gardening.com", "https://www.wildflower-gardening.com",
-            "https://wildflower-gardening.com:443", "https://www.wildflower-gardening.com:443",
-            "http://wildflower-gardening.com", "http://www.wildflower-gardening.com",
-            "http://wildflower-gardening.com:80", "http://www.wildflower-gardening.com:80",
-            "https://api.wildflower-gardening.com"
-    ));
-
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(Arrays.asList("auth-token", "Content-Type", "X-Requested-With", "Accept", "Origin"));
-//    configuration.setAllowCredentials(true); // 인증 정보 허용 설정 추가
-    configuration.setMaxAge(3600L); // 캐시 유효 기간 설정
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-
-    FilterRegistrationBean<CorsFilter> filterBean = new FilterRegistrationBean<>(new CorsFilter(source));
-    filterBean.setOrder(0); // 필터 순서 설정
-    filterBean.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ERROR);
-    return filterBean;
-  }*/
-
-
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")

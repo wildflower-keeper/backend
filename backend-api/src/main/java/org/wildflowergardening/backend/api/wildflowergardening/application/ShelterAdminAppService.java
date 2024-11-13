@@ -359,7 +359,7 @@ public class ShelterAdminAppService {
                 .room(request.getRoom())
                 .birthDate(request.getBirthDate())
                 .phoneNumber(PhoneNumberFormatter.format(request.getPhoneNumber()))
-                .admissionDate(request.getAdmissionDate()==null?targetDate:request.getAdmissionDate())
+                .admissionDate(targetDate)
                 .memo(request.getMemo())
                 .build());
 

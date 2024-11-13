@@ -32,8 +32,8 @@ public class CreateHomelessByAdminRequest {
     @Schema(description = "노숙인 휴대폰번호 (선택사항)", example = "01012341234", nullable = true)
     private String phoneNumber;
 
-    @Schema(description = "센터 입소일 (선택사항)", example = "2024-08-01(공란이면 현재 날짜로 등록)", nullable = true)
-    private LocalDate admissionDate;
+/*    @Schema(description = "센터 입소일 (선택사항)", example = "2024-08-01(공란이면 현재 날짜로 등록)", nullable = true)
+    private LocalDate admissionDate;*/
 
     @Schema(description = "메모(선택 사항)", example = "알러지 존재", nullable = true)
     private String memo;

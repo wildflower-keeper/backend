@@ -160,10 +160,11 @@ public class LocationTrackingService {
                 = locationTrackingRepository.findByHomelessIdAndShelterId(homelessId, shelterId);
 
         if (locationTrackingOptional.isEmpty()) {
-            throw new IllegalArgumentException("위치 정보가 존재하지 않습니다.");
+            return;
         }
 
         locationTrackingRepository.delete(locationTrackingOptional.get());
+        return;
     }
 
 }

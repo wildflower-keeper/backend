@@ -363,6 +363,7 @@ public class ShelterAdminAppService {
                 .memo(request.getMemo())
                 .build());
 
+        locationTrackingService.createOrUpdate(result, shelterId, InOutStatus.IN_SHELTER);
         DailyHomelessCounts counts = dailyHomelessCountsService.getOrCreateDailyHomelessCount(shelterId, targetDate);
         counts.setCount(homelessQueryService.count(shelterId));
 

@@ -3,6 +3,8 @@ spring:
     url: 'jdbc:mysql://localhost:13306/wildflower_gardening?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&zeroDateTimeBehavior=convertToNull&cacheDefaultTimezone=false'
     username: ${RDS_USERNAME}
     password: ${RDS_PW}
+    hikari:
+      max-lifetime: 600000
   datasource-batch:
     url: 'jdbc:mysql://localhost:13306/wildflower_batch?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&zeroDateTimeBehavior=convertToNull&cacheDefaultTimezone=false'
     username: ${RDS_USERNAME}

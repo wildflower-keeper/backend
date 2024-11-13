@@ -349,7 +349,7 @@ public class ShelterAdminAppService {
 
     @Transactional
     public Long createHomeless(Long shelterId, CreateHomelessByAdminRequest request) {
-        Shelter shelter = shelterService.getShelterById(request.getShelterId())
+        Shelter shelter = shelterService.getShelterById(shelterId)
                 .orElseThrow(() -> new IllegalArgumentException("id=" + shelterId + "인 센터가 존재하지 않습니다."));
         LocalDate targetDate = LocalDate.now();
         long result = homelessCommandService.create(Homeless.builder()
@@ -359,7 +359,7 @@ public class ShelterAdminAppService {
                 .room(request.getRoom())
                 .birthDate(request.getBirthDate())
                 .phoneNumber(PhoneNumberFormatter.format(request.getPhoneNumber()))
-                .admissionDate(request.getAdmissionDate())
+                .admissionDate(request.getAdmissionDate()==null?targetDate:request.getAdmissionDate())
                 .memo(request.getMemo())
                 .build());
 

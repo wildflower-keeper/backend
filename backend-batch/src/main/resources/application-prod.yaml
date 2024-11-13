@@ -19,3 +19,5 @@ spring:
       enabled: false
     jdbc:
       initialize-schema: always
+server:
+  port: 8083

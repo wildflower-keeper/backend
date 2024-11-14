@@ -42,16 +42,10 @@ public class Shelter {
     @Column(name = "phone_number", unique = true)
     @Comment("센터 전화번호")
     private String phoneNumber;
-
-    @Column(name = "password", nullable = false)
-    @Comment("비밀번호")
+    
+    @Column(name = "admin_id")
     @Setter
-    private String password;
-
-    @Column(name = "email", nullable = false)
-    @Comment("이메일")
-    @Setter
-    private String email;
+    private Long adminId;
 
     @Column(name = "latitude", columnDefinition = "decimal(10,8)", nullable = false)
     @Comment("위도")

@@ -8,9 +8,6 @@ spring:
     hibernate:
       ddl-auto: create-drop
     defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always    # DB에 테스트데이터 셋팅
   mail:
     host: smtp.gmail.com
     port: 587
@@ -23,6 +20,9 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+  sql:
+    init:
+      mode: always
 logging:
   config: classpath:log4j2/log4j2-prod.xml
 admin:

@@ -11,6 +11,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.C
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.config.YamlPropertySourceFactory;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessTermsService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterAccountService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.HomelessTerms;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
@@ -24,6 +25,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 public class WildflowerAdminService {
 
     private final ShelterService shelterService;
+    private final ShelterAccountService shelterAccountService;
     private final HomelessTermsService homelessTermsService;
     private final PasswordEncoder passwordEncoder;
 
@@ -37,12 +39,10 @@ public class WildflowerAdminService {
         Shelter shelter = Shelter.builder()
                 .name(dto.getName())
                 .phoneNumber(PhoneNumberFormatter.format(dto.getPhoneNumber()))
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .email(dto.getEmail())
                 .latitude(dto.getLatitude())
                 .longitude(dto.getLongitude())
                 .build();
-        return shelterService.save(shelter);
+        return shelterService.save(shelter).getId();
     }
 
     public Long createHomelessTerms(String adminPassword, CreateHomelessTermsRequest dto) {
@@ -59,10 +59,10 @@ public class WildflowerAdminService {
         return homelessTermsService.create(homelessTerms);
     }
 
-    public void changeShelterPassword(String adminPassword, Long shelterId, String newPw) {
+    public void changeShelterPassword(String adminPassword, Long userId, String newPw) {
         if (!this.adminPassword.equals(adminPassword)) {
             throw new ForbiddenException("권한이 없습니다.");
         }
-        shelterService.changePassword(shelterId, passwordEncoder.encode(newPw));
+        shelterAccountService.changePassword(userId, passwordEncoder.encode(newPw));
     }
 }

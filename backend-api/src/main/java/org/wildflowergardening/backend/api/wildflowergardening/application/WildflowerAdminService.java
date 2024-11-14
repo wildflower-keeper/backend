@@ -3,6 +3,7 @@ package org.wildflowergardening.backend.api.wildflowergardening.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
@@ -15,6 +16,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.Shel
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.HomelessTerms;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @Service
 @RequiredArgsConstructor
@@ -64,5 +66,13 @@ public class WildflowerAdminService {
             throw new ForbiddenException("권한이 없습니다.");
         }
         shelterAccountService.changePassword(userId, passwordEncoder.encode(newPw));
+    }
+
+    public void changeShelterAccountRole(Long shelterAccountId, UserRole role) {
+        if (!this.adminPassword.equals(adminPassword)) {
+            throw new ForbiddenException("권한이 없습니다.");
+        }
+
+        shelterAccountService.changeRole(shelterAccountId, role);
     }
 }

@@ -132,6 +132,10 @@ public class ShelterAdminAppService {
                 .build();
     }
 
+    public String getShelterInfo(Long shelterId) {
+        return shelterService.getShelterById(shelterId).orElseThrow(() -> new IllegalArgumentException("보호소가 존재하지 않습니다.")).getName();
+    }
+
     public void logout(Long userId) {
         sessionService.deleteAllBy(UserRole.SHELTER, userId);
     }

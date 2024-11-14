@@ -10,11 +10,12 @@ public class ShelterUserContext implements UserContext {
 
     private Long userId;
     private Long shelterId;
-    private String shelterName;
+    private String userName;
+    private UserRole role;
 
     @Override
     public UserRole getUserRole() {
-        return UserRole.SHELTER;
+        return this.role;
     }
 
     @Override
@@ -29,6 +30,6 @@ public class ShelterUserContext implements UserContext {
 
     @Override
     public String getUsername() {
-        return this.shelterName;
+        return this.userName;
     }
 }

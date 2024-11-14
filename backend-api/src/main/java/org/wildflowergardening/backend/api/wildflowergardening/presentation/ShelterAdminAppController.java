@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterAdminAppService;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAdminAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
@@ -53,6 +54,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberF
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.InOutStatus;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 
 @RestController
 @RequiredArgsConstructor
@@ -125,12 +127,12 @@ public class ShelterAdminAppController {
     public ResponseEntity<ShelterInfoResponse> getShelterInfo() {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         Long shelterId = shelterContext.getShelterId();
-        String shelterName = shelterContext.getShelterName();
+
         LocalDate now = LocalDate.now();
 
         return ResponseEntity.ok(
                 ShelterInfoResponse.builder()
-                        .shelterName(shelterName)
+                        .shelterName(shelterAdminAppService.getShelterInfo(shelterId))
                         .chiefOfficers(shelterAdminAppService.getChiefOfficers(shelterId))
                         .dutyOfficers(shelterAdminAppService.getDutyOfficers(shelterId, now, now))
                         .build()
@@ -474,6 +476,18 @@ public class ShelterAdminAppController {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         List<Long> result = shelterAdminAppService.monthlySleepoverCounts(shelterContext.getShelterId(), targetDate);
         return ResponseEntity.ok().body(result);
+    }
+
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @GetMapping("/api/v1/shelter-admin/checkId")
+    public ResponseEntity<String> test() {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        return ResponseEntity.ok().body(shelterContext.getUserRole().toString());
     }
 
 }

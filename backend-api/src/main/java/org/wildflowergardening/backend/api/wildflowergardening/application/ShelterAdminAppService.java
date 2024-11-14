@@ -12,7 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +34,8 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
+import javax.swing.text.html.Option;
+
 @Service
 @RequiredArgsConstructor
 public class ShelterAdminAppService {
@@ -56,27 +57,25 @@ public class ShelterAdminAppService {
     private final DailyOutingCountsService dailyOutingCountsService;
     private final DailyEmergencyCountsService dailyEmergencyCountsService;
     private final DailySleepoverCountsService dailySleepoverCountsService;
+    private final ShelterAccountService shelterAccountService;
 
 
     public SessionResponse login(ShelterLoginRequest dto) {
-        Optional<Shelter> shelterOptional = shelterService.getShelterById(dto.getId());
+        ShelterAccount shelterAccount = shelterAccountService.getShelterAccountByEmail(dto.getEmail());
 
-        if (shelterOptional.isEmpty() || !passwordEncoder.matches(
-                dto.getPw(), shelterOptional.get().getPassword()
-        )) {
+        if (!passwordEncoder.matches(dto.getPw(), shelterAccount.getPassword())) {
             throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
         }
 
-        Shelter shelter = shelterOptional.get();
         LocalDateTime now = LocalDateTime.now();
 
         byte[] randomBytes = new byte[80];
         new SecureRandom().nextBytes(randomBytes);
         Session session = Session.builder()
                 .token(Base64.getUrlEncoder().encodeToString(randomBytes).substring(0, 80))
-                .userRole(UserRole.SHELTER)
-                .userId(shelter.getId())
-                .username(shelter.getName())
+                .userRole(shelterAccount.getUserRole())
+                .userId(shelterAccount.getId())
+                .username(shelterAccount.getName())
                 .createdAt(now)
                 .expiredAt(now.plusMinutes(30))
                 .build();
@@ -90,20 +89,18 @@ public class ShelterAdminAppService {
     }
 
     public SessionResponse checkCode(VerificationCodeRequest request) {
-        Long shelterId = request.getId();
-        String code = request.getCode();
-        if (!mailService.checkVerificationCode(shelterId, code)) {
+        if (!mailService.checkVerificationCode(request.getEmail(), request.getCode())) {
             throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_CODE_INVALID);
         }
-        Shelter shelter = shelterService.getShelterById(shelterId).orElseThrow(() -> new RuntimeException("센터 조회 시 오류가 발생했습니다"));
+        ShelterAccount shelterAccount = shelterAccountService.getShelterAccountByEmail(request.getEmail());
         LocalDateTime now = LocalDateTime.now();
         byte[] randomBytes = new byte[80];
         new SecureRandom().nextBytes(randomBytes);
         Session session = Session.builder()
                 .token(Base64.getUrlEncoder().encodeToString(randomBytes).substring(0, 80))
                 .userRole(UserRole.SHELTER)
-                .userId(shelter.getId())
-                .username(shelter.getName())
+                .userId(shelterAccount.getId())
+                .username(shelterAccount.getName())
                 .createdAt(now)
                 .expiredAt(now.plusMinutes(30))
                 .build();
@@ -117,14 +114,14 @@ public class ShelterAdminAppService {
     }
 
     public void sendCode(ShelterLoginRequest request) {
-        Shelter shelter = shelterService.getShelterById(request.getId()).orElseThrow(() -> new IllegalArgumentException("없는 보호소 입니다."));
+        ShelterAccount shelterAccount = shelterAccountService.getShelterAccountByEmail(request.getEmail());
 
         //비밀번호 맞는지 확인
-        if (!passwordEncoder.matches(request.getPw(), shelter.getPassword())) {
+        if (!passwordEncoder.matches(request.getPw(), shelterAccount.getPassword())) {
             throw new ApplicationLogicException(SHELTER_ADMIN_LOGIN_ID_PASSWORD_INVALID);
         }
 
-        mailService.sendVerificationCodeMail(shelter.getId(), shelter.getEmail());
+        mailService.sendVerificationCodeMail(request.getEmail());
     }
 
     public ShelterPinResponse getPin(Long shelterId) {
@@ -135,8 +132,8 @@ public class ShelterAdminAppService {
                 .build();
     }
 
-    public void logout(Long shelterId) {
-        sessionService.deleteAllBy(UserRole.SHELTER, shelterId);
+    public void logout(Long userId) {
+        sessionService.deleteAllBy(UserRole.SHELTER, userId);
     }
 
     public List<ChiefOfficerResponse> getChiefOfficers(Long shelterId) {

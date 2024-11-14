@@ -9,12 +9,12 @@ import lombok.Getter;
 @Getter
 public class ShelterLoginRequest {
 
-  @NotNull(message = "센터 id가 null입니다.")
-  @Schema(description = "센터 id", example = "1")
-  private Long id;
+    @NotNull(message = "이메일이 null입니다.")
+    @Schema(description = "센터 id", example = "1")
+    private String email;
 
-  @NotEmpty(message = "센터 비밀번호가 비어있습니다.")
-  @Size(max = 255, message = "센터 비밀번호를 255자 이하로 입력해주세요.")
-  @Schema(description = "센터 password", example = "password_example")
-  private String pw;
+    @NotEmpty(message = "센터 비밀번호가 비어있습니다.")
+    @Size(max = 255, message = "센터 비밀번호를 255자 이하로 입력해주세요.")
+    @Schema(description = "센터 password", example = "password_example")
+    private String pw;
 }

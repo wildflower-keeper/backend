@@ -8,21 +8,27 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.User
 @Builder
 public class ShelterUserContext implements UserContext {
 
-  private Long shelterId;
-  private String shelterName;
+    private Long userId;
+    private Long shelterId;
+    private String shelterName;
 
-  @Override
-  public UserRole getUserRole() {
-    return UserRole.SHELTER;
-  }
+    @Override
+    public UserRole getUserRole() {
+        return UserRole.SHELTER;
+    }
 
-  @Override
-  public Long getUserId() {
-    return this.shelterId;
-  }
+    @Override
+    public Long getUserId() {
+        return this.userId;
+    }
 
-  @Override
-  public String getUsername() {
-    return this.shelterName;
-  }
+    @Override
+    public Long getShelterId() {
+        return this.shelterId;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.shelterName;
+    }
 }

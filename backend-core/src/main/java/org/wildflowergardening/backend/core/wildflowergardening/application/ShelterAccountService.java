@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterAccount;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterAccountRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 import java.util.Optional;
 
@@ -36,5 +37,10 @@ public class ShelterAccountService {
     public void changePassword(Long id, String newPwEncrypted) {
 //        shelterAccountRepository.findShelterAccountByEmail(email).ifPresent(shelterAccount -> shelterAccount.setPassword(newPwEncrypted));
         shelterAccountRepository.findById(id).ifPresent(shelterAccount -> shelterAccount.setPassword(newPwEncrypted));
+    }
+
+    @Transactional
+    public void changeRole(Long accountId, UserRole role) {
+        shelterAccountRepository.findById(accountId).ifPresent(shelterAccount -> shelterAccount.setUserRole(role));
     }
 }

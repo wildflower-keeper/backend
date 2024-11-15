@@ -14,7 +14,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAdminAuthorized;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterAdminContext;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SessionService;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
@@ -55,7 +55,7 @@ public class ShelterAdminAuthInterceptor implements HandlerInterceptor {
         Session session = sessionOptional.get();
         session.setExpiredAt(LocalDateTime.now().plusMinutes(30));    // 세션 연장
 
-        userContextHolder.setUserContext(ShelterAdminContext.builder()
+        userContextHolder.setUserContext(ShelterUserContext.builder()
                 .role(session.getUserRole())
                 .shelterId(session.getUserId())
                 .userName(session.getUsername())

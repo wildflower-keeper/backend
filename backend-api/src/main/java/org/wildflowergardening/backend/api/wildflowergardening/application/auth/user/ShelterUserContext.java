@@ -15,7 +15,7 @@ public class ShelterUserContext implements UserContext {
 
     @Override
     public UserRole getUserRole() {
-        return UserRole.SHELTER;
+        return this.role;
     }
 
     @Override

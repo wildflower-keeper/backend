@@ -10,7 +10,7 @@ import lombok.Getter;
 public class ShelterLoginRequest {
 
     @NotNull(message = "이메일이 null입니다.")
-    @Schema(description = "센터 id", example = "1")
+    @Schema(description = "로그인할 email", example = "email@email.com")
     private String email;
 
     @NotEmpty(message = "센터 비밀번호가 비어있습니다.")

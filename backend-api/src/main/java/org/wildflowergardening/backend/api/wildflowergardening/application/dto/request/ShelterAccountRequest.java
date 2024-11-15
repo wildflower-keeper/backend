@@ -15,8 +15,7 @@ public class ShelterAccountRequest {
     @Schema(description = "비밀번호", example = "password_example")
     private String password;
 
-    @NotBlank(message = "전화번호가 비었습니다." )
-    @Schema(description = "전화번호", example = "01012341122")
+    @Schema(description = "전화번호(선택사항)", example = "01012341122")
     private String phoneNumber;
 
     @NotBlank(message = "이름이 비었습니다.")

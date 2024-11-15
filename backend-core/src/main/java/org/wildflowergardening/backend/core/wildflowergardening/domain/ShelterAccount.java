@@ -27,7 +27,7 @@ public class ShelterAccount {
     @Comment("보호소 id")
     private Long shelterId;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false)
     @Comment("이메일")
     @Setter
     private String email;
@@ -41,7 +41,7 @@ public class ShelterAccount {
     @Comment("이름")
     private String name;
 
-    @Column(name = "phone_number", unique = true)
+    @Column(name = "phone_number")
     @Comment("전화번호")
     @Setter
     private String phoneNumber;
@@ -68,4 +68,8 @@ public class ShelterAccount {
     @Column(name = "remark")
     @Setter
     private String remark;
+
+    public void toSoftDeleted() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }

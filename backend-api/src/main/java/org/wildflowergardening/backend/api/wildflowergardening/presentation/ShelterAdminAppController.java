@@ -103,6 +103,21 @@ public class ShelterAdminAppController {
         return ResponseEntity.ok(shelterAdminAppService.createShelterAccount(shelterAccountRequest, shelterContext.getShelterId()));
     }
 
+    @ShelterAdminAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @DeleteMapping("/api/v2/shelter-admin/shelter-account/{shelterAccountId}")
+    @Operation(summary = "센터 관리자(일반) 생성")
+    public ResponseEntity<Long> createShelterAccount(
+            @RequestParam Long shelterAccountId
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        return ResponseEntity.ok(shelterAdminAppService.deleteShelterAccount(shelterContext.getShelterId(), shelterAccountId));
+    }
+
     @ShelterAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
@@ -491,18 +506,5 @@ public class ShelterAdminAppController {
         List<Long> result = shelterAdminAppService.monthlySleepoverCounts(shelterContext.getShelterId(), targetDate);
         return ResponseEntity.ok().body(result);
     }
-
-    @ShelterAuthorized
-    @Parameters(@Parameter(
-            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
-            in = ParameterIn.HEADER,
-            example = "session-token-example"
-    ))
-    @GetMapping("/api/v1/shelter-admin/checkId")
-    public ResponseEntity<String> test() {
-        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
-        return ResponseEntity.ok().body(shelterContext.getUserRole().toString());
-    }
-
 
 }

@@ -58,7 +58,6 @@ public class ShelterAdminAppService {
     private final DailySleepoverCountsService dailySleepoverCountsService;
     private final ShelterAccountService shelterAccountService;
 
-
     public SessionResponse login(ShelterLoginRequest dto) {
         ShelterAccount shelterAccount = shelterAccountService.getShelterAccountByEmail(dto.getEmail());
 
@@ -451,7 +450,10 @@ public class ShelterAdminAppService {
                 .build();
 
         return shelterAccountService.save(shelterAccount);
+    }
 
+    public Long deleteShelterAccount(Long shelterId, Long accountId){
+        return shelterAccountService.deleteShelterAccount(shelterId,accountId);
     }
 
 }

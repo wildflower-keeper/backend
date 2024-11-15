@@ -34,7 +34,7 @@ public class OpenApiConfig {
   public GroupedOpenApi wildflowerAdminGroup() {
     return GroupedOpenApi.builder()
         .group("들꽃지기 Admin API")
-        .pathsToMatch("/api/v1/wildflower-admin/**")
+        .pathsToMatch("/api/v1/wildflower-admin/**","/api/v2/wildflower-admin/**")
         .build();
   }
 

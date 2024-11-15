@@ -20,7 +20,7 @@ public class ShelterAccountService {
 
     @Transactional
     public Long save(ShelterAccount shelterAccount) {
-        boolean isAlreadyExist = shelterAccountRepository.findShelterAccountByEmailOrPhoneNumber(shelterAccount.getEmail(), shelterAccount.getPhoneNumber()).isPresent();
+        boolean isAlreadyExist = shelterAccountRepository.findByEmailOrPhoneNumberAndDeletedAtIsNull(shelterAccount.getEmail(), shelterAccount.getPhoneNumber()).isPresent();
         if (isAlreadyExist) {
             throw new ApplicationLogicException(SHELTER_ACCOUNT_EMAIL_OR_PHONENUMBER_ALREADY_EXISTS);
         }
@@ -43,4 +43,16 @@ public class ShelterAccountService {
     public void changeRole(Long accountId, UserRole role) {
         shelterAccountRepository.findById(accountId).ifPresent(shelterAccount -> shelterAccount.setUserRole(role));
     }
+
+    @Transactional
+    public Long deleteShelterAccount(Long shelterId, Long shelterAccountId) {
+        Optional<ShelterAccount> shelterAccount = shelterAccountRepository.findShelterAccountByShelterIdAndId(shelterId, shelterAccountId);
+        if (shelterAccount.isEmpty()) {
+            throw new IllegalArgumentException("id = " + shelterAccountId + "인 관리자가 없습니다.");
+        }
+
+        shelterAccount.get().toSoftDeleted();
+        return shelterAccount.get().getId();
+    }
+
 }

@@ -42,7 +42,7 @@ public class OpenApiConfig {
   public GroupedOpenApi shelterAdminGroup() {
     return GroupedOpenApi.builder()
         .group("센터 Admin API")
-        .pathsToMatch("/api/v1/shelter-admin/**")
+        .pathsToMatch("/api/v1/shelter-admin/**", "/api/v2/shelter-admin/**")
         .build();
   }
 

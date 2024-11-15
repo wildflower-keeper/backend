@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateHomelessTermsRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.CreateShelterRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.ShelterLoginRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.config.YamlPropertySourceFactory;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessTermsService;
@@ -16,7 +17,10 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.Shel
 import org.wildflowergardening.backend.core.wildflowergardening.application.ShelterService;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.HomelessTerms;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterAccount;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -75,4 +79,6 @@ public class WildflowerAdminService {
 
         shelterAccountService.changeRole(shelterAccountId, role);
     }
+
+
 }

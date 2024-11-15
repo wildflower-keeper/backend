@@ -25,7 +25,7 @@ public class ShelterAccountService {
             throw new ApplicationLogicException(SHELTER_ACCOUNT_EMAIL_OR_PHONENUMBER_ALREADY_EXISTS);
         }
 
-        return shelterAccountRepository.save(shelterAccount).getShelterId();
+        return shelterAccountRepository.save(shelterAccount).getId();
     }
 
     @Transactional(readOnly = true)

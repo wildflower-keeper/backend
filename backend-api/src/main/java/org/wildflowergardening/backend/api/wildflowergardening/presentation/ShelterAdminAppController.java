@@ -39,10 +39,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterAdminAppService;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAdminAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterAccountRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterInfoResponse;
@@ -84,6 +86,21 @@ public class ShelterAdminAppController {
     public ResponseEntity<SessionResponse> getToken(@RequestBody @Valid VerificationCodeRequest request) {
         SessionResponse response = shelterAdminAppService.checkCode(request);
         return ResponseEntity.ok(response);
+    }
+
+    @ShelterAdminAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @PostMapping("/api/v2/shelter-admin/shelter-account")
+    @Operation(summary = "센터 관리자(일반) 생성")
+    public ResponseEntity<Long> createShelterAccount(
+            @RequestBody @Valid ShelterAccountRequest shelterAccountRequest
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        return ResponseEntity.ok(shelterAdminAppService.createShelterAccount(shelterAccountRequest, shelterContext.getShelterId()));
     }
 
     @ShelterAuthorized
@@ -487,6 +504,5 @@ public class ShelterAdminAppController {
         return ResponseEntity.ok().body(shelterContext.getUserRole().toString());
     }
 
-    
 
 }

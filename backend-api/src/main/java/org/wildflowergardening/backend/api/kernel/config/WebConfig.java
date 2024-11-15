@@ -1,29 +1,23 @@
 package org.wildflowergardening.backend.api.kernel.config;
 
-import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.filter.CorsFilter;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.HomelessAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterPublicAuthInterceptor;
-
-import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-  private final ShelterAdminAuthInterceptor shelterAdminAuthInterceptor;
+  private final ShelterAuthInterceptor shelterAuthInterceptor;
   private final HomelessAuthInterceptor homelessAuthInterceptor;
   private final ShelterPublicAuthInterceptor shelterPublicAuthInterceptor;
+  private final ShelterAdminAuthInterceptor shelterAdminAuthInterceptor;
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
@@ -45,7 +39,7 @@ public class WebConfig implements WebMvcConfigurer {
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(shelterAdminAuthInterceptor)
+    registry.addInterceptor(shelterAuthInterceptor)
         .addPathPatterns("/**")
         .excludePathPatterns();
 
@@ -56,5 +50,9 @@ public class WebConfig implements WebMvcConfigurer {
     registry.addInterceptor(shelterPublicAuthInterceptor)
         .addPathPatterns("/**")
         .excludePathPatterns();
+
+    registry.addInterceptor(shelterAdminAuthInterceptor)
+            .addPathPatterns("/**")
+            .excludePathPatterns();
   }
 }

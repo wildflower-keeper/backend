@@ -22,4 +22,7 @@ public class ShelterAccountRequest {
     @NotBlank(message = "이름이 비었습니다.")
     @Schema(description = "이름", example = "김보통")
     private String name;
+
+    @Schema(description = "기타 메모 사항", example = "")
+    private String remark;
 }

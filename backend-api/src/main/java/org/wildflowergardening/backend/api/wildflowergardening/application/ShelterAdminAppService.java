@@ -447,6 +447,7 @@ public class ShelterAdminAppService {
                 .phoneNumber(request.getPhoneNumber())
                 .userRole(UserRole.SHELTER)
                 .shelterId(shelterId)
+                .remark(request.getRemark())
                 .build();
 
         return shelterAccountService.save(shelterAccount);

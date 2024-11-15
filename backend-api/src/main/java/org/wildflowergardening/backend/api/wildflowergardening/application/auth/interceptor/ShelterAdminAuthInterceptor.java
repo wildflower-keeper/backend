@@ -46,7 +46,7 @@ public class ShelterAdminAuthInterceptor implements HandlerInterceptor {
             return true;
         }
         String sessionToken = request.getHeader(AUTH_HEADER_NAME);
-        Optional<Session> sessionOptional = sessionService.getSession(sessionToken, LocalDateTime.now(), UserRole.SHELTER_ADMIN);
+        Optional<Session> sessionOptional = sessionService.getAdminSession(sessionToken, LocalDateTime.now(), UserRole.SHELTER_ADMIN);
 
         if (sessionOptional.isEmpty()) {
             response.setStatus(HttpStatus.FORBIDDEN.value());

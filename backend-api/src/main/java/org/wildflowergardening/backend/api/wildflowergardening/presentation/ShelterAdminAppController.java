@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -42,7 +41,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.Shelt
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAdminAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
@@ -54,7 +53,6 @@ import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberF
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverExcelService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.InOutStatus;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 
 @RestController
 @RequiredArgsConstructor
@@ -90,8 +88,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -103,8 +102,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -117,8 +117,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -140,8 +141,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -172,8 +174,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -189,8 +192,9 @@ public class ShelterAdminAppController {
 
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -212,8 +216,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -229,8 +234,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -247,8 +253,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -285,8 +292,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -299,8 +307,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -319,8 +328,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -340,8 +350,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -356,8 +367,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -372,8 +384,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -387,8 +400,9 @@ public class ShelterAdminAppController {
 
     //TO DO : shelter id를 기준으로 긴급 상황 전체 조회
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -401,8 +415,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -415,8 +430,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -431,8 +447,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -447,8 +464,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -463,8 +481,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -479,8 +498,9 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
+    @ShelterAdminAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))

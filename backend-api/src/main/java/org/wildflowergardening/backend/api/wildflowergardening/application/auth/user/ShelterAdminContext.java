@@ -6,7 +6,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.User
 
 @Getter
 @Builder
-public class ShelterUserContext implements UserContext {
+public class ShelterAdminContext implements UserContext {
 
     private Long userId;
     private Long shelterId;
@@ -15,7 +15,7 @@ public class ShelterUserContext implements UserContext {
 
     @Override
     public UserRole getUserRole() {
-        return UserRole.SHELTER;
+        return UserRole.SHELTER_ADMIN;
     }
 
     @Override

@@ -64,4 +64,8 @@ public class ShelterAccount {
     @Enumerated(EnumType.STRING)
     @Setter
     private UserRole userRole;
+
+    @Column(name = "remark")
+    @Setter
+    private String remark;
 }

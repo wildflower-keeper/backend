@@ -23,9 +23,15 @@ public class SessionService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Session> getSession(String sessionToken, LocalDateTime now, UserRole role) {
+    public Optional<Session> getAdminSession(String sessionToken, LocalDateTime now, UserRole role) {
         return sessionRepository.findByTokenAndUserRole(sessionToken, role)
         .filter(session -> session.getExpiredAt().isAfter(now));
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Session> getSession(String sessionToken, LocalDateTime now) {
+        return sessionRepository.findByToken(sessionToken)
+                .filter(session -> session.getExpiredAt().isAfter(now));
     }
 
     @Transactional

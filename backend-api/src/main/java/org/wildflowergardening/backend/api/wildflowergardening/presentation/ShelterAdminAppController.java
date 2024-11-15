@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterAdminAppService;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAdminAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
@@ -88,7 +87,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -102,7 +100,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -117,7 +114,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -141,7 +137,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -174,7 +169,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -192,7 +186,6 @@ public class ShelterAdminAppController {
 
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -216,7 +209,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -234,7 +226,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -253,7 +244,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -292,7 +282,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -307,7 +296,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -328,7 +316,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -350,7 +337,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -367,7 +353,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -384,7 +369,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -400,7 +384,6 @@ public class ShelterAdminAppController {
 
     //TO DO : shelter id를 기준으로 긴급 상황 전체 조회
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -415,7 +398,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -430,7 +412,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -447,7 +428,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -464,7 +444,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -481,7 +460,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -498,7 +476,6 @@ public class ShelterAdminAppController {
     }
 
     @ShelterAuthorized
-    @ShelterAdminAuthorized
     @Parameters(@Parameter(
             name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -509,5 +486,7 @@ public class ShelterAdminAppController {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         return ResponseEntity.ok().body(shelterContext.getUserRole().toString());
     }
+
+    
 
 }

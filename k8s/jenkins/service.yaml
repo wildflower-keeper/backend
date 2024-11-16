@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+  namespace: kisacloud2407
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/path: /
+    prometheus.io/port: '8080'
+spec:
+  selector:
+    app: jenkins-server
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 32001
+
+// access console by local
+// kubectl port-forward svc/jenkins-service 8080:8080 -n kisacloud2407

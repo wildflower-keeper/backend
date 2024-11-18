@@ -72,7 +72,7 @@ public class WildflowerAdminService {
         shelterAccountService.changePassword(userId, passwordEncoder.encode(newPw));
     }
 
-    public void changeShelterAccountRole(Long shelterAccountId, UserRole role) {
+    public void changeShelterAccountRole(String adminPassword, Long shelterAccountId, UserRole role) {
         if (!this.adminPassword.equals(adminPassword)) {
             throw new ForbiddenException("권한이 없습니다.");
         }

@@ -59,7 +59,7 @@ public class WildflowerAdminController {
             @RequestHeader(value = "auth-token") @Parameter(example = "test") String adminAuth,
             @PathVariable Long shelterAccountId
     ) {
-        wildflowerAdminService.changeShelterAccountRole(shelterAccountId, UserRole.SHELTER_ADMIN);
+        wildflowerAdminService.changeShelterAccountRole(adminAuth, shelterAccountId, UserRole.SHELTER_ADMIN);
         return ResponseEntity.ok().build();
     }
 }

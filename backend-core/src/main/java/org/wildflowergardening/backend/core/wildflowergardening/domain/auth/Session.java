@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CollectionId;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -42,6 +43,9 @@ public class Session {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
+
+    @Column(name = "shelter_id", nullable = false)
+    private Long shelterId;
 
     @Column(name = "username", nullable = false)
     private String username;

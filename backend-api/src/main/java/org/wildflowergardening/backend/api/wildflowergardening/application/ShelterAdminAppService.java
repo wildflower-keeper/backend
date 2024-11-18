@@ -21,6 +21,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.LocationTrackingCount;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.SleepoverCount;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterAccountRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyLogItem;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
@@ -33,8 +34,6 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.dto.
 import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
-
-import javax.swing.text.html.Option;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +73,7 @@ public class ShelterAdminAppService {
         Session session = Session.builder()
                 .token(Base64.getUrlEncoder().encodeToString(randomBytes).substring(0, 80))
                 .userRole(shelterAccount.getUserRole())
+                .shelterId(shelterAccount.getShelterId())
                 .userId(shelterAccount.getId())
                 .username(shelterAccount.getName())
                 .createdAt(now)
@@ -437,6 +437,21 @@ public class ShelterAdminAppService {
         }
 
         return dailySleepoverCountsService.getMonthlyCounts(shelterId, targetDate);
+    }
+
+    public Long createShelterAccount(ShelterAccountRequest request, Long shelterId) {
+        ShelterAccount shelterAccount = ShelterAccount.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .phoneNumber(request.getPhoneNumber())
+                .userRole(UserRole.SHELTER)
+                .shelterId(shelterId)
+                .remark(request.getRemark())
+                .build();
+
+        return shelterAccountService.save(shelterAccount);
+
     }
 
 }

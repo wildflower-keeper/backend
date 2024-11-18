@@ -57,7 +57,8 @@ public class ShelterAdminAuthInterceptor implements HandlerInterceptor {
 
         userContextHolder.setUserContext(ShelterUserContext.builder()
                 .role(session.getUserRole())
-                .shelterId(session.getUserId())
+                .shelterId(session.getShelterId())
+                .userId(session.getUserId())
                 .userName(session.getUsername())
                 .build());
         return true;

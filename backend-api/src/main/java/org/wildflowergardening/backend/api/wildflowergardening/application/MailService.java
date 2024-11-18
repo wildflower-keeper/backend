@@ -25,7 +25,7 @@ public class MailService {
     private final VerificationCodeService verificationCodeService;
 
     @Transactional
-    public void sendVerificationCodeMail(Long shelterId, String email) {
+    public void sendVerificationCodeMail(String email) {
         MimeMessage message = javaMailSender.createMimeMessage();
         String code = RandomCodeGenerator.generate();
         try {
@@ -39,7 +39,7 @@ public class MailService {
             mimeMessageHelper.setText(htmlContent, true);
 
             javaMailSender.send(message);
-            verificationCodeService.create(shelterId, code);
+            verificationCodeService.create(email, code);
 
         } catch (MessagingException e) {
             throw new RuntimeException("메일 전송 실패", e);
@@ -47,8 +47,8 @@ public class MailService {
     }
 
     //TODO : 인증 코드 확인(boolean)
-    public boolean checkVerificationCode(Long shelterId, String code) {
-        VerificationCode originCode = verificationCodeService.checkCode(shelterId).orElseThrow(() -> new IllegalArgumentException("인증 코드를 다시 발급 받아 주세요."));
+    public boolean checkVerificationCode(String email, String code) {
+        VerificationCode originCode = verificationCodeService.checkCode(email).orElseThrow(() -> new IllegalArgumentException("인증 코드를 다시 발급 받아 주세요."));
         if (!originCode.getCode().equals(code)) {
             return false;
         }

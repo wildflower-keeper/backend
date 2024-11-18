@@ -4,9 +4,11 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.User
 
 public interface UserContext {
 
-  UserRole getUserRole();
+    UserRole getUserRole();
 
-  Long getUserId();
+    Long getUserId();
 
-  String getUsername();
+    String getUsername();
+
+    Long getShelterId();
 }

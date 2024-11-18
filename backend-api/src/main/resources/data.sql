@@ -8,13 +8,20 @@ VALUES (null, true, '2024-06-01', '2024-06-04 22:34:49.497696', 1, '위치정보
         'blablablablablablablablablablablablablablablablablablablablablablablabla');
 
 -- 센터 계정
-INSERT INTO wildflower_gardening.shelter (latitude, longitude, created_at, id, last_updated_at, name, password,
-                                          phone_number, email)
+INSERT INTO wildflower_gardening.shelter (latitude, longitude, created_at, id, last_updated_at, name,
+                                          phone_number, admin_id)
 VALUES (90.00000000, 180.00000000, '2024-05-24 13:00:39.553443', 1, '2024-05-24 13:00:39.553443', '테스트 센터명 1',
-        '{bcrypt}$2a$10$GIfRKyTHl1Qv4b7fklKj2OFiPN90orA16pqgRHvZ6jR6vpSg3Zghq', '01012341234', 'hara0822@naver.com');
+        '01012341234', 1);
 
+-- 슈퍼 관리자 계정
+INSERT INTO wildflower_gardening.shelter_account (phone_number, id, shelter_id, email, password, name, user_role,
+                                                  created_at, last_updated_at)
+VALUES ('01012341234', 1, 1, 'hara0822@naver.com',
+        '{bcrypt}$2a$10$GIfRKyTHl1Qv4b7fklKj2OFiPN90orA16pqgRHvZ6jR6vpSg3Zghq',
+        '슈퍼맨', 'SHELTER_ADMIN', '2024-05-24 13:00:39.553443', '2024-05-24 13:00:39.553443');
 -- 센터 핀 번호
-INSERT INTO shelter_pin (pin, created_at, last_updated_at, shelter_id)
+INSERT
+INTO shelter_pin (pin, created_at, last_updated_at, shelter_id)
 VALUES ('1234', NOW(), NOW(), 1);
 
 -- 노숙인 계정

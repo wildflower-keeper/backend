@@ -16,7 +16,7 @@ public class DeleteExpiredCodeScheduler {
     private final JobLauncher jobLauncher;
     private final Job deleteExpiredCodeJob;
 
-    @Scheduled(cron = "0 21 22 * * ?")  // 매일 정오에 실행
+    @Scheduled(cron = "0 0 3 * * ?")  // 매일 정오에 실행
     public void runDeleteExpiredCodeJob() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())

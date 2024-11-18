@@ -25,6 +25,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.r
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyLogItem;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.ShelterAccountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
@@ -452,8 +453,24 @@ public class ShelterAdminAppService {
         return shelterAccountService.save(shelterAccount);
     }
 
-    public Long deleteShelterAccount(Long shelterId, Long accountId){
-        return shelterAccountService.deleteShelterAccount(shelterId,accountId);
+    public Long deleteShelterAccount(Long shelterId, Long accountId) {
+        return shelterAccountService.deleteShelterAccount(shelterId, accountId);
+    }
+
+    public List<ShelterAccountResponse> getShelterAccountAll(Long shelterId) {
+        List<ShelterAccount> shelterAccountList = shelterAccountService.getShelterAccountAll(shelterId);
+
+        List<ShelterAccountResponse> resultList = new ArrayList<>();
+        for (ShelterAccount account : shelterAccountList) {
+            resultList.add(ShelterAccountResponse.builder()
+                    .id(account.getId())
+                    .createdAt(account.getCreatedAt())
+                    .name(account.getName())
+                    .phoneNumber(account.getPhoneNumber())
+                    .remark(account.getRemark()).build());
+        }
+
+        return resultList;
     }
 
 }

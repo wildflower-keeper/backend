@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ShelterAccountRepository extends JpaRepository<ShelterAccount, Long> {
@@ -15,4 +16,6 @@ public interface ShelterAccountRepository extends JpaRepository<ShelterAccount, 
     Optional<ShelterAccount> findShelterAccountByEmail(String email);
 
     Optional<ShelterAccount> findShelterAccountByShelterIdAndId(Long shelterId, Long id);
+
+    List<ShelterAccount> findByShelterId(Long shelterId);
 }

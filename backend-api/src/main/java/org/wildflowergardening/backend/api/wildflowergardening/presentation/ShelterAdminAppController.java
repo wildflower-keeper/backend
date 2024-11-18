@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -40,10 +39,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.wildflowergardening.backend.api.wildflowergardening.application.ShelterAdminAppService;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAdminAuthorized;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.ShelterAuthorized;
-import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAdminAuthInterceptor;
+import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterAccountRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterInfoResponse;
@@ -87,9 +88,39 @@ public class ShelterAdminAppController {
         return ResponseEntity.ok(response);
     }
 
+    @ShelterAdminAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @PostMapping("/api/v2/shelter-admin/shelter-account")
+    @Operation(summary = "센터 관리자(일반) 생성")
+    public ResponseEntity<Long> createShelterAccount(
+            @RequestBody @Valid ShelterAccountRequest shelterAccountRequest
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        return ResponseEntity.ok(shelterAdminAppService.createShelterAccount(shelterAccountRequest, shelterContext.getShelterId()));
+    }
+
+    @ShelterAdminAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @DeleteMapping("/api/v2/shelter-admin/shelter-account/{shelterAccountId}")
+    @Operation(summary = "센터 관리자(일반) 생성")
+    public ResponseEntity<Long> createShelterAccount(
+            @RequestParam Long shelterAccountId
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        return ResponseEntity.ok(shelterAdminAppService.deleteShelterAccount(shelterContext.getShelterId(), shelterAccountId));
+    }
+
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -102,7 +133,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -116,7 +147,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -125,12 +156,12 @@ public class ShelterAdminAppController {
     public ResponseEntity<ShelterInfoResponse> getShelterInfo() {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         Long shelterId = shelterContext.getShelterId();
-        String shelterName = shelterContext.getShelterName();
+
         LocalDate now = LocalDate.now();
 
         return ResponseEntity.ok(
                 ShelterInfoResponse.builder()
-                        .shelterName(shelterName)
+                        .shelterName(shelterAdminAppService.getShelterInfo(shelterId))
                         .chiefOfficers(shelterAdminAppService.getChiefOfficers(shelterId))
                         .dutyOfficers(shelterAdminAppService.getDutyOfficers(shelterId, now, now))
                         .build()
@@ -139,7 +170,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -171,7 +202,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -188,7 +219,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -211,7 +242,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -228,7 +259,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -246,7 +277,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -284,7 +315,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -298,7 +329,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -318,7 +349,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -339,7 +370,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -355,7 +386,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -371,7 +402,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -386,7 +417,7 @@ public class ShelterAdminAppController {
     //TO DO : shelter id를 기준으로 긴급 상황 전체 조회
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -400,7 +431,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -414,7 +445,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -430,7 +461,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -446,7 +477,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
@@ -462,7 +493,7 @@ public class ShelterAdminAppController {
 
     @ShelterAuthorized
     @Parameters(@Parameter(
-            name = ShelterAdminAuthInterceptor.AUTH_HEADER_NAME,
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))

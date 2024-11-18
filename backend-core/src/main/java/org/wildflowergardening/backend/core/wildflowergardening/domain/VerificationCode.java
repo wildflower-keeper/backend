@@ -22,9 +22,9 @@ public class VerificationCode {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "shelter_id")
-    @Comment("보호소 ID")
-    private Long shelterId;
+    @Column(name = "email")
+    @Comment("이메일")
+    private String email;
 
     @Column(name = "expired_at", nullable = false)
     @Comment("만료 시간")

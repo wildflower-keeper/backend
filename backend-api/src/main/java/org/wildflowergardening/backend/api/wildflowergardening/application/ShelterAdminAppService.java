@@ -97,7 +97,7 @@ public class ShelterAdminAppService {
         new SecureRandom().nextBytes(randomBytes);
         Session session = Session.builder()
                 .token(Base64.getUrlEncoder().encodeToString(randomBytes).substring(0, 80))
-                .userRole(UserRole.SHELTER)
+                .userRole(shelterAccount.getUserRole())
                 .userId(shelterAccount.getId())
                 .shelterId(shelterAccount.getShelterId())
                 .username(shelterAccount.getName())

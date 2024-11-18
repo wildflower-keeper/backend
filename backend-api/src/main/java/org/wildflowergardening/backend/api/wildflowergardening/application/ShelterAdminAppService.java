@@ -99,6 +99,7 @@ public class ShelterAdminAppService {
                 .token(Base64.getUrlEncoder().encodeToString(randomBytes).substring(0, 80))
                 .userRole(UserRole.SHELTER)
                 .userId(shelterAccount.getId())
+                .shelterId(shelterAccount.getShelterId())
                 .username(shelterAccount.getName())
                 .createdAt(now)
                 .expiredAt(now.plusMinutes(30))

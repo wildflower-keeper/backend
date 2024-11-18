@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface VerificationCodeRepository extends JpaRepository<VerificationCode, Long> {
@@ -19,5 +20,8 @@ public interface VerificationCodeRepository extends JpaRepository<VerificationCo
             @Param("email") String email,
             @Param("currentDate") LocalDateTime currentDate
     );
+
+    @Query("SELECT v.id FROM VerificationCode v WHERE v.expiredAt < :currentTime OR v.isUsed = true")
+    List<Long> findExpiredOrUsedIds(@Param("currentTime") LocalDateTime currentTime);
 
 }

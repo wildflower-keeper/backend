@@ -8,6 +8,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterAc
 import org.wildflowergardening.backend.core.wildflowergardening.domain.ShelterAccountRepository;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.wildflowergardening.backend.core.kernel.application.exception.WildflowerExceptionType.*;
@@ -53,6 +54,11 @@ public class ShelterAccountService {
 
         shelterAccount.get().toSoftDeleted();
         return shelterAccount.get().getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShelterAccount> getShelterAccountAll(Long shelterId) {
+        return shelterAccountRepository.findByShelterId(shelterId);
     }
 
 }

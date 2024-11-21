@@ -113,7 +113,7 @@ public class ShelterAdminAppController {
     @DeleteMapping("/api/v2/shelter-admin/shelter-account/{shelterAccountId}")
     @Operation(summary = "센터 관리자 삭제")
     public ResponseEntity<Long> createShelterAccount(
-            @RequestParam Long shelterAccountId
+            @PathVariable Long shelterAccountId
     ) {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         return ResponseEntity.ok(shelterAdminAppService.deleteShelterAccount(shelterContext.getShelterId(), shelterAccountId));

@@ -6,8 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.VerificationCode;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.VerificationCodeRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,6 +34,14 @@ public class VerificationCodeService {
     public Optional<VerificationCode> checkCode(String email) {
         LocalDateTime curTime = LocalDateTime.now();
         return verificationCodeRepository.findFirstValidCodeByEmail(email, curTime);
+    }
+
+    @Transactional
+    public void deleteExpiredCode(LocalDateTime targetTime) {
+        List<Long> expiredIds = verificationCodeRepository.findExpiredOrUsedIds(targetTime);
+        for (Long id : expiredIds) {
+            verificationCodeRepository.deleteById(id);
+        }
     }
 
 }

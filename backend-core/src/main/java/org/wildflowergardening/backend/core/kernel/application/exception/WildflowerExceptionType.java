@@ -16,7 +16,9 @@ public enum WildflowerExceptionType implements ExceptionType {
     WILDFLOWER_ADMIN_AUTHENTICATION_FAILED("들꽃지기 관리자 인증에 실패했습니다."),
     HOMELESS_APP_CREATE_DEFAULT_LOCATION("기본 위치 상태 생성 실패"),
     SHELTER_ACCOUNT_EMAIL_OR_PHONENUMBER_ALREADY_EXISTS("해당 이메일 혹은 전화번호로 등록된 계정이 존재합니다"),
-    SHELTER_ACCOUNT_NOT_EXISTS("해당 메일로 등록된 계정이 없습니다.");
+    SHELTER_ACCOUNT_NOT_EXISTS("해당 메일로 등록된 계정이 없습니다."),
+    ADMIN_ACCOUNT_CANNOT_BE_DELETED("관리자 계정은 삭제할 수 없습니다.");
+
 
     private final String message;
 

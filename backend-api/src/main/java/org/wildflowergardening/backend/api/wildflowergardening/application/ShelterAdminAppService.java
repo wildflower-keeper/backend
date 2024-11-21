@@ -468,7 +468,9 @@ public class ShelterAdminAppService {
                     .createdAt(account.getCreatedAt())
                     .name(account.getName())
                     .phoneNumber(account.getPhoneNumber())
-                    .remark(account.getRemark()).build());
+                    .remark(account.getRemark())
+                    .hasAdminRole(account.getUserRole() == UserRole.SHELTER_ADMIN)
+                    .build());
         }
 
         return resultList;

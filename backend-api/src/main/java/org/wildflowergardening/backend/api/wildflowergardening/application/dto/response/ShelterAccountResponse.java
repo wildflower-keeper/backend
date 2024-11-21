@@ -1,5 +1,6 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,4 +23,7 @@ public class ShelterAccountResponse {
 
     @Schema(description = "관리자 개인 전화번호", example = "01012341234")
     private String phoneNumber;
+
+    @Schema(description = "관리자 유무", example = "false")
+    private boolean hasAdminRole;
 }

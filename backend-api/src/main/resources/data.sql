@@ -16,7 +16,7 @@ VALUES (90.00000000, 180.00000000, '2024-05-24 13:00:39.553443', 1, '2024-05-24 
 -- 슈퍼 관리자 계정
 INSERT INTO wildflower_gardening.shelter_account (phone_number, id, shelter_id, email, password, name, user_role,
                                                   created_at, last_updated_at)
-VALUES ('01012341234', 1, 1, 'hara0822@naver.com',
+VALUES ('01012341234', 1, 1, 'email@email.com',
         '{bcrypt}$2a$10$GIfRKyTHl1Qv4b7fklKj2OFiPN90orA16pqgRHvZ6jR6vpSg3Zghq',
         '슈퍼맨', 'SHELTER_ADMIN', '2024-05-24 13:00:39.553443', '2024-05-24 13:00:39.553443');
 -- 센터 핀 번호

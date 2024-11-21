@@ -15,7 +15,7 @@ public interface ShelterAccountRepository extends JpaRepository<ShelterAccount, 
 
     Optional<ShelterAccount> findShelterAccountByEmail(String email);
 
-    Optional<ShelterAccount> findShelterAccountByShelterIdAndId(Long shelterId, Long id);
+    Optional<ShelterAccount> findShelterAccountByShelterIdAndIdAndDeletedAtIsNull(Long shelterId, Long id);
 
-    List<ShelterAccount> findByShelterId(Long shelterId);
+    List<ShelterAccount> findByShelterIdAndDeletedAtIsNull(Long shelterId);
 }

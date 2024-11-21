@@ -111,7 +111,7 @@ public class ShelterAdminAppController {
             example = "session-token-example"
     ))
     @DeleteMapping("/api/v2/shelter-admin/shelter-account/{shelterAccountId}")
-    @Operation(summary = "센터 관리자(일반) 삭제")
+    @Operation(summary = "센터 관리자 삭제")
     public ResponseEntity<Long> createShelterAccount(
             @RequestParam Long shelterAccountId
     ) {

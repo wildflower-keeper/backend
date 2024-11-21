@@ -36,7 +36,6 @@ public class ShelterAccountService {
 
     @Transactional
     public void changePassword(Long id, String newPwEncrypted) {
-//        shelterAccountRepository.findShelterAccountByEmail(email).ifPresent(shelterAccount -> shelterAccount.setPassword(newPwEncrypted));
         shelterAccountRepository.findById(id).ifPresent(shelterAccount -> shelterAccount.setPassword(newPwEncrypted));
     }
 
@@ -47,9 +46,13 @@ public class ShelterAccountService {
 
     @Transactional
     public Long deleteShelterAccount(Long shelterId, Long shelterAccountId) {
-        Optional<ShelterAccount> shelterAccount = shelterAccountRepository.findShelterAccountByShelterIdAndId(shelterId, shelterAccountId);
+        Optional<ShelterAccount> shelterAccount = shelterAccountRepository.findShelterAccountByShelterIdAndIdAndDeletedAtIsNull(shelterId, shelterAccountId);
         if (shelterAccount.isEmpty()) {
             throw new IllegalArgumentException("id = " + shelterAccountId + "인 관리자가 없습니다.");
+        }
+
+        if(shelterAccount.get().getUserRole()==UserRole.SHELTER_ADMIN){
+            throw new ApplicationLogicException(ADMIN_ACCOUNT_CANNOT_BE_DELETED);
         }
 
         shelterAccount.get().toSoftDeleted();
@@ -58,7 +61,7 @@ public class ShelterAccountService {
 
     @Transactional(readOnly = true)
     public List<ShelterAccount> getShelterAccountAll(Long shelterId) {
-        return shelterAccountRepository.findByShelterId(shelterId);
+        return shelterAccountRepository.findByShelterIdAndDeletedAtIsNull(shelterId);
     }
 
 }

@@ -253,6 +253,7 @@ public class ShelterAdminAppService {
                                 .startDate(sleepover.getStartDate())
                                 .endDate(sleepover.getEndDate())
                                 .createdAt(sleepover.getCreatedAt())
+                                .emergencyContact(sleepover.getEmergencyContact())
                                 .build())
                         .collect(Collectors.toList()))
                 .pagination(PageInfoResponse.of(result.getPagination()))

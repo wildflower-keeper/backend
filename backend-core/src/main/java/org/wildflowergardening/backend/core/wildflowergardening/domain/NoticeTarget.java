@@ -1,17 +1,21 @@
 package org.wildflowergardening.backend.core.wildflowergardening.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Builder;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-public class NoticeTargets {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Entity
+@Table
+@EntityListeners(AuditingEntityListener.class)
+public class NoticeTarget {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,6 +14,7 @@ public class NoticeTargetService {
 
     @Transactional
     public Long save(NoticeTarget noticeTarget) {
+
         return noticeTargetRepository.save(noticeTarget).getId();
     }
 }

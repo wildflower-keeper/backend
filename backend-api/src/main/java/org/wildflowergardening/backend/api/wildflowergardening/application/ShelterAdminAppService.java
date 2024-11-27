@@ -497,6 +497,11 @@ public class ShelterAdminAppService {
         Long cnt = 0L;
         //notice target등록
         for (Long homelessId : request.getTargetHomelessIds()) {
+            Optional<Homeless> homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId);
+            if(homeless.isEmpty()){
+                throw new IllegalArgumentException("해당 센터에 존재하지 않는 노숙인 id가 존재합니다.");
+            }
+
             NoticeTarget noticeTarget = NoticeTarget.builder()
                     .shelterId(shelterId)
                     .noticeId(noticeId)

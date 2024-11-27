@@ -502,12 +502,12 @@ public class ShelterAdminAppService {
                 throw new IllegalArgumentException("해당 센터에 존재하지 않는 노숙인 id가 존재합니다.");
             }
 
-            NoticeTarget noticeTarget = NoticeTarget.builder()
+            NoticeRecipient noticeRecipient = NoticeRecipient.builder()
                     .shelterId(shelterId)
                     .noticeId(noticeId)
                     .homelessId(homelessId)
                     .build();
-            noticeTargetService.save(noticeTarget);
+            noticeTargetService.save(noticeRecipient);
             cnt++;
         }
 

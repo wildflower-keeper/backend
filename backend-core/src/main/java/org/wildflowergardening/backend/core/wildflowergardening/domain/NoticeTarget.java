@@ -33,10 +33,10 @@ public class NoticeTarget {
     @Comment("노숙인 id")
     private Long homelessId;
 
-    @Column(name = "is_read", nullable = false)
+    @Column(name = "read_status", nullable = false)
     @Builder.Default
     @Setter
-    private boolean isRead = false;
+    private boolean readStatus = false;
 
     @Column(name = "read_at")
     @Comment("읽은 시간")

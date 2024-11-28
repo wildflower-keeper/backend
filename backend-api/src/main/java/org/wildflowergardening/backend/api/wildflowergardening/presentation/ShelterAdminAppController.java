@@ -44,6 +44,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.interceptor.ShelterAuthInterceptor;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.CreateNoticeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterAccountRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
@@ -519,6 +520,22 @@ public class ShelterAdminAppController {
     public ResponseEntity<List<ShelterAccountResponse>> getShelterAccounts() {
         ShelterUserContext shelterUserContext = (ShelterUserContext) userContextHolder.getUserContext();
         List<ShelterAccountResponse> result = shelterAdminAppService.getShelterAccountAll(shelterUserContext.getShelterId());
+        return ResponseEntity.ok().body(result);
+    }
+
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @Operation(summary = "공지사항 등록")
+    @PostMapping("/api/v2/shelter-admin/notice")
+    public ResponseEntity<Long> getMonthlySleepoverCounts(
+            @RequestBody @Valid CreateNoticeRequest request
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        Long result = shelterAdminAppService.createNotice(shelterContext.getShelterId(), shelterContext.getUserId(), request);
         return ResponseEntity.ok().body(result);
     }
 

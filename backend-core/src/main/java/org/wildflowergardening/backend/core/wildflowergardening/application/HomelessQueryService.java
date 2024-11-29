@@ -32,6 +32,11 @@ public class HomelessQueryService {
     }
 
     @Transactional(readOnly = true)
+    public Set<Long> getHomelessIdsByShelterId(Long shelterId) {
+        return homelessRepository.findIdsByShelterId(shelterId);
+    }
+
+    @Transactional(readOnly = true)
     public Optional<Homeless> getOneByIdAndShelter(Long id, Long shelterId) {
         return homelessRepository.findByIdAndShelterId(id, shelterId);
     }

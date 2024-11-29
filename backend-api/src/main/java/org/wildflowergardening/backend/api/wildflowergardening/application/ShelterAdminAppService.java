@@ -494,10 +494,14 @@ public class ShelterAdminAppService {
                 .build();
 
         Long noticeId = noticeService.save(notice);
+        Set<Long> homelessIds = new HashSet<>(request.getTargetHomelessIds());
+        if (request.getTargetHomelessIds().isEmpty()) {
+            homelessIds = homelessQueryService.getHomelessIdsByShelterId(shelterId);
+        }
 
         Long cnt = 0L;
         //notice target등록
-        for (Long homelessId : request.getTargetHomelessIds()) {
+        for (Long homelessId : homelessIds) {
             Optional<Homeless> homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId);
             if (homeless.isEmpty()) {
                 throw new IllegalArgumentException("해당 센터에 존재하지 않는 노숙인 id가 존재합니다.");

@@ -230,7 +230,7 @@ public class HomelessAppController {
             example = "access-token-example"
     ))
     @PutMapping("/api/v2/homeless-app/notice-target/{noticeId}/read")
-    public ResponseEntity<Void> updateNoticeReadStatusRead(@PathVariable @Parameter(description = "외박신청내역 id", example = "1") Long noticeId) {
+    public ResponseEntity<Void> updateNoticeReadStatusRead(@PathVariable @Parameter(description = "공지사항 id", example = "1") Long noticeId) {
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
         homelessAppService.updateNoticeReadStatus(homelessContext.getHomelessId(), noticeId, true);
         return ResponseEntity.ok().build();

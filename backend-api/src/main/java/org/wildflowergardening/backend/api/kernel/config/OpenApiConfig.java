@@ -58,7 +58,7 @@ public class OpenApiConfig {
   public GroupedOpenApi homelessGroup() {
     return GroupedOpenApi.builder()
         .group("노숙인 앱 API")
-        .pathsToMatch("/api/v1/homeless-app/**", "/api/v2/homeless-app/**")
+        .pathsToMatch("/api/v1/homeless-app/**")
         .build();
   }
 

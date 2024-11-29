@@ -31,7 +31,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.pager
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
-import org.wildflowergardening.backend.core.wildflowergardening.application.NoticeTargetService;
+import org.wildflowergardening.backend.core.wildflowergardening.NoticeTargetService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
@@ -257,7 +257,6 @@ public class ShelterAdminAppService {
                                 .startDate(sleepover.getStartDate())
                                 .endDate(sleepover.getEndDate())
                                 .createdAt(sleepover.getCreatedAt())
-                                .emergencyContact(sleepover.getEmergencyContact())
                                 .build())
                         .collect(Collectors.toList()))
                 .pagination(PageInfoResponse.of(result.getPagination()))

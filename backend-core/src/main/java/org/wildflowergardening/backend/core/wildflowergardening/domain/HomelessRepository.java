@@ -32,4 +32,7 @@ public interface HomelessRepository extends JpaRepository<Homeless, Long> {
     Optional<Homeless> findByIdAndShelterId(Long id, Long shelter_id);
 
     Page<Homeless> findByIdIn(Set<Long> homelessIds, Pageable pageable);
+
+    @Query("select h.id from Homeless h where h.shelter.id = :shelterId")
+    Set<Long> findIdsByShelterId(@Param("shelterId") Long shelterId);
 }

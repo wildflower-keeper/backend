@@ -17,12 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.wildflowergardening.backend.api.wildflowergardening.application.HomelessAppService;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.UserContextHolder;
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.annotation.HomelessAuthorized;
@@ -225,6 +220,20 @@ public class HomelessAppController {
         String result = homelessAppService.getStatusLocationByHomelessId(homelessContext.getHomelessId(), homelessContext.getShelterId());
 
         return ResponseEntity.ok(LocationStatusResponse.builder().locationStatus(result).build());
+    }
+
+    @HomelessAuthorized
+    @Operation(summary = "공지사항 읽음 상태 변경", description = "공지사항을 읽으면 true, 안읽음 처리 하려면 false")
+    @Parameters(@Parameter(
+            name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "access-token-example"
+    ))
+    @PutMapping("/api/v2/homeless-app/notice-target/{noticeId}/read")
+    public ResponseEntity<Void> updateNoticeReadStatusRead(@PathVariable @Parameter(description = "외박신청내역 id", example = "1") Long noticeId) {
+        HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+        homelessAppService.updateNoticeReadStatus(homelessContext.getHomelessId(), noticeId, true);
+        return ResponseEntity.ok().build();
     }
 
 }

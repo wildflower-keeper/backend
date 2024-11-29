@@ -3,8 +3,8 @@ package org.wildflowergardening.backend.core.wildflowergardening.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeTarget;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeTargetRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeRecipient;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeRecipientRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,19 +13,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeTargetService {
 
-    private final NoticeTargetRepository noticeTargetRepository;
+    private final NoticeRecipientRepository noticeRecipientRepository;
 
     @Transactional
-    public Long save(NoticeTarget noticeTarget) {
-        return noticeTargetRepository.save(noticeTarget).getId();
+    public Long save(NoticeRecipient noticeRecipient) {
+        return noticeRecipientRepository.save(noticeRecipient).getId();
     }
 
     @Transactional
     public void updateReadStatus(Long noticeId, Long homelessId, boolean status) {
-        List<NoticeTarget> noticeTargetList = noticeTargetRepository.getNoticeTargetByNoticeIdAndHomelessId(noticeId, homelessId);
-        for (NoticeTarget noticeTarget : noticeTargetList) {
-            noticeTarget.setReadStatus(status);
-            noticeTarget.setReadAt(LocalDateTime.now());
+        List<NoticeRecipient> noticeRecipientList = noticeRecipientRepository.getNoticeRecipientByNoticeIdAAndHomelessId(noticeId, homelessId);
+        for (NoticeRecipient noticeRecipient : noticeRecipientList) {
+            noticeRecipient.setReadStatus(status);
+            noticeRecipient.setReadAt(LocalDateTime.now());
         }
     }
 }

@@ -45,9 +45,11 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.CreateNoticeRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.NoticePageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterAccountRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.NoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.ShelterAccountResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateChiefOfficerRequest;
@@ -537,6 +539,33 @@ public class ShelterAdminAppController {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         Long result = shelterAdminAppService.createNotice(shelterContext.getShelterId(), shelterContext.getUserId(), request);
         return ResponseEntity.ok().body(result);
+    }
+
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @GetMapping("/api/v2/shelter-admin/notice")
+    @Operation(summary = "공지사항 목록 조회", description = "필터유형(필터값) NONE() InOut_STATUS(IN_SHELTER,OUT_SHELTER, OVERNIGHT_STAY, UNCONFIRMED) SLEEPOVER() NAME(노숙인성함)")
+    public ResponseEntity<NumberPageResponse<NoticeResponse>> getNoticePage(
+            @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "NAME") NoticeFilterType filterType,
+            @RequestParam(required = false) @Parameter(description = "필터 값", example = "급식 안내") String filterValue,
+            @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
+            @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
+    ) {
+
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        NoticePageRequest pageRequest = NoticePageRequest.builder()
+                .shelterId(shelterContext.getShelterId())
+                .filterType(filterType)
+                .pageNumber(pageNumber)
+                .filterValue(filterValue)
+                .pageSize(pageSize)
+                .build();
+
+        return ResponseEntity.ok(shelterAdminAppService.getNoticePage(pageRequest));
     }
 
 }

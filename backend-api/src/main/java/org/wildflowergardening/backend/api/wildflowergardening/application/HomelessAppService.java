@@ -55,7 +55,6 @@ public class HomelessAppService {
     private final DailySleepoverCountsService dailySleepoverCountsService;
     private final DailyEmergencyCountsService dailyEmergencyCountsService;
     private final NoticeTargetService noticeTargetService;
-    private final NoticeService noticeService;
 
     public List<HomelessTermsResponse> getAllTerms() {
         return homelessTermsService.findAll(LocalDate.now()).stream()

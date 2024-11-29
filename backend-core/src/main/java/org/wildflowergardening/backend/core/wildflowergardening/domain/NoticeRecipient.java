@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table
 @EntityListeners(AuditingEntityListener.class)
-public class NoticeTarget {
+public class NoticeRecipient {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

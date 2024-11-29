@@ -21,15 +21,16 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.LocationTrackingCount;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.SleepoverCount;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.CreateNoticeRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.NoticePageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterAccountRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyLogItem;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.ShelterAccountResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.*;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
+import org.wildflowergardening.backend.api.wildflowergardening.application.pager.NoticeFilterPagerProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
+import org.wildflowergardening.backend.core.wildflowergardening.application.NoticeTargetService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
@@ -45,6 +46,7 @@ public class ShelterAdminAppService {
     private final PasswordEncoder passwordEncoder;
     private final ShelterPinService shelterPinService;
     private final HomelessFilterPagerProvider homelessFilterPagerProvider;
+    private final NoticeFilterPagerProvider noticeFilterPagerProvider;
     private final SleepoverService sleepoverService;
     private final HomelessQueryService homelessQueryService;
     private final LocationTrackingService locationTrackingService;
@@ -58,6 +60,8 @@ public class ShelterAdminAppService {
     private final DailyEmergencyCountsService dailyEmergencyCountsService;
     private final DailySleepoverCountsService dailySleepoverCountsService;
     private final ShelterAccountService shelterAccountService;
+    private final NoticeService noticeService;
+    private final NoticeTargetService noticeTargetService;
 
     public SessionResponse login(ShelterLoginRequest dto) {
         ShelterAccount shelterAccount = shelterAccountService.getShelterAccountByEmail(dto.getEmail());
@@ -475,6 +479,47 @@ public class ShelterAdminAppService {
         }
 
         return resultList;
+    }
+
+
+    @Transactional(rollbackFor = {Exception.class})
+    public Long createNotice(Long shelterId, Long shelterAccountId, CreateNoticeRequest request) {
+
+        //공지사항 등록
+        Notice notice = Notice.builder()
+                .shelterId(shelterId)
+                .title(request.getTitle())
+                .contents(request.getContent())
+                .shelterAccountId(shelterAccountId)
+                .build();
+
+        Long noticeId = noticeService.save(notice);
+
+        Long cnt = 0L;
+        //notice target등록
+        for (Long homelessId : request.getTargetHomelessIds()) {
+            Optional<Homeless> homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId);
+            if (homeless.isEmpty()) {
+                throw new IllegalArgumentException("해당 센터에 존재하지 않는 노숙인 id가 존재합니다.");
+            }
+
+            NoticeRecipient noticeRecipient = NoticeRecipient.builder()
+                    .shelterId(shelterId)
+                    .noticeId(noticeId)
+                    .homelessId(homelessId)
+                    .build();
+            noticeTargetService.save(noticeRecipient);
+            cnt++;
+        }
+
+        //TODO: FCM전송 로직 추가
+
+        return cnt;
+    }
+
+    public NumberPageResponse<NoticeResponse> getNoticePage(NoticePageRequest pageRequest) {
+        return noticeFilterPagerProvider.from(pageRequest.getFilterType())
+                .getPage(pageRequest);
     }
 
 }

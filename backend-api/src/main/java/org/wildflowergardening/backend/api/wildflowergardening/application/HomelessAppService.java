@@ -54,6 +54,7 @@ public class HomelessAppService {
     private final DailyOutingCountsService dailyOutingCountsService;
     private final DailySleepoverCountsService dailySleepoverCountsService;
     private final DailyEmergencyCountsService dailyEmergencyCountsService;
+    private final NoticeTargetService noticeTargetService;
 
     public List<HomelessTermsResponse> getAllTerms() {
         return homelessTermsService.findAll(LocalDate.now()).stream()
@@ -302,7 +303,7 @@ public class HomelessAppService {
     }
 
     @Transactional
-    public void saveEmergencyLog(long homelessId, long shelterId, EmergencyRequest request) {
+    public void saveEmergencyLog(Long homelessId, Long shelterId, EmergencyRequest request) {
 
         Homeless homeless = homelessQueryService.getOneById(homelessId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
@@ -321,7 +322,7 @@ public class HomelessAppService {
 
     }
 
-    public String getStatusLocationByHomelessId(long homelessId, long shelterId) {
+    public String getStatusLocationByHomelessId(Long homelessId, Long shelterId) {
         LocationTracking locationTracking = locationTrackingService.getLocationByHomelessId(homelessId, shelterId);
 
         InOutStatus status = locationTracking.getInOutStatus();
@@ -330,5 +331,10 @@ public class HomelessAppService {
         } else {
             return "OUT_SHELTER";
         }
+    }
+
+    @Transactional
+    public void updateNoticeReadStatus(Long homelessId, Long noticeId, boolean status) {
+        noticeTargetService.updateReadStatus(noticeId, homelessId, status);
     }
 }

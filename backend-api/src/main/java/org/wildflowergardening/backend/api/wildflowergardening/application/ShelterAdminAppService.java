@@ -30,7 +30,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.pager
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
-import org.wildflowergardening.backend.core.wildflowergardening.application.NoticeTargetService;
+import org.wildflowergardening.backend.core.wildflowergardening.application.NoticeRecipientService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.*;
@@ -61,7 +61,7 @@ public class ShelterAdminAppService {
     private final DailySleepoverCountsService dailySleepoverCountsService;
     private final ShelterAccountService shelterAccountService;
     private final NoticeService noticeService;
-    private final NoticeTargetService noticeTargetService;
+    private final NoticeRecipientService noticeRecipientService;
 
     public SessionResponse login(ShelterLoginRequest dto) {
         ShelterAccount shelterAccount = shelterAccountService.getShelterAccountByEmail(dto.getEmail());
@@ -508,7 +508,7 @@ public class ShelterAdminAppService {
                     .noticeId(noticeId)
                     .homelessId(homelessId)
                     .build();
-            noticeTargetService.save(noticeRecipient);
+            noticeRecipientService.save(noticeRecipient);
             cnt++;
         }
 

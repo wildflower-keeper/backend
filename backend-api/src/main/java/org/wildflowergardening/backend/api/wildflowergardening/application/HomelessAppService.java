@@ -54,7 +54,7 @@ public class HomelessAppService {
     private final DailyOutingCountsService dailyOutingCountsService;
     private final DailySleepoverCountsService dailySleepoverCountsService;
     private final DailyEmergencyCountsService dailyEmergencyCountsService;
-    private final NoticeTargetService noticeTargetService;
+    private final NoticeRecipientService noticeRecipientService;
 
     public List<HomelessTermsResponse> getAllTerms() {
         return homelessTermsService.findAll(LocalDate.now()).stream()
@@ -335,6 +335,6 @@ public class HomelessAppService {
 
     @Transactional
     public void updateNoticeReadStatus(Long homelessId, Long noticeId, boolean status) {
-        noticeTargetService.updateReadStatus(noticeId, homelessId, status);
+        noticeRecipientService.updateReadStatus(noticeId, homelessId, status);
     }
 }

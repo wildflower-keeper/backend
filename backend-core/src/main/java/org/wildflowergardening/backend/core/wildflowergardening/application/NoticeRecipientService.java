@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class NoticeTargetService {
+public class NoticeRecipientService {
 
     private final NoticeRecipientRepository noticeRecipientRepository;
 

@@ -8,6 +8,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeRec
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +28,10 @@ public class NoticeRecipientService {
             noticeRecipient.setReadStatus(status);
             noticeRecipient.setReadAt(LocalDateTime.now());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Long> getNoticeIdsByHomelessId(Long homelessId) {
+        return noticeRecipientRepository.getNoticeIdByHomelessId(homelessId);
     }
 }

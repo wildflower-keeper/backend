@@ -31,9 +31,11 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.NoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.resonse.LocationStatusResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
 @RestController
@@ -234,6 +236,20 @@ public class HomelessAppController {
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
         homelessAppService.updateNoticeReadStatus(homelessContext.getHomelessId(), noticeId, true);
         return ResponseEntity.ok().build();
+    }
+
+    @HomelessAuthorized
+    @Operation(summary = "공지 사항 전체 조회", description = "받은 공지사항 전체 조회")
+    @Parameters(@Parameter(
+            name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "access-token-example"
+    ))
+    @GetMapping("/api/v2/homeless-app/notice")
+    public ResponseEntity<List<NoticeResponse>> getAllNotice() {
+        HomelessUserContext homelessUserContext = (HomelessUserContext) userContextHolder.getUserContext();
+        List<NoticeResponse> noticeResponseList = homelessAppService.getNoticeListByHomeless(homelessUserContext.getHomelessId());
+        return ResponseEntity.ok(noticeResponseList);
     }
 
 }

@@ -30,6 +30,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.NoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
@@ -55,6 +56,7 @@ public class HomelessAppService {
     private final DailySleepoverCountsService dailySleepoverCountsService;
     private final DailyEmergencyCountsService dailyEmergencyCountsService;
     private final NoticeRecipientService noticeRecipientService;
+    private final NoticeService noticeService;
 
     public List<HomelessTermsResponse> getAllTerms() {
         return homelessTermsService.findAll(LocalDate.now()).stream()
@@ -336,5 +338,21 @@ public class HomelessAppService {
     @Transactional
     public void updateNoticeReadStatus(Long homelessId, Long noticeId, boolean status) {
         noticeRecipientService.updateReadStatus(noticeId, homelessId, status);
+    }
+
+    public List<NoticeResponse> getNoticeListByHomeless(Long homelessId) {
+        List<Long> noticeIdList = noticeRecipientService.getNoticeIdsByHomelessId(homelessId);
+        List<NoticeResponse> noticeList = new ArrayList<>();
+        for (Long id : noticeIdList) {
+            Notice notice = noticeService.getNoticeById(id).orElseThrow(() -> new IllegalArgumentException("id= " + id + "인 공지사항이 없습니다."));
+
+            noticeList.add(NoticeResponse.builder()
+                    .id(notice.getId())
+                    .title(notice.getTitle())
+                    .contents(notice.getContents())
+                    .sendAt(notice.getCreatedAt()).build());
+
+        }
+        return noticeList;
     }
 }

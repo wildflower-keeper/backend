@@ -11,11 +11,11 @@ import java.util.List;
 public class CreateNoticeRequest {
 
     @NotBlank(message = "공지사항의 제목이 공백일 수는 없습니다.")
-    @Schema(description = "제목")
+    @Schema(description = "제목", example = "채용 관련 안내 알려드립니다.")
     private String title;
 
     @NotBlank(message = "공지사항의 내용이 공백일 수는 없습니다.")
-    @Schema(description = "내용")
+    @Schema(description = "내용", example = "상세 내용입니다.")
     private String content;
 
     @NotNull(message = "타겟 유저가 null일 수는 없습니다.")

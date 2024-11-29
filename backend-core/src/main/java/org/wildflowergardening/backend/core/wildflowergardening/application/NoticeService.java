@@ -11,6 +11,9 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.dto.
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.PageInfoResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class NoticeService {
@@ -36,5 +39,10 @@ public class NoticeService {
                 .items(noticePage.getContent())
                 .pagination(PageInfoResult.of(noticePage))
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Notice> getNoticeById(Long noticeId) {
+        return noticeRepository.getNoticeById(noticeId);
     }
 }

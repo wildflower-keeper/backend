@@ -550,8 +550,6 @@ public class ShelterAdminAppController {
     @GetMapping("/api/v2/shelter-admin/notice")
     @Operation(summary = "공지사항 목록 조회", description = "필터유형(필터값) NONE() InOut_STATUS(IN_SHELTER,OUT_SHELTER, OVERNIGHT_STAY, UNCONFIRMED) SLEEPOVER() NAME(노숙인성함)")
     public ResponseEntity<NumberPageResponse<NoticeResponse>> getNoticePage(
-            @RequestParam(defaultValue = "NONE") @Parameter(description = "필터 유형", example = "NAME") NoticeFilterType filterType,
-            @RequestParam(required = false) @Parameter(description = "필터 값", example = "급식 안내") String filterValue,
             @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
             @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
     ) {
@@ -559,9 +557,7 @@ public class ShelterAdminAppController {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         NoticePageRequest pageRequest = NoticePageRequest.builder()
                 .shelterId(shelterContext.getShelterId())
-                .filterType(filterType)
                 .pageNumber(pageNumber)
-                .filterValue(filterValue)
                 .pageSize(pageSize)
                 .build();
 

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.dto.HomelessNamePhoneDto;
 
 public interface HomelessRepository extends JpaRepository<Homeless, Long> {
 
@@ -35,4 +36,12 @@ public interface HomelessRepository extends JpaRepository<Homeless, Long> {
 
     @Query("select h.id from Homeless h where h.shelter.id = :shelterId")
     Set<Long> findIdsByShelterId(@Param("shelterId") Long shelterId);
+
+    @Query(
+            "SELECT new org.wildflowergardening.backend.core.wildflowergardening.domain.dto.HomelessNamePhoneDto" +
+                    "(h.id, h.name, h.phoneNumber) " +
+                    "FROM Homeless h " +
+                    "WHERE h.id IN :homelessIds"
+    )
+    List<HomelessNamePhoneDto> findNameAndPhoneByIds(@Param("homelessIds") List<Long> homelessIds);
 }

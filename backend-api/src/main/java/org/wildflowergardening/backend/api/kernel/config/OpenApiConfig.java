@@ -77,12 +77,4 @@ public class OpenApiConfig {
         .pathsToMatch("/api/v1/system/**")
         .build();
   }
-
-  @Bean
-  public GroupedOpenApi testGroup() {
-    return GroupedOpenApi.builder()
-            .group("fcm text")
-            .pathsToMatch("/api/fcm/**")
-            .build();
-  }
 }

@@ -337,12 +337,4 @@ public class HomelessAppService {
     public void updateNoticeReadStatus(Long homelessId, Long noticeId, boolean status) {
         noticeRecipientService.updateReadStatus(noticeId, homelessId, status);
     }
-
-    @Transactional
-    public void updateDeviceId(Long homelessId, String deviceId) {
-        Homeless homeless = homelessQueryService.getOneById(homelessId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
-
-        homeless.setDeviceId(deviceId);
-    }
 }

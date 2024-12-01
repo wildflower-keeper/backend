@@ -31,6 +31,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.HomelessDeviceIdRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.resonse.LocationStatusResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
@@ -233,6 +234,20 @@ public class HomelessAppController {
     public ResponseEntity<Void> updateNoticeReadStatusRead(@PathVariable @Parameter(description = "공지사항 id", example = "1") Long noticeId) {
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
         homelessAppService.updateNoticeReadStatus(homelessContext.getHomelessId(), noticeId, true);
+        return ResponseEntity.ok().build();
+    }
+
+    @HomelessAuthorized
+    @Operation(summary = "fcm을 위한 디바이스 토큰 저장")
+    @Parameters(@Parameter(
+            name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "access-token-example"
+    ))
+    @PutMapping("/api/v2/homeless-app/device-id")
+    public ResponseEntity<Void> updateNoticeReadStatusRead(@RequestBody @Valid HomelessDeviceIdRequest request) {
+        HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+        homelessAppService.updateDeviceId(homelessContext.getHomelessId(), request.getDeviceId());
         return ResponseEntity.ok().build();
     }
 

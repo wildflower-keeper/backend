@@ -29,3 +29,7 @@ admin:
   password: "test"
 token:
   secret: "TokenSecretTokenSecretTokenSecretTokenSecretTokenSecret"
+fcm:
+  url: https://fcm.googleapis.com/v1/projects/${PROJECT_ID}/messages:send
+  google_api: https://www.googleapis.com/auth/cloud-platform
+  project_id: ${PROJECT_ID}

@@ -39,5 +39,7 @@ public class NoticeRecipientService {
                         NoticeRecipientReadDto::getHomelessId,
                         NoticeRecipientReadDto::isRead
                 ));
+
     }
 }
+

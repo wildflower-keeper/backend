@@ -25,3 +25,7 @@ admin:
   password: ${ADMIN_PASSWORD}
 token:
   secret: ${TOKEN_SECRET}
+fcm:
+  url: https://fcm.googleapis.com/v1/projects/${PROJECT_ID}/messages:send
+  google_api: https://www.googleapis.com/auth/cloud-platform
+  project_id: ${PROJECT_ID}

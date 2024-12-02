@@ -62,6 +62,7 @@ public class ShelterAdminAppService {
     private final ShelterAccountService shelterAccountService;
     private final NoticeService noticeService;
     private final NoticeRecipientService noticeRecipientService;
+    private final FCMService fcmService;
 
     public SessionResponse login(ShelterLoginRequest dto) {
         ShelterAccount shelterAccount = shelterAccountService.getShelterAccountByEmail(dto.getEmail());
@@ -499,6 +500,7 @@ public class ShelterAdminAppService {
             homelessIds = homelessQueryService.getHomelessIdsByShelterId(shelterId);
         }
 
+        List<String> devicesId = new ArrayList<>();
         Long cnt = 0L;
         //notice target등록
         for (Long homelessId : homelessIds) {
@@ -506,7 +508,7 @@ public class ShelterAdminAppService {
             if (homeless.isEmpty()) {
                 throw new IllegalArgumentException("해당 센터에 존재하지 않는 노숙인 id가 존재합니다.");
             }
-
+            devicesId.add(homeless.get().getDeviceId());
             NoticeRecipient noticeRecipient = NoticeRecipient.builder()
                     .shelterId(shelterId)
                     .noticeId(noticeId)
@@ -517,8 +519,15 @@ public class ShelterAdminAppService {
         }
 
         //TODO: FCM전송 로직 추가
+        FcmMultiSendDto fcmMultiSendDto = FcmMultiSendDto.builder()
+                .tokens(devicesId)
+                .title(request.getTitle())
+                .body(request.getContent())
+                .data(FcmSendDto.Data.builder().screen("notice").noticeId(noticeId).build()).build();
 
-        return cnt;
+        int successCount = fcmService.sendMessageToMultiple(fcmMultiSendDto);
+
+        return cnt - successCount;
     }
 
     public NumberPageResponse<NoticeResponse> getNoticePage(NoticePageRequest pageRequest) {

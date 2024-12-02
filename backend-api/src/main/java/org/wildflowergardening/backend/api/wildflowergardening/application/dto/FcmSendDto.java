@@ -4,8 +4,7 @@ import lombok.*;
 
 @Getter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@Builder
 public class FcmSendDto {
     private String token;
     private String title;
@@ -14,8 +13,7 @@ public class FcmSendDto {
 
     @Getter
     @ToString
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor
+    @Builder
     public static class Data {
         private String screen;
         private Long noticeId;

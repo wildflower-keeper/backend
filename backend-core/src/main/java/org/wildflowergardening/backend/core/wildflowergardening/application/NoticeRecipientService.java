@@ -22,10 +22,15 @@ public class NoticeRecipientService {
 
     @Transactional
     public void updateReadStatus(Long noticeId, Long homelessId, boolean status) {
-        List<NoticeRecipient> noticeRecipientList = noticeRecipientRepository.getNoticeRecipientByNoticeIdAndHomelessId(noticeId, homelessId);
+        List<NoticeRecipient> noticeRecipientList = noticeRecipientRepository.findByNoticeIdAndHomelessId(noticeId, homelessId);
         for (NoticeRecipient noticeRecipient : noticeRecipientList) {
             noticeRecipient.setReadStatus(status);
             noticeRecipient.setReadAt(LocalDateTime.now());
         }
+    }
+
+    @Transactional
+    public List<NoticeRecipient> getAllByNoticeIdAndShelterId(Long noticeId, Long shelterId) {
+        return noticeRecipientRepository.findByNoticeIdAndShelterId(noticeId, shelterId);
     }
 }

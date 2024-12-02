@@ -30,7 +30,7 @@ public class NoticeService {
     @Transactional(readOnly = true)
     public NumberPageResult<Notice> getPage(Long shelterId, int pageNumber, int pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize, SORT_CREATED_AT_DESC);
-        Page<Notice> noticePage = noticeRepository.getNoticeByShelterId(shelterId, pageRequest);
+        Page<Notice> noticePage = noticeRepository.findByShelterId(shelterId, pageRequest);
 
         return NumberPageResult.<Notice>builder()
                 .items(noticePage.getContent())

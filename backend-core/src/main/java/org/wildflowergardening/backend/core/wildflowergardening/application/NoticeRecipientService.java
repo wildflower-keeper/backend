@@ -29,8 +29,15 @@ public class NoticeRecipientService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<NoticeRecipient> getAllByNoticeIdAndShelterId(Long noticeId, Long shelterId) {
         return noticeRecipientRepository.findByNoticeIdAndShelterId(noticeId, shelterId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Long> getRecentNoticeIdByHomelessId(Long homelessId) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusDays(3);
+        return noticeRecipientRepository.findRecentNoticeIds(homelessId, startDate, endDate);
     }
 }

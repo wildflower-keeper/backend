@@ -110,7 +110,7 @@ VALUES
     (9, '2024-12-02 20:59:25.068092', '2024-12-02 20:59:25.068092', 1, 1, '내용입니다 9', '제목입니다 9');
 
 -- 수신자
-INSERT INTO notice_recipient (notice_id, created_at, homeless_id, read_status, read_at, shelter_id)
+INSERT INTO notice_recipient (notice_id, created_at, homeless_id, is_read, read_at, shelter_id)
 VALUES
     (1, '2024-11-29 20:58:28.288994', 1, false, NULL, 1),
     (2, '2024-11-30 20:58:33.857096', 1, false, NULL, 1),

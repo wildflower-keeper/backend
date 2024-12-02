@@ -535,4 +535,40 @@ public class ShelterAdminAppService {
                 .getPage(pageRequest);
     }
 
+    public NoticeRecipientStatusResponse getNoticeRecipientStatus(Long noticeId, Long shelterId) {
+        //1. 해당 공지사항을 받은 사람들의 목록 가져오기
+        Map<Long, Boolean> homelessIdsAndReadStatus = noticeRecipientService.getAllHomelessIdAndReadByNoticeId(noticeId, shelterId);
+        Map<Long, String[]> homelessInfo = homelessQueryService.getNameAndPhoneById(homelessIdsAndReadStatus.keySet().stream().toList());
+
+        // 2. NoticeRecipientInfoResult 리스트 생성
+        List<NoticeRecipientInfoResult> items = homelessIdsAndReadStatus.entrySet().stream()
+                .map(entry -> {
+                    Long homelessId = entry.getKey();
+                    boolean isRead = entry.getValue();
+                    String[] info = homelessInfo.get(homelessId);
+                    return NoticeRecipientInfoResult.builder()
+                            .homelessId(homelessId)
+                            .homelessName(info[0])
+                            .homelessPhoneNumber(info[1])
+                            .isRead(isRead)
+                            .build();
+                })
+                .toList();
+
+        // 3. 읽음 현황 정보 계산
+        Long totalCount = (long) items.size();
+        Long readCount = items.stream().filter(NoticeRecipientInfoResult::isRead).count();
+        Long unReadCount = totalCount - readCount;
+
+        // 4. NoticeRecipientStatusResponse 생성 및 반환
+        return NoticeRecipientStatusResponse.builder()
+                .items(items)
+                .noticeReadInfo(NoticeRecipientStatusResponse.NoticeReadInfo.builder()
+                        .totalCount(totalCount)
+                        .readCount(readCount)
+                        .unReadCount(unReadCount)
+                        .build())
+                .build();
+    }
+
 }

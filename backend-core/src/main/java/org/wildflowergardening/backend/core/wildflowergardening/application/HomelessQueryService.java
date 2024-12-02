@@ -1,7 +1,10 @@
 package org.wildflowergardening.backend.core.wildflowergardening.application;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +18,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.dto.
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.NumberPageResult.PageInfoResult;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.HomelessRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.dto.HomelessNamePhoneDto;
 
 @Service
 @RequiredArgsConstructor
@@ -89,5 +93,14 @@ public class HomelessQueryService {
     @Transactional(readOnly = true)
     public long count(Long shelterId) {
         return homelessRepository.countByShelterId(shelterId);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Long, String[]> getNameAndPhoneById(List<Long> homelessIds) {
+        return homelessRepository.findNameAndPhoneByIds(homelessIds).stream()
+                .collect(Collectors.toMap(
+                        HomelessNamePhoneDto::getId,
+                        dto -> new String[]{dto.getName(), dto.getPhoneNumber()}
+                ));
     }
 }

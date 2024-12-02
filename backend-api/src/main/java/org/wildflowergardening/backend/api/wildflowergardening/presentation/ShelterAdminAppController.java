@@ -47,10 +47,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.CreateNoticeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.NoticePageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterAccountRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.EmergencyResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessDetailResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.NoticeResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.ShelterAccountResponse;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.*;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.ShelterInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.UpdateChiefOfficerRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
@@ -564,6 +561,22 @@ public class ShelterAdminAppController {
 
 
         return ResponseEntity.ok(shelterAdminAppService.getNoticePage(pageRequest));
+    }
+
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @GetMapping("/api/v2/shelter-admin/notice-recipient/{noticeId}")
+    @Operation(summary = "공지사항 수신 목록 조회", description = "noticeId를 가진 공지사항의 수신 여부 목록을 조회함.")
+    public ResponseEntity<NoticeRecipientStatusResponse> getNoticeRecipientReadStatus(
+            @PathVariable Long noticeId
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        NoticeRecipientStatusResponse response = shelterAdminAppService.getNoticeRecipientStatus(noticeId, shelterContext.getShelterId());
+        return ResponseEntity.ok(response);
     }
 
 }

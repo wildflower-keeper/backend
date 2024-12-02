@@ -542,6 +542,7 @@ public class ShelterAdminAppService {
 
         // 2. NoticeRecipientInfoResult 리스트 생성
         List<NoticeRecipientInfoResult> items = homelessIdsAndReadStatus.entrySet().stream()
+                .filter(entry -> homelessInfo.get(entry.getKey()) != null)
                 .map(entry -> {
                     Long homelessId = entry.getKey();
                     boolean isRead = entry.getValue();

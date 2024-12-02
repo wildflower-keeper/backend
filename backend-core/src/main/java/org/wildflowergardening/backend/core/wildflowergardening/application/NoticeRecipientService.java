@@ -39,7 +39,14 @@ public class NoticeRecipientService {
                         NoticeRecipientReadDto::getHomelessId,
                         NoticeRecipientReadDto::isRead
                 ));
+    }
 
+
+    @Transactional(readOnly = true)
+    public List<Long> getRecentNoticeIdByHomelessId(Long homelessId) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusDays(3);
+        return noticeRecipientRepository.findRecentNoticeIds(homelessId, startDate, endDate);
     }
 }
 

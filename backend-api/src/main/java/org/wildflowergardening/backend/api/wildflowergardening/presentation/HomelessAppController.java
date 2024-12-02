@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +29,9 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.NoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.HomelessDeviceIdRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.resonse.LocationStatusResponse;
-import org.wildflowergardening.backend.core.wildflowergardening.application.dto.BaseResponseBody;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 
@@ -251,4 +249,16 @@ public class HomelessAppController {
         return ResponseEntity.ok().build();
     }
 
+    @HomelessAuthorized
+    @Operation(summary = "최근(3일 이내)의 공지 사항 조회")
+    @Parameters(@Parameter(
+            name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "access-token-example"
+    ))
+    @GetMapping("/api/v2/homeless-app/notice")
+    public ResponseEntity<Map<LocalDate, List<NoticeResponse>>> getRecentNotice() {
+        HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+        return ResponseEntity.ok(homelessAppService.getRecentNotice(homelessContext.getHomelessId()));
+    }
 }

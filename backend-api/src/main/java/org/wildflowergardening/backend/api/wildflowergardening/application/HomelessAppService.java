@@ -7,12 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +26,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.NoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
@@ -55,6 +52,7 @@ public class HomelessAppService {
     private final DailySleepoverCountsService dailySleepoverCountsService;
     private final DailyEmergencyCountsService dailyEmergencyCountsService;
     private final NoticeRecipientService noticeRecipientService;
+    private final NoticeService noticeService;
 
     public List<HomelessTermsResponse> getAllTerms() {
         return homelessTermsService.findAll(LocalDate.now()).stream()
@@ -344,5 +342,30 @@ public class HomelessAppService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
 
         homeless.setDeviceId(deviceId);
+    }
+
+    public Map<LocalDate, List<NoticeResponse>> getRecentNotice(Long homelessId) {
+        List<Long> noticeIds = noticeRecipientService.getRecentNoticeIdByHomelessId(homelessId);
+        List<Notice> noticeList = noticeService.getAllByIdIn(noticeIds);
+
+
+        Map<LocalDate, List<NoticeResponse>> result = noticeList.stream()
+                .map(notice -> NoticeResponse.builder()
+                        .id(notice.getId())
+                        .title(notice.getTitle())
+                        .contents(notice.getContents())
+                        .sendAt(notice.getCreatedAt())
+                        .build())
+                .collect(Collectors.groupingBy(
+                        notice -> notice.getSendAt().toLocalDate(),
+                        () -> new TreeMap<LocalDate, List<NoticeResponse>>(Comparator.reverseOrder()),
+                        Collectors.collectingAndThen(Collectors.toList(),
+                                list -> {
+                                    list.sort(Comparator.comparing(NoticeResponse::getSendAt).reversed());
+                                    return list;
+                                })
+                ));
+
+        return result;
     }
 }

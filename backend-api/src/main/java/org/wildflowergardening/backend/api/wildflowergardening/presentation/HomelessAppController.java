@@ -29,6 +29,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessNoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.NoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.HomelessDeviceIdRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.resonse.LocationStatusResponse;
@@ -257,7 +258,7 @@ public class HomelessAppController {
             example = "access-token-example"
     ))
     @GetMapping("/api/v2/homeless-app/notice")
-    public ResponseEntity<Map<LocalDate, List<NoticeResponse>>> getRecentNotice() {
+    public ResponseEntity<Map<LocalDate, List<HomelessNoticeResponse>>> getRecentNotice() {
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
         return ResponseEntity.ok(homelessAppService.getRecentNotice(homelessContext.getHomelessId()));
     }

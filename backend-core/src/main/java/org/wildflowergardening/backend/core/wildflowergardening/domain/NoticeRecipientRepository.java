@@ -21,14 +21,12 @@ public interface NoticeRecipientRepository extends JpaRepository<NoticeRecipient
                     "and nr.shelterId = :shelterId")
     List<NoticeRecipientReadDto> findAllHomelessIdAndReadByNoticeId(@Param("noticeId") Long noticeId, @Param("shelterId") Long shelterId);
 
-    List<NoticeRecipient> findByNoticeIdAndShelterId(Long noticeId, Long shelterId);
-
-    @Query("SELECT nr.noticeId FROM NoticeRecipient nr " +
+    @Query("SELECT nr FROM NoticeRecipient nr " +
             "WHERE nr.homelessId = :homelessId " +
             "AND nr.createdAt >= :startDate " +
             "AND nr.createdAt < :endDate " +
             "ORDER BY nr.createdAt DESC")
-    List<Long> findRecentNoticeIds(@Param("homelessId") Long homelessId,
+    List<NoticeRecipient> findRecentNoticeIds(@Param("homelessId") Long homelessId,
                                    @Param("startDate") LocalDateTime startDate,
                                    @Param("endDate") LocalDateTime endDate);
 }

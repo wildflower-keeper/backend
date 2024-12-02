@@ -43,7 +43,7 @@ public class NoticeRecipientService {
 
 
     @Transactional(readOnly = true)
-    public List<Long> getRecentNoticeIdByHomelessId(Long homelessId) {
+    public List<NoticeRecipient> getRecentNoticeIdByHomelessId(Long homelessId) {
         LocalDateTime endDate = LocalDateTime.now();
         LocalDateTime startDate = endDate.minusDays(3);
         return noticeRecipientRepository.findRecentNoticeIds(homelessId, startDate, endDate);

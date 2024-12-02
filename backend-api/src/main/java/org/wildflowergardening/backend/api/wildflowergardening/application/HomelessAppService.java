@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessTokenResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessNoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.NoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
@@ -344,24 +346,33 @@ public class HomelessAppService {
         homeless.setDeviceId(deviceId);
     }
 
-    public Map<LocalDate, List<NoticeResponse>> getRecentNotice(Long homelessId) {
-        List<Long> noticeIds = noticeRecipientService.getRecentNoticeIdByHomelessId(homelessId);
+    public Map<LocalDate, List<HomelessNoticeResponse>> getRecentNotice(Long homelessId) {
+        List<NoticeRecipient> noticeRecipientList = noticeRecipientService.getRecentNoticeIdByHomelessId(homelessId);
+        List<Long> noticeIds = noticeRecipientList.stream()
+                .map(NoticeRecipient::getNoticeId)
+                .collect(Collectors.toList());
         List<Notice> noticeList = noticeService.getAllByIdIn(noticeIds);
 
+        Map<Long, NoticeRecipient> noticeRecipientMap = noticeRecipientList.stream()
+                .collect(Collectors.toMap(NoticeRecipient::getNoticeId, Function.identity()));
 
-        Map<LocalDate, List<NoticeResponse>> result = noticeList.stream()
-                .map(notice -> NoticeResponse.builder()
-                        .id(notice.getId())
-                        .title(notice.getTitle())
-                        .contents(notice.getContents())
-                        .sendAt(notice.getCreatedAt())
-                        .build())
+        Map<LocalDate, List<HomelessNoticeResponse>> result = noticeList.stream()
+                .map(notice -> {
+                    NoticeRecipient recipient = noticeRecipientMap.get(notice.getId());
+                    return HomelessNoticeResponse.builder()
+                            .id(notice.getId())
+                            .title(notice.getTitle())
+                            .contents(notice.getContents())
+                            .sendAt(notice.getCreatedAt())
+                            .isRead(recipient.isRead())
+                            .build();
+                })
                 .collect(Collectors.groupingBy(
                         notice -> notice.getSendAt().toLocalDate(),
-                        () -> new TreeMap<LocalDate, List<NoticeResponse>>(Comparator.reverseOrder()),
+                        () -> new TreeMap<LocalDate, List<HomelessNoticeResponse>>(Comparator.reverseOrder()),
                         Collectors.collectingAndThen(Collectors.toList(),
                                 list -> {
-                                    list.sort(Comparator.comparing(NoticeResponse::getSendAt).reversed());
+                                    list.sort(Comparator.comparing(HomelessNoticeResponse::getSendAt).reversed());
                                     return list;
                                 })
                 ));

@@ -549,18 +549,16 @@ public class ShelterAdminAppService {
                     return NoticeRecipientInfoResult.builder()
                             .homelessId(homelessId)
                             .homelessName(info[0])
-                            .homelessPhoneNumber(info[1])
+                            .homelessPhoneNumber(info[1] != null ? info[1] : "")
                             .isRead(isRead)
                             .build();
                 })
                 .toList();
 
-        // 3. 읽음 현황 정보 계산
         Long totalCount = (long) items.size();
         Long readCount = items.stream().filter(NoticeRecipientInfoResult::isRead).count();
         Long unReadCount = totalCount - readCount;
 
-        // 4. NoticeRecipientStatusResponse 생성 및 반환
         return NoticeRecipientStatusResponse.builder()
                 .items(items)
                 .noticeReadInfo(NoticeRecipientStatusResponse.NoticeReadInfo.builder()

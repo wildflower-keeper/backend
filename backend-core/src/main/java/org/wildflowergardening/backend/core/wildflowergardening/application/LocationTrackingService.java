@@ -164,7 +164,6 @@ public class LocationTrackingService {
         }
 
         locationTrackingRepository.delete(locationTrackingOptional.get());
-        return;
     }
 
 }

@@ -30,7 +30,6 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessNoticeResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.NoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.HomelessDeviceIdRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.resonse.LocationStatusResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
@@ -187,7 +186,7 @@ public class HomelessAppController {
             @PathVariable @Parameter(description = "외박신청내역 id", example = "1") Long sleepoverId
     ) {
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
-        homelessAppService.deleteSleepover(homelessContext.getHomelessId(), sleepoverId, homelessContext.getShelterId());
+        homelessAppService.deleteSleepover(homelessContext.getHomelessId(), sleepoverId);
         return ResponseEntity.ok().build();
     }
 

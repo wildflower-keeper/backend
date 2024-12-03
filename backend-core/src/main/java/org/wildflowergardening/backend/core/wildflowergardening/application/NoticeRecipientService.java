@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeRecipient;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeRecipientRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.dto.NoticeRecipientReadDto;
 
 import java.time.LocalDateTime;
@@ -47,6 +49,12 @@ public class NoticeRecipientService {
         LocalDateTime endDate = LocalDateTime.now();
         LocalDateTime startDate = endDate.minusDays(3);
         return noticeRecipientRepository.findRecentNoticeIds(homelessId, startDate, endDate);
+    }
+    
+    @Transactional
+    public void deleteAllByHomelessId(Long homelessId) {
+        List<NoticeRecipient> noticeRecipients = noticeRecipientRepository.findAllByHomelessId(homelessId);
+        noticeRecipientRepository.deleteAll(noticeRecipients);
     }
 }
 

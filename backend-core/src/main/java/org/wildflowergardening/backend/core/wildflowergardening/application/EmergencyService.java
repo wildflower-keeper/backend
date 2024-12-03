@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.EmergencyLog;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.EmergencyLogRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -26,8 +27,15 @@ public class EmergencyService {
         return emergencyLogRepository.findByShelterIdOrderByCreatedAtDesc(shelterId);
     }
 
-    public List<EmergencyLog> getEmergencyListOneDay(long shelterId, LocalDateTime targetDate){
+    public List<EmergencyLog> getEmergencyListOneDay(long shelterId, LocalDateTime targetDate) {
         return emergencyLogRepository.findAllByCreatedAtBetweenAndShelterId(targetDate.minusHours(24), targetDate, shelterId);
+    }
+
+    public Long getCountByShelterIdAndDate(Long shelterId, LocalDate targetDate) {
+        LocalDateTime start = targetDate.atStartOfDay();
+        LocalDateTime end = targetDate.plusDays(1).atStartOfDay().minusSeconds(1);
+
+        return emergencyLogRepository.findCountByShelterIdAndDate(shelterId, start, end);
     }
 
 }

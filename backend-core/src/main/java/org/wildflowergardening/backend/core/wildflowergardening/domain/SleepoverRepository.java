@@ -37,6 +37,18 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
             @Param("targetDate") LocalDate targetDate
     );
 
+    @Query("SELECT s FROM Sleepover s " +
+            "WHERE s.shelterId = :shelterId " +
+            "AND s.startDate <= :endDate " +
+            "AND s.endDate >= :startDate " +
+            "AND s.deletedAt IS NULL")
+    List<Sleepover> filterSleepoverByShelterId(
+            @Param("shelterId") Long shelterId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+
     @Query("select s.homelessId from Sleepover s "
             + " where s.startDate<= :targetDate and s.endDate > :targetDate "
             + " and s.deletedAt is null")

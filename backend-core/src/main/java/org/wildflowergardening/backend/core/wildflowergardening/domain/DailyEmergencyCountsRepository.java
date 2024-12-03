@@ -20,5 +20,6 @@ public interface DailyEmergencyCountsRepository extends JpaRepository<DailyEmerg
     );
 
     List<DailyEmergencyCounts> findByShelterIdAndRecordedDateIsBetween(Long shelterId, LocalDate startDate, LocalDate endDate);
+
     Optional<DailyEmergencyCounts> findByShelterIdAndRecordedDate(Long shelterId, LocalDate now);
 }

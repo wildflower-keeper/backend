@@ -76,6 +76,15 @@ public class SleepoverService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public List<Sleepover> filterSleepoverShelterId(
+            Long shelterId, LocalDate startDate, LocalDate endDate
+    ) {
+        return sleepoverRepository.filterSleepoverByShelterId(
+                shelterId, startDate, endDate
+        );
+    }
+
     /*
      외박신청 전체 목록 조회 (최신순)
      */

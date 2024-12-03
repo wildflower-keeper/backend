@@ -18,28 +18,6 @@ import java.util.Optional;
 public class DailyEmergencyCountsService {
     private final DailyEmergencyCountsRepository dailyEmergencyCountsRepository;
 
-    @Transactional
-    public Long create(Long shelterId, Long count, LocalDate now) {
-        return dailyEmergencyCountsRepository.save(DailyEmergencyCounts.builder()
-                .shelterId(shelterId)
-                .recordedDate(now)
-                .count(count)
-                .build()).getId();
-    }
-
-    @Transactional
-    public DailyEmergencyCounts getOrCreateDailyEmergencyCounts(Long shelterId, LocalDate targetDate) {
-        return dailyEmergencyCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate)
-                .orElseGet(() -> {
-                    DailyEmergencyCounts newCount = DailyEmergencyCounts.builder()
-                            .shelterId(shelterId)
-                            .recordedDate(targetDate)
-                            .count(0L)
-                            .build();
-                    return dailyEmergencyCountsRepository.save(newCount);
-                });
-    }
-
     @Transactional(readOnly = true)
     public List<Long> getMonthlyCounts(Long shelterId, LocalDate now) {
         LocalDate startDate = LocalDate.of(now.getYear(), now.getMonth(), 1);
@@ -55,6 +33,24 @@ public class DailyEmergencyCountsService {
 
         return result;
     }
+
+    @Transactional()
+    public Long createOrUpdate(Long shelterId, LocalDate date, Long count) {
+        Optional<DailyEmergencyCounts> optional = dailyEmergencyCountsRepository.findByShelterIdAndRecordedDate(shelterId, date);
+
+        if (optional.isEmpty()) {
+            return dailyEmergencyCountsRepository.save(DailyEmergencyCounts.builder()
+                    .shelterId(shelterId)
+                    .recordedDate(date)
+                    .count(count)
+                    .build()).getCount();
+        }
+
+        DailyEmergencyCounts dailyEmergencyCounts = optional.get();
+        dailyEmergencyCounts.setCount(count);
+        return dailyEmergencyCounts.getCount();
+    }
+
 
     @Transactional(readOnly = true)
     public Optional<DailyEmergencyCounts> getEmergencyCountsByDate(Long shelterId, LocalDate now) {

@@ -5,8 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.DailyHomelessCounts;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.DailyHomelessCountsRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.InOutStatus;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationTracking;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,19 +20,6 @@ import java.util.Optional;
 public class DailyHomelessCountsService {
 
     private final DailyHomelessCountsRepository dailyHomelessCountsRepository;
-
-    @Transactional
-    public DailyHomelessCounts getOrCreateDailyHomelessCount(Long shelterId, LocalDate targetDate) {
-        return dailyHomelessCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate)
-                .orElseGet(() -> {
-                    DailyHomelessCounts newCount = DailyHomelessCounts.builder()
-                            .shelterId(shelterId)
-                            .recordedDate(targetDate)
-                            .count(0L)
-                            .build();
-                    return dailyHomelessCountsRepository.save(newCount);
-                });
-    }
 
     @Transactional(readOnly = true)
     public List<Long> getMonthlyCounts(Long shelterId, LocalDate now) {
@@ -43,13 +33,25 @@ public class DailyHomelessCountsService {
             int dayOfMonth = count.getRecordedDate().getDayOfMonth();
             result.set(dayOfMonth - 1, count.getCount());
         }
-
         return result;
     }
 
-    @Transactional(readOnly = true)
-    public Optional<DailyHomelessCounts> getHomelessCountsByDate(Long shelterId, LocalDate now) {
-        return dailyHomelessCountsRepository.findByShelterIdAndRecordedDate(shelterId, now);
-    }
+    @Transactional
+    public Long createOrUpdate(Long shelterId, LocalDate date, Long count) {
+        Optional<DailyHomelessCounts> dailyHomelessCountsOptional =
+                dailyHomelessCountsRepository.findByShelterIdAndRecordedDate(shelterId, date);
 
+        if (dailyHomelessCountsOptional.isEmpty()) {
+            return dailyHomelessCountsRepository.save(DailyHomelessCounts.builder()
+                    .count(count)
+                    .shelterId(shelterId)
+                    .recordedDate(date)
+                    .build()).getCount();
+        }
+
+        DailyHomelessCounts dailyHomelessCounts = dailyHomelessCountsOptional.get();
+        dailyHomelessCounts.setCount(count);
+
+        return dailyHomelessCounts.getCount();
+    }
 }

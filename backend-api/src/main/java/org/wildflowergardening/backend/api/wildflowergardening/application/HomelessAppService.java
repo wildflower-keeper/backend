@@ -49,10 +49,7 @@ public class HomelessAppService {
     private final HomelessAppJwtProvider homelessAppJwtProvider;
     private final LocationTrackingService locationTrackingService;
     private final EmergencyService emergencyService;
-    private final DailyHomelessCountsService dailyHomelessCountsService;
     private final DailyOutingCountsService dailyOutingCountsService;
-    private final DailySleepoverCountsService dailySleepoverCountsService;
-    private final DailyEmergencyCountsService dailyEmergencyCountsService;
     private final NoticeRecipientService noticeRecipientService;
     private final NoticeService noticeService;
 
@@ -121,10 +118,6 @@ public class HomelessAppService {
 
         //기본 재실 상태값 생성
         locationTrackingService.createOrUpdate(homelessId, request.getShelterId(), InOutStatus.IN_SHELTER);
-
-        LocalDate targetDate = LocalDate.now();
-        DailyHomelessCounts counts = dailyHomelessCountsService.getOrCreateDailyHomelessCount(request.getShelterId(), targetDate);
-        counts.setCount(homelessQueryService.count(request.getShelterId()));
 
         return HomelessTokenResponse.builder()
                 .homelessId(homelessId)
@@ -214,13 +207,13 @@ public class HomelessAppService {
         }
 
 
-        LocalDate currentDate = dto.getStartDate();
+/*        LocalDate currentDate = dto.getStartDate();
         while (!currentDate.isAfter(dto.getEndDate())) {
             DailySleepoverCounts dailySleepoverCounts = dailySleepoverCountsService.getOrCreateDailySleepoverCounts(dto.getShelterId(), currentDate);
             dailySleepoverCounts.setCount(dailySleepoverCounts.getCount() + 1);
 
             currentDate = currentDate.plusDays(1);
-        }
+        }*/
 
 
         return sleepoverService.create(dto);
@@ -290,16 +283,8 @@ public class HomelessAppService {
     }
 
     @Transactional
-    public void deleteSleepover(Long homelessId, Long sleepoverId, Long shelterId) {
-        Sleepover sleepover = sleepoverService.delete(homelessId, sleepoverId);
-
-        LocalDate currentDate = sleepover.getStartDate();
-        while (!currentDate.isAfter(sleepover.getEndDate())) {
-            DailySleepoverCounts dailySleepoverCounts = dailySleepoverCountsService.getOrCreateDailySleepoverCounts(shelterId, currentDate);
-            dailySleepoverCounts.setCount(dailySleepoverCounts.getCount() - 1);
-
-            currentDate = currentDate.plusDays(1);
-        }
+    public void deleteSleepover(Long homelessId, Long sleepoverId) {
+        sleepoverService.delete(homelessId, sleepoverId);
     }
 
     @Transactional
@@ -307,11 +292,6 @@ public class HomelessAppService {
 
         Homeless homeless = homelessQueryService.getOneById(homelessId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
-
-        LocalDate targetDate = LocalDate.now();
-        DailyEmergencyCounts dailyEmergencyCounts = dailyEmergencyCountsService.getOrCreateDailyEmergencyCounts(shelterId, targetDate);
-
-        dailyEmergencyCounts.setCount(dailyEmergencyCounts.getCount() + 1);
 
         emergencyService.save(EmergencyLog.builder()
                 .homless(homeless)

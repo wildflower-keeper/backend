@@ -25,7 +25,7 @@ public class SessionService {
     @Transactional(readOnly = true)
     public Optional<Session> getAdminSession(String sessionToken, LocalDateTime now, UserRole role) {
         return sessionRepository.findByTokenAndUserRole(sessionToken, role)
-        .filter(session -> session.getExpiredAt().isAfter(now));
+                .filter(session -> session.getExpiredAt().isAfter(now));
     }
 
     @Transactional(readOnly = true)
@@ -38,5 +38,11 @@ public class SessionService {
     public void deleteAllBy(UserRole userRole, Long userId) {
         List<Session> sessions = sessionRepository.findAllByUserIdAndUserRole(userId, userRole);
         sessionRepository.deleteAll(sessions);
+    }
+
+    @Transactional
+    public void deleteExpiredCode(LocalDateTime targetTime) {
+        List<Session> expiredSessions = sessionRepository.findByExpiredAtLessThan(targetTime);
+        sessionRepository.deleteAll(expiredSessions);
     }
 }

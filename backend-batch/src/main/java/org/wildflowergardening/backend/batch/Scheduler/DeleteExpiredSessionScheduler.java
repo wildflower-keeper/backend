@@ -12,15 +12,15 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableScheduling
 @RequiredArgsConstructor
-public class DeleteExpiredCodeScheduler {
+public class DeleteExpiredSessionScheduler {
     private final JobLauncher jobLauncher;
-    private final Job deleteExpiredCodeJob;
+    private final Job deleteExpiredSessionJob;
 
-    @Scheduled(cron = "0 0 3 * * ?")  // 매일 새벽 3시에 실행
-    public void runDeleteExpiredCodeJob() throws Exception {
+    @Scheduled(cron = "0 0 4 * * ?")  // 매일 새벽 4시에 실행
+    public void runDeleteExpiredSessionJob() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
-        jobLauncher.run(deleteExpiredCodeJob, jobParameters);
+        jobLauncher.run(deleteExpiredSessionJob, jobParameters);
     }
 }

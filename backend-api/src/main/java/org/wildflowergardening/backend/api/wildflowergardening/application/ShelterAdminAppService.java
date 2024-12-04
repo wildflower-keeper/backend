@@ -131,7 +131,7 @@ public class ShelterAdminAppService {
 
     public HomelessDetailResponse getHomeless(Long shelterId, Long homelessId, LocalDate targetDate) {
         Homeless homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId).orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
-        boolean isSleepOverDate = sleepoverService.exist(homelessId, targetDate);
+        boolean isSleepOverDate = sleepoverService.isExist(homelessId, targetDate);
 
         LocationTracking locationTracking = locationTrackingService.getLocationByHomelessId(homelessId, shelterId);
 
@@ -222,7 +222,6 @@ public class ShelterAdminAppService {
         return result;
     }
 
-    //전체 위급 상황 발생 내역 조회
     public EmergencyResponse getEmergencyListByShelterId(Long shelterId) {
         List<EmergencyLog> allList = emergencyService.getEmergencyLogByShelterId(shelterId);
 
@@ -238,13 +237,16 @@ public class ShelterAdminAppService {
     @Transactional
     public void updateHomelessInOutStatus(Long shelterId, Long homelessId, UpdateLocationRequest request) {
         homelessQueryService.getOneByIdAndShelter(homelessId, shelterId).orElseThrow(() -> new IllegalArgumentException("노숙인 정보가 존재하지 않습니다."));
+        LocalDate targetDate = LocalDate.now();
+
+        if (request.getLocationStatus() == InOutStatus.OUT_SHELTER && sleepoverService.isExist(homelessId, targetDate)) {
+            request.setLocationStatus(InOutStatus.OVERNIGHT_STAY);
+        }
 
         locationTrackingService.createOrUpdate(homelessId, shelterId, request.getLocationStatus());
 
         if (request.getLocationStatus() == InOutStatus.OUT_SHELTER) {
-            LocalDate targetDate = LocalDate.now();
-            DailyOutingCounts dailyOutingCounts = dailyOutingCountsService.getOrCreateDailyOutingCounts(shelterId, targetDate);
-            dailyOutingCounts.setCount(dailyOutingCounts.getCount() + 1);
+            dailyOutingCountsService.createOrUpdateDailyOutingCounts(shelterId, targetDate);
         }
     }
 
@@ -255,9 +257,7 @@ public class ShelterAdminAppService {
         Long currentCount = homelessQueryService.count(shelterId);
         dailyHomelessCountsService.createOrUpdate(shelterId, targetDate, currentCount);
 
-        List<Long> monthlyCounts = dailyHomelessCountsService.getMonthlyCounts(shelterId, targetDate);
-
-        return monthlyCounts;
+        return dailyHomelessCountsService.getMonthlyCounts(shelterId, targetDate);
     }
 
     public List<Long> monthlyOutingCounts(Long shelterId, LocalDate targetDate) {

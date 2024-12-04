@@ -28,7 +28,6 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.UpdateLocationRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessNoticeResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.NoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
 import org.wildflowergardening.backend.core.kernel.application.exception.ApplicationLogicException;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
@@ -206,15 +205,11 @@ public class HomelessAppService {
             throw new IllegalArgumentException("외박 신청 가능한 일자 범위를 벗어났습니다.");
         }
 
-
-/*        LocalDate currentDate = dto.getStartDate();
-        while (!currentDate.isAfter(dto.getEndDate())) {
-            DailySleepoverCounts dailySleepoverCounts = dailySleepoverCountsService.getOrCreateDailySleepoverCounts(dto.getShelterId(), currentDate);
-            dailySleepoverCounts.setCount(dailySleepoverCounts.getCount() + 1);
-
-            currentDate = currentDate.plusDays(1);
-        }*/
-
+        //상태가 외출 중이면 바로 외박 중으로 변경
+        LocationTracking location = locationTrackingService.getLocationByHomelessId(dto.getHomelessId(), dto.getShelterId());
+        if ((location.getInOutStatus() == InOutStatus.OUT_SHELTER) && (dto.getStartDate().equals(now))) {
+            location.setInOutStatus(InOutStatus.OVERNIGHT_STAY);
+        }
 
         return sleepoverService.create(dto);
     }
@@ -265,13 +260,16 @@ public class HomelessAppService {
     public Long createOrUpdateLocationTracking(
             Long homelessId, Long shelterId, UpdateLocationRequest request
     ) {
+        LocalDate targetDate = LocalDate.now();
+
+        if (request.getLocationStatus() == InOutStatus.OUT_SHELTER && sleepoverService.isExist(homelessId, targetDate)) {
+            request.setLocationStatus(InOutStatus.OVERNIGHT_STAY);
+        }
         Long result = locationTrackingService.createOrUpdate(
                 homelessId, shelterId, request.getLocationStatus());
 
         if (request.getLocationStatus() == InOutStatus.OUT_SHELTER) {
-            LocalDate targetDate = LocalDate.now();
-            DailyOutingCounts dailyOutingCounts = dailyOutingCountsService.getOrCreateDailyOutingCounts(shelterId, targetDate);
-            dailyOutingCounts.setCount(dailyOutingCounts.getCount() + 1);
+            dailyOutingCountsService.createOrUpdateDailyOutingCounts(shelterId, targetDate);
         }
 
         return result;

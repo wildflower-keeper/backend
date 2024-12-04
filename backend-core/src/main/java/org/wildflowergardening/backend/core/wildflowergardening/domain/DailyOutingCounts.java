@@ -42,4 +42,8 @@ public class DailyOutingCounts {
 
     @LastModifiedDate
     private LocalDateTime lastUpdatedAt;
+
+    public void inCreaseCount() {
+        this.count += 1;
+    }
 }

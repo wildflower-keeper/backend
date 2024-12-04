@@ -25,14 +25,12 @@ public class LocationStatusCheckJobConfig {
     private final PlatformTransactionManager batchTransactionManager;
     private final UnreturnedOutingCheckTasklet unreturnedOutingCheckTasklet;
     private final UnreturnedOvernightStayTasklet unreturnedOvernightStayTasklet;
-    private final SleepOverCheckTasklet sleepOverCheckTasklet;
 
     @Bean
     public Job locationStatusCheckJob() {
         return new JobBuilder("locationStatusCheckJob", jobRepository)
                 .start(outingUnReturnCheckStep())
                 .next(overnightUnReturnCheckStep())
-                .next(sleepOverCheckStep())
                 .build();
     }
 
@@ -50,10 +48,4 @@ public class LocationStatusCheckJobConfig {
                 .build();
     }
 
-    @Bean
-    public Step sleepOverCheckStep() {
-        return new StepBuilder("sleepOverCheckStep", jobRepository)
-                .tasklet(sleepOverCheckTasklet, batchTransactionManager)
-                .build();
-    }
 }

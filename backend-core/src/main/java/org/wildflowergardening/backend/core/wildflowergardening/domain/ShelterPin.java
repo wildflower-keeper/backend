@@ -58,7 +58,7 @@ public class ShelterPin {
   }
 
   public LocalDateTime calcExpiredAt() {
-    return lastUpdatedAt.toLocalDate().plusDays(1).atStartOfDay();
+    return lastUpdatedAt.toLocalDate().plusDays(14).atStartOfDay();
   }
 
   public boolean isExpired() {

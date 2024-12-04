@@ -28,8 +28,8 @@ public class DailyOutingCountsService {
     }
 
     @Transactional
-    public DailyOutingCounts getOrCreateDailyOutingCounts(Long shelterId, LocalDate targetDate) {
-        return dailyOutingCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate)
+    public void getOrCreateDailyOutingCounts(Long shelterId, LocalDate targetDate) {
+        dailyOutingCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate)
                 .orElseGet(() -> {
                     DailyOutingCounts newCount = DailyOutingCounts.builder()
                             .shelterId(shelterId)
@@ -38,6 +38,22 @@ public class DailyOutingCountsService {
                             .build();
                     return dailyOutingCountsRepository.save(newCount);
                 });
+    }
+
+    @Transactional
+    public void createOrUpdateDailyOutingCounts(Long shelterId, LocalDate targetDate) {
+        Optional<DailyOutingCounts> optional = dailyOutingCountsRepository.findByShelterIdAndRecordedDate(shelterId, targetDate);
+
+        if (optional.isEmpty()) {
+            dailyOutingCountsRepository.save(DailyOutingCounts.builder()
+                    .shelterId(shelterId)
+                    .recordedDate(targetDate)
+                    .count(1L)
+                    .build());
+            return;
+        }
+
+        optional.get().inCreaseCount();
     }
 
     @Transactional(readOnly = true)

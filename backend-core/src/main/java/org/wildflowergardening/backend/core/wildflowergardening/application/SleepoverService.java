@@ -170,7 +170,7 @@ public class SleepoverService {
     }
 
     @Transactional(readOnly = true)
-    public boolean exist(Long homelessId, LocalDate targetDate) {
+    public boolean isExist(Long homelessId, LocalDate targetDate) {
         Set<Long> existHomelessId = sleepoverRepository.filterSleepoverHomeless(
                 Collections.singletonList(homelessId), targetDate
         );

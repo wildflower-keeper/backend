@@ -138,7 +138,7 @@ public class HomelessAppController {
     }
 
     @HomelessAuthorized
-    @Operation(summary = "위치 상태 update", description = "30분에 한번씩 호출되는 API")
+    @Operation(summary = "위치 상태 update", description = "사용자가 센터를 들어 가고 나갈 때 QR을 통해 바꿈")
     @Parameters(@Parameter(
             name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
             in = ParameterIn.HEADER,
@@ -152,6 +152,7 @@ public class HomelessAppController {
         Long locationTrackingId = homelessAppService.createOrUpdateLocationTracking(
                 homelessContext.getHomelessId(), homelessContext.getShelterId(), request
         );
+
         return ResponseEntity.ok(locationTrackingId);
     }
 

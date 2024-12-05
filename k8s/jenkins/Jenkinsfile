@@ -1,13 +1,25 @@
 pipeline {
     agent any
 
+    environment {
+        NAMESPACE = "default" // Kubernetes 네임스페이스
+    }
+
     stages {
-        
-        stage('github-clone') {
+        stage('Checkout Code') {
             steps {
                 script {
-                    echo 'Starting the pipeline...'
+                    echo "Checking out the repository"
+                    checkout scm
                 }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                echo "Pipeline execution completed"
             }
         }
     }

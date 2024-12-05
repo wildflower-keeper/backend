@@ -15,6 +15,3 @@ spec:
     - port: 8080
       targetPort: 8080
       nodePort: 32001
-
-// access console by local
-// kubectl port-forward svc/jenkins-service 8080:8080 -n kisacloud2407

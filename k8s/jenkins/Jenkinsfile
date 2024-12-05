@@ -7,8 +7,6 @@ pipeline {
             steps {
                 script {
                     echo 'Starting the pipeline...'
-                    git branch: 'main', credentialsId: 'github_token', url: 'https://github.com/wildflower-keeper/backend.git'
-                    echo 'Cloned the repository successfully.'
                 }
             }
         }

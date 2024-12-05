@@ -11,26 +11,22 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.wildflowergardening.backend.batch.tasklet.SleepOverCheckTasklet;
+import org.wildflowergardening.backend.batch.tasklet.DailyCountTasklet;
 import org.wildflowergardening.backend.batch.tasklet.UnreturnedOutingCheckTasklet;
-import org.wildflowergardening.backend.batch.tasklet.UnreturnedOvernightStayTasklet;
 
 @Configuration
 @EnableBatchProcessing(dataSourceRef = "batchDataSource")
 @RequiredArgsConstructor
-public class LocationStatusCheckJobConfig {
+public class UnreturnedOutingCheckJobConfig {
     private final JobRepository jobRepository;
-
     @Qualifier("batchTransactionManager")
     private final PlatformTransactionManager batchTransactionManager;
     private final UnreturnedOutingCheckTasklet unreturnedOutingCheckTasklet;
-    private final UnreturnedOvernightStayTasklet unreturnedOvernightStayTasklet;
 
     @Bean
-    public Job locationStatusCheckJob() {
-        return new JobBuilder("locationStatusCheckJob", jobRepository)
+    public Job unreturnedOutingCheckJob() {
+        return new JobBuilder("unreturnedOutingCheckJob", jobRepository)
                 .start(outingUnReturnCheckStep())
-                .next(overnightUnReturnCheckStep())
                 .build();
     }
 
@@ -40,12 +36,4 @@ public class LocationStatusCheckJobConfig {
                 .tasklet(unreturnedOutingCheckTasklet, batchTransactionManager)
                 .build();
     }
-
-    @Bean
-    public Step overnightUnReturnCheckStep() {
-        return new StepBuilder("overnightUnReturnCheckStep", jobRepository)
-                .tasklet(unreturnedOvernightStayTasklet, batchTransactionManager)
-                .build();
-    }
-
 }

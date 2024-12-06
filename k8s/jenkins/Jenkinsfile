@@ -1,44 +1,45 @@
 pipeline {
-    agent {
-        kubernetes {
-            yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-    - name: jnlp
-      image: jenkins/inbound-agent:latest
-      resources:
-        limits:
-          cpu: "500m"
-          memory: "512Mi"
-        requests:
-          cpu: "250m"
-          memory: "256Mi"
-    - name: kaniko
-      image: gcr.io/kaniko-project/executor:latest
-      command:
-        - "/kaniko/executor"
-      args:
-        - "--help"
-      tty: true
-      resources:
-        limits:
-          cpu: "1"
-          memory: "1Gi"
-        requests:
-          cpu: "500m"
-          memory: "512Mi"
-      volumeMounts:
-        - name: docker-config
-          mountPath: /kaniko/.docker
-  volumes:
-    - name: docker-config
-      secret:
-        secretName: docker-hub-secret
-"""
-        }
-    }
+    agent kubernetes
+//     {
+//         kubernetes {
+//             yaml """
+// apiVersion: v1
+// kind: Pod
+// spec:
+//   containers:
+//     - name: jnlp
+//       image: jenkins/inbound-agent:latest
+//       resources:
+//         limits:
+//           cpu: "500m"
+//           memory: "512Mi"
+//         requests:
+//           cpu: "250m"
+//           memory: "256Mi"
+//     - name: kaniko
+//       image: gcr.io/kaniko-project/executor:latest
+//       command:
+//         - "/kaniko/executor"
+//       args:
+//         - "--help"
+//       tty: true
+//       resources:
+//         limits:
+//           cpu: "1"
+//           memory: "1Gi"
+//         requests:
+//           cpu: "500m"
+//           memory: "512Mi"
+//       volumeMounts:
+//         - name: docker-config
+//           mountPath: /kaniko/.docker
+//   volumes:
+//     - name: docker-config
+//       secret:
+//         secretName: docker-hub-secret
+// """
+//         }
+//     }
 
     environment {
         NAMESPACE = "kisacloud2407"

@@ -40,12 +40,12 @@ spec:
         }
     }
 
-    environment {
-        NAMESPACE = "kisacloud2407"
-        DOCKER_REGISTRY_URL = credentials('DOCKER_REGISTRY_URL')
-        IMAGE_NAME = "backend-api"
-        IMAGE_TAG = "${BUILD_NUMBER}"
-    }
+    // environment {
+    //     NAMESPACE = "kisacloud2407"
+    //     DOCKER_REGISTRY_URL = credentials('DOCKER_REGISTRY_URL')
+    //     IMAGE_NAME = "backend-api"
+    //     IMAGE_TAG = "${BUILD_NUMBER}"
+    // }
 
     stages {
         stage('Checkout Code') {

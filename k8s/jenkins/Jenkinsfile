@@ -47,47 +47,47 @@ spec:
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
-    stages {
-        stage('Checkout Code') {
-            steps {
-                script {
-                    echo "Checking out the repository"
-                    checkout scm
-                }
-            }
-        }
+    // stages {
+    //     stage('Checkout Code') {
+    //         steps {
+    //             script {
+    //                 echo "Checking out the repository"
+    //                 checkout scm
+    //             }
+    //         }
+    //     }
 
-        stage('Build Docker Image with Kaniko') {
-            steps {
-                container('kaniko') {
-                    script {
-                        echo "Building Docker Image with Kaniko"
-                        sh """
-                        /kaniko/executor \
-                            --context \$(pwd) \
-                            --dockerfile \$(pwd)/k8s/was/Dockerfile \
-                            --destination ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
-                        """
-                    }
-                }
-            }
-        }
+    //     stage('Build Docker Image with Kaniko') {
+    //         steps {
+    //             container('kaniko') {
+    //                 script {
+    //                     echo "Building Docker Image with Kaniko"
+    //                     sh """
+    //                     /kaniko/executor \
+    //                         --context \$(pwd) \
+    //                         --dockerfile \$(pwd)/k8s/was/Dockerfile \
+    //                         --destination ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+    //                     """
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                echo "Deploying to Kubernetes"
-                sh """
-                kubectl apply -f k8s/deployment.yaml -n ${NAMESPACE}
-                """
-            }
-        }
-    }
+    //     stage('Deploy to Kubernetes') {
+    //         steps {
+    //             echo "Deploying to Kubernetes"
+    //             sh """
+    //             kubectl apply -f k8s/deployment.yaml -n ${NAMESPACE}
+    //             """
+    //         }
+    //     }
+    // }
 
-    post {
-        always {
-            script {
-                echo "Pipeline execution completed"
-            }
-        }
-    }
+    // post {
+    //     always {
+    //         script {
+    //             echo "Pipeline execution completed"
+    //         }
+    //     }
+    // }
 }

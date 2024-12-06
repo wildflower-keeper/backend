@@ -1,8 +1,32 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+                    yaml """
+        apiVersion: v1
+        kind: Pod
+        spec:
+        containers:
+            - name: kaniko
+                    image: gcr.io/kaniko-project/executor:latest
+                    command:
+                        - /busybox/cat
+                    tty: true
+                    volumeMounts:
+                        - name: docker-config
+                            mountPath: /kaniko/.docker
+                volumes:
+                    - name: docker-config
+                        secret:
+                        secretName: docker-hub-secret
+        """
+        }
+    }
 
     environment {
-        NAMESPACE = "default" // Kubernetes 네임스페이스
+        NAMESPACE = "kisacloud2407"
+        DOCKER_REGISTRY_URL = credentials('DOCKER_REGISTRY_URL')
+        IMAGE_NAME = "backend-api"
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -12,6 +36,27 @@ pipeline {
                     echo "Checking out the repository"
                     checkout scm
                 }
+            }
+        }
+
+        stage('Build Docker Image with Kaniko') {
+            steps {
+                container('kaniko') {
+                    script {
+                        echo "Building Docker Image with Kaniko"
+                        sh '''/kaniko/executor \\
+                            --context `pwd` \\
+                            --dockerfile `pwd`/k8s/was/Dockerfile \\
+                            --destination ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG} \\
+                            '''
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                echo "Deploying to Kubernetes"
             }
         }
     }

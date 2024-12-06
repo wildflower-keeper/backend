@@ -53,8 +53,8 @@ spec:
                         echo "Building Docker Image with Kaniko"
                         sh """
                         /kaniko/executor \
-                            --context $(pwd) \
-                            --dockerfile $(pwd)/k8s/was/Dockerfile \
+                            --context \$(pwd) \
+                            --dockerfile \$(pwd)/k8s/was/Dockerfile \
                             --destination ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
                         """
                     }

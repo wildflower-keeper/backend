@@ -29,6 +29,13 @@ spec:
               mountPath: /docker-entrypoint-initdb.d
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '250m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
           args:
             - '--character-set-server=utf8mb4'
             - '--collation-server=utf8mb4_unicode_ci'

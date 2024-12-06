@@ -6,6 +6,15 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
+    - name: jnlp
+      image: jenkins/inbound-agent:4.10-3
+      resources:
+        limits:
+          cpu: "200m"
+          memory: "512Mi"
+        requests:
+          cpu: "100m"
+          memory: "256Mi"
     - name: kaniko
       image: gcr.io/kaniko-project/executor:latest
       command:

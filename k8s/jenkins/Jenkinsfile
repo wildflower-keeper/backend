@@ -40,12 +40,12 @@ spec:
         }
     }
 
-    // environment {
-    //     NAMESPACE = "kisacloud2407"
-    //     DOCKER_REGISTRY_URL = credentials('DOCKER_REGISTRY_URL')
-    //     IMAGE_NAME = "backend-api"
-    //     IMAGE_TAG = "${BUILD_NUMBER}"
-    // }
+    environment {
+        NAMESPACE = "kisacloud2407"
+        DOCKER_REGISTRY_URL = credentials('DOCKER_REGISTRY_URL')
+        IMAGE_NAME = "backend-api"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+    }
 
     stages {
         stage('Checkout Code') {
@@ -57,30 +57,30 @@ spec:
             }
         }
 
-        // stage('Build Docker Image with Kaniko') {
-        //     steps {
-        //         container('kaniko') {
-        //             script {
-        //                 echo "Building Docker Image with Kaniko"
-        //                 sh """
-        //                 /kaniko/executor \
-        //                     --context \$(pwd) \
-        //                     --dockerfile \$(pwd)/k8s/was/Dockerfile \
-        //                     --destination ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
-        //                 """
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Build Docker Image with Kaniko') {
+            steps {
+                container('kaniko') {
+                    script {
+                        echo "Building Docker Image with Kaniko"
+                        sh """
+                        /kaniko/executor \
+                            --context \$(pwd) \
+                            --dockerfile \$(pwd)/k8s/was/Dockerfile \
+                            --destination ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+                        """
+                    }
+                }
+            }
+        }
 
-        // stage('Deploy to Kubernetes') {
-        //     steps {
-        //         echo "Deploying to Kubernetes"
-        //         sh """
-        //         kubectl apply -f k8s/deployment.yaml -n ${NAMESPACE}
-        //         """
-        //     }
-        // }
+        stage('Deploy to Kubernetes') {
+            steps {
+                echo "Deploying to Kubernetes"
+                sh """
+                kubectl apply -f k8s/deployment.yaml -n ${NAMESPACE}
+                """
+            }
+        }
     }
 
     post {

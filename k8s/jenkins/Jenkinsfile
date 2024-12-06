@@ -18,7 +18,7 @@ spec:
     - name: kaniko
       image: gcr.io/kaniko-project/executor:latest
       command:
-        - /busybox/cat
+        - "/kaniko/executor"
       args:
         - "--help"
       tty: true

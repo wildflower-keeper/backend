@@ -1,24 +1,24 @@
 pipeline {
     agent {
         kubernetes {
-                    yaml """
-        apiVersion: v1
-        kind: Pod
-        spec:
-        containers:
-            - name: kaniko
-                    image: gcr.io/kaniko-project/executor:latest
-                    command:
-                        - /busybox/cat
-                    tty: true
-                    volumeMounts:
-                        - name: docker-config
-                            mountPath: /kaniko/.docker
-                volumes:
-                    - name: docker-config
-                        secret:
-                        secretName: docker-hub-secret
-        """
+            yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:latest
+      command:
+        - /busybox/cat
+      tty: true
+      volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker
+  volumes:
+    - name: docker-config
+      secret:
+        secretName: docker-hub-secret
+"""
         }
     }
 
@@ -44,11 +44,12 @@ pipeline {
                 container('kaniko') {
                     script {
                         echo "Building Docker Image with Kaniko"
-                        sh '''/kaniko/executor \\
-                            --context `pwd` \\
-                            --dockerfile `pwd`/k8s/was/Dockerfile \\
-                            --destination ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG} \\
-                            '''
+                        sh """
+                        /kaniko/executor \
+                            --context $(pwd) \
+                            --dockerfile $(pwd)/k8s/was/Dockerfile \
+                            --destination ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+                        """
                     }
                 }
             }
@@ -57,6 +58,9 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 echo "Deploying to Kubernetes"
+                sh """
+                kubectl apply -f /k8s/was/deployment.yaml
+                """
             }
         }
     }

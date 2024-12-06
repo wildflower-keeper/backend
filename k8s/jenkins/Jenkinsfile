@@ -46,8 +46,8 @@ spec:
                         echo "Building Docker Image with Kaniko"
                         sh """
                         /kaniko/executor \
-                            --context $(pwd) \
-                            --dockerfile $(pwd)/k8s/was/Dockerfile \
+                            --context \$(pwd) \
+                            --dockerfile \$(pwd)/k8s/was/Dockerfile \
                             --destination ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
                         """
                     }
@@ -59,7 +59,7 @@ spec:
             steps {
                 echo "Deploying to Kubernetes"
                 sh """
-                kubectl apply -f /k8s/was/deployment.yaml
+                kubectl apply -f k8s/deployment.yaml -n ${NAMESPACE}
                 """
             }
         }

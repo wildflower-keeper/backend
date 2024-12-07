@@ -37,4 +37,6 @@ public interface LocationTrackingRepository extends JpaRepository<LocationTracki
     Set<Long> findHomelessIdByShelterIdAndInOutStatus(Long shelterId, InOutStatus status);
 
     Optional<LocationTracking> findByHomelessIdAndShelterId(Long homelessId, Long shelterId);
+
+    List<LocationTracking> findByInOutStatus(InOutStatus status);
 }

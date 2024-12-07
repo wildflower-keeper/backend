@@ -139,12 +139,6 @@ public class LocationTrackingService {
     }
 
     @Transactional(readOnly = true)
-    public List<LocationTracking> getUnreturnedSleepoversHomelessIds(Set<Long> homelessIds, LocalDateTime now) {
-        LocalDateTime startTime = now.toLocalDate().atStartOfDay();
-        return locationTrackingRepository.findByHomelessIdInAndLastUpdatedAtBeforeAndInOutStatus(homelessIds, startTime, InOutStatus.OVERNIGHT_STAY);
-    }
-
-    @Transactional(readOnly = true)
     public List<LocationTracking> getSleepoverHomeless(Set<Long> homelessIds) {
         return locationTrackingRepository.findByHomelessIdInAndInOutStatusNot(homelessIds, InOutStatus.OVERNIGHT_STAY);
     }
@@ -164,6 +158,11 @@ public class LocationTrackingService {
         }
 
         locationTrackingRepository.delete(locationTrackingOptional.get());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LocationTracking> getAllByInOutStatus(InOutStatus inOutStatus) {
+        return locationTrackingRepository.findByInOutStatus(inOutStatus);
     }
 
 }

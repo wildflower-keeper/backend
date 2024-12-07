@@ -25,11 +25,10 @@ public class UnreturnedOvernightStayTasklet implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        LocalDate now = LocalDate.now();
-        Set<Long> sleepoverEndedHomelessIds = sleepoverService.getSleepoverEndedHomelessIds(now);
-        List<LocationTracking> unReturned = locationTrackingService.getUnreturnedSleepoversHomelessIds(sleepoverEndedHomelessIds, LocalDateTime.now());
-        for (LocationTracking location : unReturned) {
-            location.setInOutStatus(InOutStatus.UNCONFIRMED);
+        List<LocationTracking> locationTrackingList = locationTrackingService.getAllByInOutStatus(InOutStatus.OVERNIGHT_STAY);
+        for (LocationTracking locationTracking : locationTrackingList) {
+            if (sleepoverService.isExist(locationTracking.getHomelessId(), LocalDate.now())) continue;
+            locationTracking.setInOutStatus(InOutStatus.UNCONFIRMED);
         }
 
         return RepeatStatus.FINISHED;

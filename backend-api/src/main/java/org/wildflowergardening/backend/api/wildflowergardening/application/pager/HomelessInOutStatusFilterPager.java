@@ -26,9 +26,6 @@ public class HomelessInOutStatusFilterPager implements HomelessFilterPager {
     @Override
     public NumberPageResponse<HomelessResponse> getPage(HomelessPageRequest pageRequest) {
         Set<Long> candidatesHomelessIds = locationTrackingService.getHomelessIdsByInOutStatus(pageRequest.getShelterId(), pageRequest.getInOutstatus());
-        for (Long id : candidatesHomelessIds) {
-            System.out.println("Id : " + id);
-        }
         NumberPageResult<Homeless> result = homelessQueryService.getPage(candidatesHomelessIds, pageRequest.getPageNumber(), pageRequest.getPageSize());
         List<Long> homelessIds = result.getItems().stream()
                 .map(Homeless::getId).toList();

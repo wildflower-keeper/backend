@@ -12,18 +12,18 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.LocationT
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class UnreturnedOutingCheckTasklet implements Tasklet {
     private final LocationTrackingService locationTrackingService;
 
+    //아침 7시에 도는 것
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext context) throws Exception {
-        LocalDateTime now = LocalDateTime.now();
-        List<LocationTracking> noReturnOutings = locationTrackingService.getUnreturnedOutingsHomelessIds(now);
-
-        for (LocationTracking locationTracking : noReturnOutings) {
+        List<LocationTracking> locationTrackingList = locationTrackingService.getAllByInOutStatus(InOutStatus.OUT_SHELTER);
+        for (LocationTracking locationTracking : locationTrackingList) {
             locationTracking.setInOutStatus(InOutStatus.UNCONFIRMED);
         }
 

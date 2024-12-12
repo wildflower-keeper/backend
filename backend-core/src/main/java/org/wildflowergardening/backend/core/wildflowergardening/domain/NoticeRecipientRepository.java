@@ -12,7 +12,6 @@ import java.util.List;
 public interface NoticeRecipientRepository extends JpaRepository<NoticeRecipient, Long> {
     List<NoticeRecipient> findByNoticeIdAndHomelessId(Long noticeId, Long homelessId);
 
-
     @Query(
             " select new org.wildflowergardening.backend.core.wildflowergardening.domain.dto.NoticeRecipientReadDto"
                     + "(nr.homelessId, nr.isRead) "
@@ -31,4 +30,9 @@ public interface NoticeRecipientRepository extends JpaRepository<NoticeRecipient
                                               @Param("endDate") LocalDateTime endDate);
 
     List<NoticeRecipient> findAllByHomelessId(Long homelessId);
+
+    @Query("SELECT count(*) from NoticeRecipient nr " +
+            "WHERE nr.noticeId =:noticeId "
+            + "AND nr.isRead = :isRead")
+    Long findCountByNoticeIdAndReadStatus(@Param("noticeId") Long noticeId, @Param("isRead") boolean isRead);
 }

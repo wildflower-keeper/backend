@@ -331,8 +331,13 @@ public class ShelterAdminAppService {
     @Transactional(rollbackFor = {Exception.class})
     public Long createNotice(Long shelterId, Long shelterAccountId, CreateNoticeRequest request) {
 
-        //공지사항 등록
-        Notice notice = Notice.builder().shelterId(shelterId).title(request.getTitle()).contents(request.getContent()).shelterAccountId(shelterAccountId).build();
+        boolean isGlobal = request.getTargetHomelessIds().isEmpty();
+
+        Notice notice = Notice.builder().shelterId(shelterId).title(request.getTitle()).contents(request.getContent()).shelterAccountId(shelterAccountId)
+                .imageUrl(request.getImageUrl())
+                .isSurvey(request.getIsSurvey())
+                .isGlobal(isGlobal)
+                .build();
 
         Long noticeId = noticeService.save(notice);
         Set<Long> homelessIds = new HashSet<>(request.getTargetHomelessIds());
@@ -341,8 +346,6 @@ public class ShelterAdminAppService {
         }
 
         List<String> devicesId = new ArrayList<>();
-        Long cnt = 0L;
-        //notice target등록
         for (Long homelessId : homelessIds) {
             Optional<Homeless> homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId);
             if (homeless.isEmpty()) {
@@ -351,15 +354,9 @@ public class ShelterAdminAppService {
             devicesId.add(homeless.get().getDeviceId());
             NoticeRecipient noticeRecipient = NoticeRecipient.builder().shelterId(shelterId).noticeId(noticeId).homelessId(homelessId).build();
             noticeRecipientService.save(noticeRecipient);
-            cnt++;
         }
 
-        //TODO: FCM전송 로직 추가
-        FcmMultiSendDto fcmMultiSendDto = FcmMultiSendDto.builder().tokens(devicesId).title(request.getTitle()).body(request.getContent()).data(FcmSendDto.Data.builder().screen("notice").noticeId(noticeId).build()).build();
-
-        int successCount = fcmService.sendMessageToMultiple(fcmMultiSendDto);
-
-        return cnt - successCount;
+        return notice.getId();
     }
 
     public NumberPageResponse<NoticeResponse> getNoticePage(NoticePageRequest pageRequest) {
@@ -367,11 +364,9 @@ public class ShelterAdminAppService {
     }
 
     public NoticeRecipientStatusResponse getNoticeRecipientStatus(Long noticeId, Long shelterId) {
-        //1. 해당 공지사항을 받은 사람들의 목록 가져오기
         Map<Long, Boolean> homelessIdsAndReadStatus = noticeRecipientService.getAllHomelessIdAndReadByNoticeId(noticeId, shelterId);
         Map<Long, String[]> homelessInfo = homelessQueryService.getNameAndPhoneById(homelessIdsAndReadStatus.keySet().stream().toList());
 
-        // 2. NoticeRecipientInfoResult 리스트 생성
         List<NoticeRecipientInfoResult> items = homelessIdsAndReadStatus.entrySet().stream().filter(entry -> homelessInfo.get(entry.getKey()) != null).map(entry -> {
             Long homelessId = entry.getKey();
             boolean isRead = entry.getValue();

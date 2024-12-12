@@ -1,10 +1,7 @@
 package org.wildflowergardening.backend.core.wildflowergardening.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -32,7 +29,7 @@ public class Notice {
     @Column(name = "shelter_account_id", nullable = false)
     @Comment("공지 사항을 작성 한 보호소 관리자 ID")
     private Long shelterAccountId;
-    
+
     @Column(name = "title", nullable = false)
     @Comment("공지 사항 제목")
     private String title;
@@ -50,4 +47,18 @@ public class Notice {
     @Column(name = "last_updated_at", nullable = false)
     @Comment("마지막 수정일시")
     private LocalDateTime lastUpdatedAt;
+
+    @Column(name = "is_global", nullable = false)
+    @Builder.Default
+    @Setter
+    private boolean isGlobal = false;
+
+    @Column(name = "is_survey", nullable = false)
+    @Builder.Default
+    @Setter
+    private Boolean isSurvey = false;
+
+    @Column(name = "image_url")
+    @Comment("이미지 url")
+    private String imageUrl;
 }

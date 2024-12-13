@@ -25,6 +25,7 @@ public interface NoticeRecipientRepository extends JpaRepository<NoticeRecipient
             "WHERE nr.homelessId = :homelessId " +
             "AND nr.createdAt >= :startDate " +
             "AND nr.createdAt < :endDate " +
+            "AND nr.participateStatus <> 'NOT_PARTICIPATE' " +
             "ORDER BY nr.createdAt DESC")
     List<NoticeRecipient> findRecentNoticeIds(@Param("homelessId") Long homelessId,
                                               @Param("startDate") LocalDateTime startDate,

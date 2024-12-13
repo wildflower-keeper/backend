@@ -36,7 +36,7 @@ public class NoticeRecipient {
     @Column(name = "is_read", nullable = false)
     @Builder.Default
     @Setter
-    private boolean isRead = false;
+    private Boolean isRead = false;
 
     @Column(name = "read_at")
     @Comment("읽은 시간")
@@ -47,4 +47,10 @@ public class NoticeRecipient {
     @Column(name = "created_at", nullable = false)
     @Comment("생성일시")
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "participate_status", nullable = false)
+    @Builder.Default
+    @Setter
+    private ParticipateStatus participateStatus = ParticipateStatus.NONE;
 }

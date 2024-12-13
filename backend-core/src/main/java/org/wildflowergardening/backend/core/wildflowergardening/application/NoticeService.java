@@ -12,6 +12,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.application.dto.
 import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,4 +46,8 @@ public class NoticeService {
         return noticeRepository.findByIdIn(noticeIds);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<Notice> getOneById(Long id) {
+        return noticeRepository.findById(id);
+    }
 }

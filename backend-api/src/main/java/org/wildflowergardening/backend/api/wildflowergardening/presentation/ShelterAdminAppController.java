@@ -20,6 +20,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -530,12 +531,13 @@ public class ShelterAdminAppController {
     ))
     @Operation(summary = "공지사항 등록")
     @PostMapping("/api/v2/shelter-admin/notice")
-    public ResponseEntity<Long> getMonthlySleepoverCounts(
+    public ResponseEntity<Map<String, Long>> getMonthlySleepoverCounts(
             @RequestBody @Valid CreateNoticeRequest request
     ) {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         Long result = shelterAdminAppService.createNotice(shelterContext.getShelterId(), shelterContext.getUserId(), request);
-        return ResponseEntity.ok().body(result);
+        Map<String, Long> response = Map.of("noticeId", result);
+        return ResponseEntity.ok().body(response);
     }
 
     @ShelterAuthorized

@@ -50,11 +50,16 @@ public class NoticeRecipientService {
         LocalDateTime startDate = endDate.minusDays(3);
         return noticeRecipientRepository.findRecentNoticeIds(homelessId, startDate, endDate);
     }
-    
+
     @Transactional
     public void deleteAllByHomelessId(Long homelessId) {
         List<NoticeRecipient> noticeRecipients = noticeRecipientRepository.findAllByHomelessId(homelessId);
         noticeRecipientRepository.deleteAll(noticeRecipients);
+    }
+
+    @Transactional(readOnly = true)
+    public Long getCountByNoticeIdAndReadStatus(Long noticeId, boolean readStatus) {
+        return noticeRecipientRepository.findCountByNoticeIdAndReadStatus(noticeId, readStatus);
     }
 }
 

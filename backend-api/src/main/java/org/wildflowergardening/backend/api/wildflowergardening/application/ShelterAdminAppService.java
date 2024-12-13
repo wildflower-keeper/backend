@@ -356,6 +356,10 @@ public class ShelterAdminAppService {
             noticeRecipientService.save(noticeRecipient);
         }
 
+        String fcmStatus = request.getIsSurvey() ? "survey" : "notice";
+        FcmMultiSendDto fcmMultiSendDto = FcmMultiSendDto.builder().tokens(devicesId).title(request.getTitle()).body(request.getContent()).data(FcmSendDto.Data.builder().screen(fcmStatus).noticeId(noticeId).build()).build();
+        fcmService.sendMessageToMultiple(fcmMultiSendDto);
+
         return notice.getId();
     }
 

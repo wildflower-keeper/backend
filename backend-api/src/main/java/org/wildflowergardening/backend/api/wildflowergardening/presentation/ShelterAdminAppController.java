@@ -547,7 +547,7 @@ public class ShelterAdminAppController {
             example = "session-token-example"
     ))
     @GetMapping("/api/v2/shelter-admin/notice")
-    @Operation(summary = "공지사항 목록 조회", description = "공지 사항 전체 조회")
+    @Operation(summary = "공지 사항 목록 조회", description = "공지 사항 전체 조회")
     public ResponseEntity<NumberPageResponse<NoticeResponse>> getNoticePage(
             @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
             @RequestParam(defaultValue = "20") @Parameter(description = "페이지 당 조회할 item 갯수", example = "20") int pageSize
@@ -578,6 +578,22 @@ public class ShelterAdminAppController {
     ) {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         NoticeRecipientStatusResponse response = shelterAdminAppService.getNoticeRecipientStatus(noticeId, shelterContext.getShelterId());
+        return ResponseEntity.ok(response);
+    }
+
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @GetMapping("/api/v2/shelter-admin/notice/{noticeId}")
+    @Operation(summary = "공지 사항 조회", description = "noticeId를 가진 공지 사항 조회.")
+    public ResponseEntity<NoticeItemResponse> getOneNotice(
+            @PathVariable Long noticeId
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        NoticeItemResponse response = shelterAdminAppService.getOneNotice(noticeId, shelterContext.getShelterId());
         return ResponseEntity.ok(response);
     }
 

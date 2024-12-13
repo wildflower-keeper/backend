@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeRecipient;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.NoticeRecipientRepository;
+import org.wildflowergardening.backend.core.wildflowergardening.domain.ParticipateStatus;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.Session;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.dto.NoticeRecipientReadDto;
@@ -29,7 +30,7 @@ public class NoticeRecipientService {
     public void updateReadStatus(Long noticeId, Long homelessId, boolean status) {
         List<NoticeRecipient> noticeRecipientList = noticeRecipientRepository.findByNoticeIdAndHomelessId(noticeId, homelessId);
         for (NoticeRecipient noticeRecipient : noticeRecipientList) {
-            noticeRecipient.setRead(status);
+            noticeRecipient.setIsRead(status);
             noticeRecipient.setReadAt(LocalDateTime.now());
         }
     }
@@ -60,6 +61,21 @@ public class NoticeRecipientService {
     @Transactional(readOnly = true)
     public Long getCountByNoticeIdAndReadStatus(Long noticeId, boolean readStatus) {
         return noticeRecipientRepository.findCountByNoticeIdAndReadStatus(noticeId, readStatus);
+    }
+
+    @Transactional(readOnly = true)
+    public Long getAllCountByNotice(Long noticeId) {
+        return noticeRecipientRepository.findAllCountByNoticeId(noticeId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Long> getHomelessIdsByNoticeIdAndReadStatus(Long noticeId, boolean readStatus) {
+        return noticeRecipientRepository.findHomelessIdByNoticeIdAndReadStatus(noticeId, readStatus);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Long> getHomelessIdsByNoticeIdAndParticipateStatus(Long noticeId, ParticipateStatus status) {
+        return noticeRecipientRepository.findHomelessIdByNoticeIdAndParticipateStatus(noticeId, status);
     }
 }
 

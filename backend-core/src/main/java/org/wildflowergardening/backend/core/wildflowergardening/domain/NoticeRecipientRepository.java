@@ -35,4 +35,18 @@ public interface NoticeRecipientRepository extends JpaRepository<NoticeRecipient
             "WHERE nr.noticeId =:noticeId "
             + "AND nr.isRead = :isRead")
     Long findCountByNoticeIdAndReadStatus(@Param("noticeId") Long noticeId, @Param("isRead") boolean isRead);
+
+    @Query("SELECT count(*) from NoticeRecipient nr " +
+            "WHERE nr.noticeId =:noticeId")
+    Long findAllCountByNoticeId(@Param("noticeId") Long noticeId);
+
+    @Query("SELECT nr.homelessId FROM NoticeRecipient nr " +
+            "WHERE nr.noticeId=:noticeId "
+            + "AND nr.isRead = :isRead")
+    List<Long> findHomelessIdByNoticeIdAndReadStatus(@Param("noticeId") Long noticeId, @Param("isRead") boolean isRead);
+
+    @Query("SELECT nr.homelessId FROM NoticeRecipient nr " +
+            "WHERE nr.noticeId=:noticeId "
+            + "AND nr.participateStatus = :participateStatus")
+    List<Long> findHomelessIdByNoticeIdAndParticipateStatus(@Param("noticeId") Long noticeId, @Param("participateStatus") ParticipateStatus participateStatus);
 }

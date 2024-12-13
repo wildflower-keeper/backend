@@ -47,7 +47,7 @@ public class NoticeService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Notice> getOneById(Long id) {
-        return noticeRepository.findById(id);
+    public Optional<Notice> getOneByIdAndShelterId(Long noticeId, Long shelterId) {
+        return noticeRepository.findByIdAndShelterId(noticeId, shelterId);
     }
 }

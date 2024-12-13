@@ -342,7 +342,7 @@ public class HomelessAppService {
                             .title(notice.getTitle())
                             .contents(notice.getContents())
                             .sendAt(notice.getCreatedAt())
-                            .isRead(recipient.isRead())
+                            .isRead(recipient.getIsRead())
                             .build();
                 })
                 .collect(Collectors.groupingBy(

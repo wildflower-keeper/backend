@@ -13,6 +13,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.dto.Notic
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,11 +29,20 @@ public class NoticeRecipientService {
 
     @Transactional
     public void updateReadStatus(Long noticeId, Long homelessId, boolean status) {
-        List<NoticeRecipient> noticeRecipientList = noticeRecipientRepository.findByNoticeIdAndHomelessId(noticeId, homelessId);
-        for (NoticeRecipient noticeRecipient : noticeRecipientList) {
-            noticeRecipient.setIsRead(status);
+        NoticeRecipient noticeRecipient = noticeRecipientRepository.findByNoticeIdAndHomelessId(noticeId, homelessId).orElseThrow(() ->
+                new IllegalArgumentException("해당 noticeId를 수신한 기록이 없습니다."));
+        if (!status) {
+            noticeRecipient.setReadAt(null);
+            noticeRecipient.setIsRead(false);
+        } else {
+            noticeRecipient.setIsRead(true);
             noticeRecipient.setReadAt(LocalDateTime.now());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<NoticeRecipient> getOneByNoticeIdAndHomelessId(Long noticeId, Long homelessId) {
+        return noticeRecipientRepository.findByNoticeIdAndHomelessId(noticeId, homelessId);
     }
 
     @Transactional(readOnly = true)
@@ -77,5 +87,7 @@ public class NoticeRecipientService {
     public List<Long> getHomelessIdsByNoticeIdAndParticipateStatus(Long noticeId, ParticipateStatus status) {
         return noticeRecipientRepository.findHomelessIdByNoticeIdAndParticipateStatus(noticeId, status);
     }
+
+
 }
 

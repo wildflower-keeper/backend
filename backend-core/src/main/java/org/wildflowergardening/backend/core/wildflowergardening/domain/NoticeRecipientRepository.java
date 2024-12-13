@@ -8,9 +8,10 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.dto.Notic
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface NoticeRecipientRepository extends JpaRepository<NoticeRecipient, Long> {
-    List<NoticeRecipient> findByNoticeIdAndHomelessId(Long noticeId, Long homelessId);
+    Optional<NoticeRecipient> findByNoticeIdAndHomelessId(Long noticeId, Long homelessId);
 
     @Query(
             " select new org.wildflowergardening.backend.core.wildflowergardening.domain.dto.NoticeRecipientReadDto"
@@ -49,4 +50,5 @@ public interface NoticeRecipientRepository extends JpaRepository<NoticeRecipient
             "WHERE nr.noticeId=:noticeId "
             + "AND nr.participateStatus = :participateStatus")
     List<Long> findHomelessIdByNoticeIdAndParticipateStatus(@Param("noticeId") Long noticeId, @Param("participateStatus") ParticipateStatus participateStatus);
+
 }

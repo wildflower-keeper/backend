@@ -357,4 +357,12 @@ public class HomelessAppService {
 
         return result;
     }
+
+    public void updateParticipateStatus(Long noticeId, Long homelessId, boolean status) {
+        NoticeRecipient noticeRecipient = noticeRecipientService.getOneByNoticeIdAndHomelessId(noticeId, homelessId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 공지사항을 수신한 이력이 없습니다."));
+
+        noticeRecipient.setParticipateStatus(status ? ParticipateStatus.PARTICIPATE : ParticipateStatus.NOT_PARTICIPATE);
+        noticeRecipientService.updateReadStatus(noticeId, homelessId, true);
+    }
 }

@@ -26,6 +26,9 @@ public class HomelessNoticeResponse {
     @Schema(description = "설문 참여 여부")
     private Boolean isResponded;
 
+    @Schema(description = "이미지 url", example = "https://")
+    private String imageUrl;
+
     @Schema(description = "읽음 유무")
     private Boolean isRead;
 }

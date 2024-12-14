@@ -344,6 +344,7 @@ public class HomelessAppService {
                             .sendAt(notice.getCreatedAt())
                             .isRead(recipient.getIsRead())
                             .isSurvey(notice.getIsSurvey())
+                            .imageUrl(notice.getImageUrl())
                             .isResponded(recipient.getParticipateStatus() != ParticipateStatus.NONE)
                             .build();
                 })

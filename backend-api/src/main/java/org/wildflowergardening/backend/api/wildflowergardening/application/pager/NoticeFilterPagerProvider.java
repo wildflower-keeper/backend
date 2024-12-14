@@ -11,11 +11,15 @@ public class NoticeFilterPagerProvider {
     private final Map<NoticeFilterType, NoticeFilterPager> filterPagers;
 
     public NoticeFilterPagerProvider(
-            NoticeNoFilterPager noFilterPager
+            NoticeNoFilterPager noFilterPager,
+            NoticeGlobalTypeFilterPager globalTypeFilterPager
     ) {
         this.filterPagers = Map.of(
-                NoticeFilterType.NONE, noFilterPager);
+                NoticeFilterType.NONE, noFilterPager,
+                NoticeFilterType.GLOBAL_TYPE, globalTypeFilterPager
+        );
     }
+
 
     public NoticeFilterPager from(NoticeFilterType noticeFilterType) {
         if (!filterPagers.containsKey(noticeFilterType)) {

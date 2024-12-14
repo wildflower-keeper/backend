@@ -11,7 +11,10 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     Page<Notice> findByShelterId(Long shelterId, Pageable pageable);
 
+    Page<Notice> findByShelterIdAndIsGlobal(Long shelterId, Boolean isGlobal, Pageable pageable);
+
     List<Notice> findByIdIn(List<Long> noticeIds);
 
     Optional<Notice> findByIdAndShelterId(Long noticeId, Long shelterId);
+
 }

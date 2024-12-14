@@ -8,6 +8,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.N
 @Builder
 public class NoticePageRequest {
     private NoticeFilterType filterType;
+    private Boolean isGlobal;
     private String filterValue;
     private Long shelterId;
     private int pageNumber;

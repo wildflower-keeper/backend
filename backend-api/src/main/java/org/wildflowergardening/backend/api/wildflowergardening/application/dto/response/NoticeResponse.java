@@ -27,6 +27,9 @@ public class NoticeResponse {
     @Schema(description = "설문 유무", example = "false")
     private Boolean isSurvey;
 
+    @Schema(description = "전체 공지 유무", example = "false")
+    private Boolean isGlobal;
+
     @Schema(description = "읽은 사람의 수", example = "15")
     private Long readCount;
 

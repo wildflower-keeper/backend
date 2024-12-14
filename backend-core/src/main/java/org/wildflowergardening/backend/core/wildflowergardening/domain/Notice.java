@@ -51,7 +51,7 @@ public class Notice {
     @Column(name = "is_global", nullable = false)
     @Builder.Default
     @Setter
-    private boolean isGlobal = false;
+    private Boolean isGlobal = false;
 
     @Column(name = "is_survey", nullable = false)
     @Builder.Default

@@ -28,7 +28,7 @@ public class UnreturnedOvernightCheckJobConfig {
     public Job unreturnedOvernightCheckJob() {
         return new JobBuilder("unreturnedOvernightCheckJob", jobRepository)
                 .start(overnightUnReturnCheckStep())
-                .next(outingUnReturnCheckStep())
+                .next(overnightOutingUnReturnCheckStep())
                 .build();
     }
 
@@ -40,8 +40,8 @@ public class UnreturnedOvernightCheckJobConfig {
     }
 
     @Bean
-    public Step outingUnReturnCheckStep() {
-        return new StepBuilder("outingUnReturnCheckStep", jobRepository)
+    public Step overnightOutingUnReturnCheckStep() {
+        return new StepBuilder("overnightOutingUnReturnCheckStep", jobRepository)
                 .tasklet(unreturnedOutingCheckTasklet, batchTransactionManager)
                 .build();
     }

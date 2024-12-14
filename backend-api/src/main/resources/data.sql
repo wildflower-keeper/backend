@@ -98,11 +98,11 @@ VALUES ('2024-09-25 13:49:29.250967', 7, '2024-09-25 13:49:29.250967', 1, '2024-
 
 -- 알림 메시티
 INSERT INTO wildflower_gardening.notification_message
-    (created_at, type, message, last_updated_at)
-VALUES ('2024-09-25 13:49:29.250967', 'REMIND_SLEEPOVER', '오늘 외박일입니다. 계획된 일정에 따라 움직여주세요.',
-        '2024-09-25 13:49:29.250967');
+    (created_at, type, contents, last_updated_at, title)
+VALUES ('2024-09-25 13:49:29.250967', 'REMIND_SLEEPOVER', '오늘 외박 일입니다. 계획된 일정에 따라 움직여주세요.',
+        '2024-09-25 13:49:29.250967', '오늘은 외박 당일 입니다.');
 INSERT INTO wildflower_gardening.notification_message
-    (created_at, type, message, last_updated_at)
-VALUES ('2024-09-25 13:49:29.250967', 'REMIND_RETURN', '1시간 뒤 센터 문이 닫힙니다. 복귀해 주세요.', '2024-09-25 13:49:29.250967');
+    (created_at, type, contents, last_updated_at, title)
+VALUES ('2024-09-25 13:49:29.250967', 'REMIND_RETURN', '1시간 뒤 센터 문이 닫힙니다. 복귀해 주세요.', '2024-09-25 13:49:29.250967', '센터 복귀 1시간 전 입니다.');
 
 

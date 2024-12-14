@@ -165,4 +165,9 @@ public class LocationTrackingService {
         return locationTrackingRepository.findByInOutStatus(inOutStatus);
     }
 
+    @Transactional(readOnly = true)
+    public Set<Long> getHomelessIdsByStatuses(List<InOutStatus> statuses) {
+        return locationTrackingRepository.findHomelessIdsByStatus(statuses);
+    }
+
 }

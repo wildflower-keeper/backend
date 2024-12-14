@@ -20,6 +20,7 @@ public class NotificationMessage {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private NotificationMessageType type;

@@ -343,6 +343,8 @@ public class HomelessAppService {
                             .contents(notice.getContents())
                             .sendAt(notice.getCreatedAt())
                             .isRead(recipient.getIsRead())
+                            .isSurvey(notice.getIsSurvey())
+                            .isResponded(recipient.getParticipateStatus() != ParticipateStatus.NONE)
                             .build();
                 })
                 .collect(Collectors.groupingBy(

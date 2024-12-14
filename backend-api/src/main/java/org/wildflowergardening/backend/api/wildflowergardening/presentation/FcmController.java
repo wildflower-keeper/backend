@@ -9,8 +9,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.wildflowergardening.backend.api.wildflowergardening.application.FCMService;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.FcmSendDto;
+import org.wildflowergardening.backend.core.kernel.config.FCMService;
+import org.wildflowergardening.backend.core.kernel.config.dto.FcmSendDto;
 
 import java.io.IOException;
 

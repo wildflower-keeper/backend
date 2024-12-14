@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.api.wildflowergardening.application;
+package org.wildflowergardening.backend.core.kernel.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,11 +9,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.FcmMessageRequest;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.FcmMultiSendDto;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.FcmSendDto;
+import org.wildflowergardening.backend.core.kernel.config.dto.FcmMessageRequest;
+import org.wildflowergardening.backend.core.kernel.config.dto.FcmMultiSendDto;
+import org.wildflowergardening.backend.core.kernel.config.dto.FcmSendDto;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -44,4 +44,8 @@ public interface HomelessRepository extends JpaRepository<Homeless, Long> {
                     "WHERE h.id IN :homelessIds"
     )
     List<HomelessNamePhoneDto> findNameAndPhoneByIds(@Param("homelessIds") List<Long> homelessIds);
+
+    @Query("SELECT h.deviceId FROM Homeless h " +
+            "WHERE h.id IN :homelessIds")
+    List<String> findDeviceIdsByIds(@Param("homelessIds") Set<Long> homelessIds);
 }

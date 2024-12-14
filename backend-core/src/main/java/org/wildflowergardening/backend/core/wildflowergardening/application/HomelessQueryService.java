@@ -103,4 +103,9 @@ public class HomelessQueryService {
                         dto -> new String[]{dto.getName(), dto.getPhoneNumber()}
                 ));
     }
+
+    @Transactional(readOnly = true)
+    public List<String> getDeviceIdsByHomelessIds(Set<Long> homelessIds) {
+        return homelessRepository.findDeviceIdsByIds(homelessIds);
+    }
 }

@@ -1,4 +1,4 @@
-package org.wildflowergardening.backend.api.wildflowergardening.application.dto;
+package org.wildflowergardening.backend.core.kernel.config.dto;
 
 import lombok.*;
 

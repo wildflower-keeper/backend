@@ -187,4 +187,9 @@ public class SleepoverService {
     public Set<Long> getSleepOverHomelessIds(LocalDate now) {
         return sleepoverRepository.findBySleepoverHomeless(now);
     }
+
+    @Transactional(readOnly = true)
+    public Set<Long> getHomelessIdsByStartDate(LocalDate targetDate) {
+        return sleepoverRepository.findHomelessIdsByStartDate(targetDate);
+    }
 }

@@ -331,8 +331,13 @@ public class ShelterAdminAppService {
     @Transactional(rollbackFor = {Exception.class})
     public Long createNotice(Long shelterId, Long shelterAccountId, CreateNoticeRequest request) {
 
-        //공지사항 등록
-        Notice notice = Notice.builder().shelterId(shelterId).title(request.getTitle()).contents(request.getContent()).shelterAccountId(shelterAccountId).build();
+        boolean isGlobal = request.getTargetHomelessIds().isEmpty();
+
+        Notice notice = Notice.builder().shelterId(shelterId).title(request.getTitle()).contents(request.getContent()).shelterAccountId(shelterAccountId)
+                .imageUrl(request.getImageUrl())
+                .isSurvey(request.getIsSurvey())
+                .isGlobal(isGlobal)
+                .build();
 
         Long noticeId = noticeService.save(notice);
         Set<Long> homelessIds = new HashSet<>(request.getTargetHomelessIds());
@@ -341,8 +346,6 @@ public class ShelterAdminAppService {
         }
 
         List<String> devicesId = new ArrayList<>();
-        Long cnt = 0L;
-        //notice target등록
         for (Long homelessId : homelessIds) {
             Optional<Homeless> homeless = homelessQueryService.getOneByIdAndShelter(homelessId, shelterId);
             if (homeless.isEmpty()) {
@@ -351,15 +354,13 @@ public class ShelterAdminAppService {
             devicesId.add(homeless.get().getDeviceId());
             NoticeRecipient noticeRecipient = NoticeRecipient.builder().shelterId(shelterId).noticeId(noticeId).homelessId(homelessId).build();
             noticeRecipientService.save(noticeRecipient);
-            cnt++;
         }
 
-        //TODO: FCM전송 로직 추가
-        FcmMultiSendDto fcmMultiSendDto = FcmMultiSendDto.builder().tokens(devicesId).title(request.getTitle()).body(request.getContent()).data(FcmSendDto.Data.builder().screen("notice").noticeId(noticeId).build()).build();
+        String fcmStatus = request.getIsSurvey() ? "survey" : "notice";
+        FcmMultiSendDto fcmMultiSendDto = FcmMultiSendDto.builder().tokens(devicesId).title(request.getTitle()).body(request.getContent()).data(FcmSendDto.Data.builder().screen(fcmStatus).noticeId(noticeId).build()).build();
+        fcmService.sendMessageToMultiple(fcmMultiSendDto);
 
-        int successCount = fcmService.sendMessageToMultiple(fcmMultiSendDto);
-
-        return cnt - successCount;
+        return notice.getId();
     }
 
     public NumberPageResponse<NoticeResponse> getNoticePage(NoticePageRequest pageRequest) {
@@ -367,11 +368,9 @@ public class ShelterAdminAppService {
     }
 
     public NoticeRecipientStatusResponse getNoticeRecipientStatus(Long noticeId, Long shelterId) {
-        //1. 해당 공지사항을 받은 사람들의 목록 가져오기
         Map<Long, Boolean> homelessIdsAndReadStatus = noticeRecipientService.getAllHomelessIdAndReadByNoticeId(noticeId, shelterId);
         Map<Long, String[]> homelessInfo = homelessQueryService.getNameAndPhoneById(homelessIdsAndReadStatus.keySet().stream().toList());
 
-        // 2. NoticeRecipientInfoResult 리스트 생성
         List<NoticeRecipientInfoResult> items = homelessIdsAndReadStatus.entrySet().stream().filter(entry -> homelessInfo.get(entry.getKey()) != null).map(entry -> {
             Long homelessId = entry.getKey();
             boolean isRead = entry.getValue();
@@ -385,5 +384,25 @@ public class ShelterAdminAppService {
 
         return NoticeRecipientStatusResponse.builder().items(items).noticeReadInfo(NoticeRecipientStatusResponse.NoticeReadInfo.builder().totalCount(totalCount).readCount(readCount).unReadCount(unReadCount).build()).build();
     }
+
+    public NoticeItemResponse getOneNotice(Long noticeId, Long shelterId) {
+        Notice notice = noticeService.getOneByIdAndShelterId(noticeId, shelterId).orElseThrow(() -> new IllegalArgumentException("해당 id를 가진 공지사항이 없습니다."));
+        NoticeItemResponse response = NoticeItemResponse.builder()
+                .noticeId(notice.getId())
+                .title(notice.getTitle())
+                .contents(notice.getContents())
+                .createdAt(notice.getCreatedAt())
+                .imageUrl(notice.getImageUrl())
+                .isSurvey(notice.getIsSurvey())
+                .tags(List.of("전체인원", "미확인인원", "미참여인원"))
+                .readHomelessIds(noticeRecipientService.getHomelessIdsByNoticeIdAndReadStatus(noticeId, true))
+                .unreadHomelessIds(noticeRecipientService.getHomelessIdsByNoticeIdAndReadStatus(noticeId, false))
+                .notParticipateHomelessIds(noticeRecipientService.getHomelessIdsByNoticeIdAndParticipateStatus(noticeId, ParticipateStatus.NOT_PARTICIPATE))
+                .build();
+
+        return response;
+
+    }
+
 
 }

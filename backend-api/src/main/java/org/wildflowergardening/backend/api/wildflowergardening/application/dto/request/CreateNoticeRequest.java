@@ -21,4 +21,11 @@ public class CreateNoticeRequest {
     @NotNull(message = "타겟 유저가 null일 수는 없습니다.")
     @Schema(description = "공지사항 수신 자")
     private List<Long> targetHomelessIds;
+
+    @NotNull(message = "참여 조사 여부가 null일 수는 없습니다.")
+    @Schema(description = "참여 조사 여부")
+    private Boolean isSurvey;
+
+    @Schema(description = "이미지 url")
+    private String imageUrl;
 }

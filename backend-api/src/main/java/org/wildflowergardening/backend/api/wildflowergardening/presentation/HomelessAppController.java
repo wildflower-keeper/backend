@@ -31,6 +31,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.U
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.EmergencyRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessNoticeResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.HomelessDeviceIdRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.HomelessNoticeParticipateStatusRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.resonse.LocationStatusResponse;
 import org.wildflowergardening.backend.core.wildflowergardening.application.dto.CreateSleepoverDto;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.UserRole;
@@ -261,5 +262,20 @@ public class HomelessAppController {
     public ResponseEntity<Map<LocalDate, List<HomelessNoticeResponse>>> getRecentNotice() {
         HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
         return ResponseEntity.ok(homelessAppService.getRecentNotice(homelessContext.getHomelessId()));
+    }
+
+    @HomelessAuthorized
+    @Operation(summary = "공지 사항의 참여 여부 처리")
+    @Parameters(@Parameter(
+            name = HomelessAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "access-token-example"
+    ))
+    @PutMapping("/api/v2/homeless-app/notice/{noticeId}/participation")
+    public ResponseEntity<Void> updateParticipateStatus(@PathVariable @Parameter(description = "공지사항 id", example = "1") Long noticeId
+            , @RequestBody HomelessNoticeParticipateStatusRequest request) {
+        HomelessUserContext homelessContext = (HomelessUserContext) userContextHolder.getUserContext();
+        homelessAppService.updateParticipateStatus(noticeId, homelessContext.getHomelessId(), request.getIsParticipating());
+        return ResponseEntity.ok().build();
     }
 }

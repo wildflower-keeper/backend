@@ -385,4 +385,24 @@ public class ShelterAdminAppService {
         return NoticeRecipientStatusResponse.builder().items(items).noticeReadInfo(NoticeRecipientStatusResponse.NoticeReadInfo.builder().totalCount(totalCount).readCount(readCount).unReadCount(unReadCount).build()).build();
     }
 
+    public NoticeItemResponse getOneNotice(Long noticeId, Long shelterId) {
+        Notice notice = noticeService.getOneByIdAndShelterId(noticeId, shelterId).orElseThrow(() -> new IllegalArgumentException("해당 id를 가진 공지사항이 없습니다."));
+        NoticeItemResponse response = NoticeItemResponse.builder()
+                .noticeId(notice.getId())
+                .title(notice.getTitle())
+                .contents(notice.getContents())
+                .createdAt(notice.getCreatedAt())
+                .imageUrl(notice.getImageUrl())
+                .isSurvey(notice.getIsSurvey())
+                .tags(List.of("전체인원", "미확인인원", "미참여인원"))
+                .readHomelessIds(noticeRecipientService.getHomelessIdsByNoticeIdAndReadStatus(noticeId, true))
+                .unreadHomelessIds(noticeRecipientService.getHomelessIdsByNoticeIdAndReadStatus(noticeId, false))
+                .notParticipateHomelessIds(noticeRecipientService.getHomelessIdsByNoticeIdAndParticipateStatus(noticeId, ParticipateStatus.NOT_PARTICIPATE))
+                .build();
+
+        return response;
+
+    }
+
+
 }

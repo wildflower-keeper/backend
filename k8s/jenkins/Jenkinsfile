@@ -1,8 +1,8 @@
 pipeline {
     agent {
         kubernetes {
-            podRetention: "OnFailure"
-            yamlFile 'kanikoPod.yaml'
+            yamlFile 'kanikoPod.yaml' // 외부 YAML 파일 참조
+            podRetention(onFailure()) // 실패 시에만 Pod 유지
         }
     }
 

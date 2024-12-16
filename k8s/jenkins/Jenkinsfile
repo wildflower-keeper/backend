@@ -8,7 +8,6 @@ pipeline {
 
     environment {
         NAMESPACE = "kisacloud2407"
-        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -23,14 +22,14 @@ pipeline {
 
         stage('Build Docker Image with Kaniko') {
             steps {
+                echo "Building Docker Image with Kaniko"
                 container('kaniko') {
                     script {
-                        echo "Building Docker Image with Kaniko"
                         sh """
                         /kaniko/executor \
                             --context /workspace \
                             --dockerfile /workspace/k8s/was/Dockerfile \
-                            --destination docker.io/jeongseulho/wildflower-gardening:${IMAGE_TAG} \
+                            --destination docker.io/jeongseulho/wildflower-gardening:latest \
                             --verbosity=debug
                         """
                     }

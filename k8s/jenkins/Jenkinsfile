@@ -26,7 +26,6 @@ pipeline {
                     script {
                         sh """
                         echo "Testing Kaniko Container"
-                        /kaniko/executor \
 
                         """
                     }

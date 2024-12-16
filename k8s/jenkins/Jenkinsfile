@@ -1,8 +1,8 @@
 pipeline {
     agent {
         kubernetes {
+            podRetention(failure())
             yamlFile 'k8s/jenkins/kanikoPod.yaml'
-            podRetention(always())
         }
     }
 
@@ -25,10 +25,9 @@ pipeline {
                 container('kaniko') {
                     script {
                         sh """
+                        echo "Testing Kaniko Container"
                         /kaniko/executor \
-                            --context /workspace \
-                            --dockerfile /workspace/k8s/was/Dockerfile \
-                            --destination docker.io/jeongseulho/wildflower-gardening:${IMAGE_TAG} \
+
                         """
                     }
                 }

@@ -27,9 +27,9 @@ pipeline {
                     script {
                         sh """
                         /kaniko/executor \
-                            --context /workspace \
-                            --dockerfile /workspace/k8s/was/Dockerfile \
-                            --destination docker.io/jeongseulho/wildflower-gardening:latest \
+                            --context=/workspace \
+                            --dockerfile=/workspace/k8s/was/Dockerfile \
+                            --no-push \
                             --verbosity=debug
                         """
                     }

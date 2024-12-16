@@ -24,14 +24,9 @@ pipeline {
                 container('kaniko') {
                     script {
                         sh """
-                        echo "Verifying build context and Dockerfile paths"
-                        ls -la /workspace
-                        ls -la /workspace/workspace
-                        ls -la /workspace/workspace/k8s/was
-
                         /kaniko/executor \
                             --context /workspace \
-                            --dockerfile /workspace/k8s/was/Dockerfile \
+                            --dockerfile /workspace/workspace/backend/k8s/was/Dockerfile \
                             --destination docker.io/jeongseulho/wildflower-gardening:${IMAGE_TAG} \
                         """
                     }

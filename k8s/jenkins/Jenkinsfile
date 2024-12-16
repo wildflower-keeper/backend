@@ -35,6 +35,7 @@ spec:
       secret:
         secretName: docker-hub-secret
 """
+            retentionStrategy: "Never"
         }
     }
 

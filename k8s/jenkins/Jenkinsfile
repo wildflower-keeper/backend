@@ -25,10 +25,10 @@ pipeline {
                 container('kaniko') {
                     script {
                         sh """
-                        echo "Building Docker Image with Kaniko"
-                        echo "IMAGE_TAG: ${IMAGE_TAG}"
-                        ls -la /workspace
-                        ls -la /workspace/k8s/was
+                        /kaniko/executor \
+                            --context /workspace \
+                            --dockerfile /workspace/k8s/was/Dockerfile \
+                            --destination docker.io/jeongseulho/wildflower-gardening:${IMAGE_TAG} \
                         """
                     }
                 }

@@ -26,7 +26,11 @@ spec:
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
+        - name: workspace-volume
+          mountPath: /workspace
   volumes:
     - name: docker-config
       secret:
         secretName: docker-hub-secret
+    - name: workspace-volume
+      emptyDir: {}

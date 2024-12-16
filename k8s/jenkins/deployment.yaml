@@ -19,7 +19,7 @@ spec:
       serviceAccountName: jenkins-admin
       containers:
         - name: jenkins
-          image: jenkins/jenkins:lts
+          image: jenkins/jenkins:2.479.2
           resources:
             limits:
               memory: '2Gi'
@@ -51,13 +51,7 @@ spec:
           volumeMounts:
             - name: jenkins-data
               mountPath: /var/jenkins_home
-            - name: tz-seoul
-              mountPath: /etc/localtime
-              readOnly: true
       volumes:
         - name: jenkins-data
           persistentVolumeClaim:
             claimName: jenkins-pv-claim
-        - name: tz-seoul
-          hostPath:
-            path: /usr/share/zoneinfo/Asia/Seoul

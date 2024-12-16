@@ -33,4 +33,5 @@ spec:
       secret:
         secretName: docker-hub-secret
     - name: workspace-volume
-      emptyDir: {}
+      hostpath:
+        path: /home/jenkins/agent/workspace/backend

@@ -15,7 +15,6 @@ pipeline {
             steps {
                 script {
                     checkout scm
-                    sh 'ls -la $WORKSPACE'
                 }
             }
         }
@@ -27,7 +26,8 @@ pipeline {
                         sh """
                         echo "Verifying build context and Dockerfile paths"
                         ls -la /workspace
-                        ls -la /workspace/k8s/was
+                        ls -la /workspace/workspace
+                        ls -la /workspace/workspace/k8s/was
 
                         /kaniko/executor \
                             --context /workspace \

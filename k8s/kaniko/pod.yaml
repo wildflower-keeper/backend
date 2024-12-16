@@ -27,7 +27,7 @@ spec:
         - name: docker-config
           mountPath: /kaniko/.docker
         - name: workspace-volume
-          mountPath: .
+          mountPath: /workspace
   volumes:
     - name: docker-config
       secret:

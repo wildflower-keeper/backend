@@ -8,8 +8,6 @@ pipeline {
 
     environment {
         NAMESPACE = "kisacloud2407"
-        DOCKER_REGISTRY_URL = credentials('DOCKER_REGISTRY_URL')
-        IMAGE_NAME = "backend-api"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
@@ -32,7 +30,7 @@ pipeline {
                         /kaniko/executor \
                             --context \$(pwd) \
                             --dockerfile \$(pwd)/k8s/was/Dockerfile \
-                            --destination ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG} \
+                            --destination docker.io/jeongseulho/wildflower-gardening:${IMAGE_TAG} \
                             --verbosity=debug
                         """
                     }

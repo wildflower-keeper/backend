@@ -15,7 +15,6 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 script {
-                    echo "Checking out the repository"
                     checkout scm
                 }
             }
@@ -23,7 +22,6 @@ pipeline {
 
         stage('Build Docker Image with Kaniko') {
             steps {
-                echo "Building Docker Image with Kaniko"
                 container('kaniko') {
                     script {
                         sh """
@@ -31,12 +29,6 @@ pipeline {
                         echo "IMAGE_TAG: ${IMAGE_TAG}"
                         ls -la /workspace
                         ls -la /workspace/k8s/was
-                        
-                        /kaniko/executor \
-                            --context /workspace \
-                            --dockerfile /workspace/k8s/was/Dockerfile \
-                            --destination docker.io/jeongseulho/wildflower-gardening:${IMAGE_TAG} \
-                            --verbosity=debug
                         """
                     }
                 }
@@ -45,7 +37,6 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                echo "Deploying to Kubernetes"
                 sh """
                 kubectl apply -f k8s/deployment.yaml -n ${NAMESPACE}
                 """

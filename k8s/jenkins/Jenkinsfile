@@ -28,8 +28,8 @@ pipeline {
                         echo "Building Docker Image with Kaniko"
                         sh """
                         /kaniko/executor \
-                            --context \$(pwd) \
-                            --dockerfile \$(pwd)/k8s/was/Dockerfile \
+                            --context /workspace \
+                            --dockerfile /workspace/k8s/was/Dockerfile \
                             --destination docker.io/jeongseulho/wildflower-gardening:${IMAGE_TAG} \
                             --verbosity=debug
                         """

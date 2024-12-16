@@ -2,38 +2,46 @@ pipeline {
     agent {
         kubernetes {
             yaml """
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko-job
 spec:
-  containers:
-    - name: jnlp
-      image: jenkins/inbound-agent:latest
-      resources:
-        limits:
-          cpu: "500m"
-          memory: "512Mi"
-        requests:
-          cpu: "250m"
-          memory: "256Mi"
-    - name: kaniko
-      image: gcr.io/kaniko-project/executor:latest
-      command:
-        - "/kaniko/executor"
-      tty: true
-      resources:
-        limits:
-          cpu: "2"
-          memory: "2Gi"
-        requests:
-          cpu: "1"
-          memory: "1Gi"
-      volumeMounts:
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      name: kaniko-pod
+    spec:
+      containers:
+        - name: jnlp
+          image: jenkins/inbound-agent:latest
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:latest
+          command:
+            - "/kaniko/executor"
+          tty: true
+          resources:
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+            requests:
+              cpu: "1"
+              memory: "1Gi"
+          volumeMounts:
+            - name: docker-config
+              mountPath: /kaniko/.docker
+      restartPolicy: Never
+      volumes:
         - name: docker-config
-          mountPath: /kaniko/.docker
-  volumes:
-    - name: docker-config
-      secret:
-        secretName: docker-hub-secret
+          secret:
+            secretName: docker-hub-secret
 """
         }
     }

@@ -2,7 +2,7 @@ pipeline {
     agent {
         kubernetes {
             podRetention(always())
-            yamlFile 'k8s/jenkins/kanikoPod.yaml'
+            yamlFile 'k8s/kaniko/pod.yaml'
         }
     }
 

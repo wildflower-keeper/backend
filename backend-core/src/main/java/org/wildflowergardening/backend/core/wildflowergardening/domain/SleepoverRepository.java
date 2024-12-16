@@ -119,4 +119,10 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
 
     Optional<Sleepover> findTopByHomelessIdAndEndDateAfterAndDeletedAtIsNullOrderByStartDateAsc(
             Long homelessId, LocalDate endDate);
+
+    @Query(" SELECT s.homelessId FROM Sleepover s "
+            + " WHERE s.startDate = :targetDate "
+            + "AND s.deletedAt IS NULL ")
+    Set<Long> findHomelessIdsByStartDate(@Param("targetDate") LocalDate targetDate);
+
 }

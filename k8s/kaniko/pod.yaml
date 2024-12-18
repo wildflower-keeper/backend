@@ -15,6 +15,17 @@ spec:
           memory: '256Mi'
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
+      env:
+        - name: RDS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: rds-secret
+              key: RDS_USERNAME
+        - name: RDS_PW
+          valueFrom:
+            secretKeyRef:
+              name: rds-secret
+              key: RDS_PW
       command:
         - /busybox/cat
       tty: true

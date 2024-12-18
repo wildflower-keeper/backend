@@ -24,7 +24,10 @@ spec:
             - name: MYSQL_DATABASE
               value: 'wildflower_gardening'
             - name: MYSQL_ROOT_PASSWORD
-              value: 'test'
+              valueFrom:
+                secretKeyRef:
+                  name: rds-secret
+                  key: RDS_PW
           volumeMounts:
             - name: mysql-init-volume
               mountPath: /docker-entrypoint-initdb.d

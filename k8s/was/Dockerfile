@@ -6,8 +6,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN cd workspace
-RUN ls -la
+RUN cd workspace && ls -la
 
 RUN cd workspace && ./gradlew clean build --no-daemon
 

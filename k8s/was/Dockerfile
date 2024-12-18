@@ -1,11 +1,21 @@
-FROM openjdk:17-jdk
+FROM gradle:7.6-jdk17 AS build
 
-LABEL creator="kiel0103@naver.com"
-LABEL version="1.0.0"
+ENV SPRING_PROFILES_ACTIVE=prod
 
 WORKDIR /app
-COPY backend-api/build/libs/backend-api-1.0.0.jar backend-api-1.0.0.jar
+
+COPY . .
+
+RUN ./gradlew clean build --no-daemon
+
+FROM openjdk:17-jdk
+
+LABEL creator="wjdtmfgh@gmail.com"
+
+WORKDIR /app
+
+COPY --from=build /app/backend-api/build/libs/backend-api-1.0.0.jar backend-api-1.0.0.jar
 
 EXPOSE 8080/tcp
 
-CMD ["java", "-jar", "/app/backend-api-1.0.0.jar"]
+CMD ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "-DRDS_USERNAME=${RDS_USERNAME}", "-DRDS_PW=${RDS_PW}", "-jar", "/app/backend-api-1.0.0.jar"]

@@ -71,6 +71,11 @@ spec:
           mountPath: /kaniko/.docker
         - name: workspace-volume
           mountPath: /workspace
+    - name: kubectl
+      image: gcr.io/cloud-builders/kubectl
+      command:
+        - cat
+      tty: true
   volumes:
     - name: docker-config
       secret:

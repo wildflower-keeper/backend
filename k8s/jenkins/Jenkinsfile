@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            yamlFile 'k8s/kaniko/pod.yaml'
+            yamlFile 'k8s/jenkins-agent/pod.yaml'
         }
     }
 
@@ -39,9 +39,11 @@ pipeline {
             steps {
                 script {
                     withKubeConfig([credentialsId: 'kubeconfig', serverUrl: "https://kubernetes.default.svc", namespace: "${NAMESPACE}"]) {
-                        sh """
-                        kubectl set image deployment/backend-api backend-api=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE}
-                        """
+                        container('kubectl') {
+                            sh """
+                            kubectl set image deployment/backend-api backend-api=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE}
+                            """
+                        }
                     }
                 }
             }

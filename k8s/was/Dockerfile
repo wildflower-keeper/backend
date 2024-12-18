@@ -6,9 +6,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN cd workspace && ls -la
-
-RUN cd workspace && ./gradlew clean build --no-daemon
+RUN cd workspace/backend && ./gradlew clean build --no-daemon
 
 FROM openjdk:17-jdk
 

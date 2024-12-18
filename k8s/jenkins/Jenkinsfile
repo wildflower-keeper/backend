@@ -38,7 +38,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withKubeConfig([credentialsId: 'kubeconfig', serverUrl: $KUBERNETES_SERVER_URL]) {
+                    withKubeConfig([credentialsId: 'kubeconfig', serverUrl: "https://kubernetes.default.svc", namespace: "${NAMESPACE}"]) {
                         sh """
                         kubectl set image deployment/backend-api backend-api=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE}
                         """

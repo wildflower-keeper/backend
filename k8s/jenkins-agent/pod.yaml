@@ -15,47 +15,6 @@ spec:
           memory: '256Mi'
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
-      env:
-        - name: RDS_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: rds-secret
-              key: RDS_USERNAME
-        - name: RDS_PW
-          valueFrom:
-            secretKeyRef:
-              name: rds-secret
-              key: RDS_PW
-        - name: ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: spring-env
-              key: ADMIN_PASSWORD
-        - name: PROJECT_ID
-          valueFrom:
-            secretKeyRef:
-              name: spring-env
-              key: PROJECT_ID
-        - name: SPRING_PROFILES_ACTIVE
-          valueFrom:
-            secretKeyRef:
-              name: spring-env
-              key: SPRING_PROFILES_ACTIVE
-        - name: MAIL_PW
-          valueFrom:
-            secretKeyRef:
-              name: spring-env
-              key: MAIL_PW
-        - name: MAIL_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: spring-env
-              key: MAIL_USERNAME
-        - name: TOKEN_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: spring-env
-              key: TOKEN_SECRET
       command:
         - /busybox/cat
       tty: true

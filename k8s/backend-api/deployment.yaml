@@ -15,4 +15,67 @@ spec:
     spec:
       containers:
         - name: backend-api
-          image: docker.io/jeongseulho/wildflower-gardening:latest
+          image: docker.io/jeongseulho/wildflower-gardening:96
+          resources:
+            requests:
+              cpu: "2"
+              memory: "2Gi"
+            limits:
+              cpu: "4"
+              memory: "4Gi"
+          env:
+            - name: RDS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rds-secret
+                  key: RDS_USERNAME
+            - name: RDS_PW
+              valueFrom:
+                secretKeyRef:
+                  name: rds-secret
+                  key: RDS_PW
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: spring-env
+                  key: ADMIN_PASSWORD
+            - name: PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: spring-env
+                  key: PROJECT_ID
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                secretKeyRef:
+                  name: spring-env
+                  key: SPRING_PROFILES_ACTIVE
+            - name: MAIL_PW
+              valueFrom:
+                secretKeyRef:
+                  name: spring-env
+                  key: MAIL_PW
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: spring-env
+                  key: MAIL_USERNAME
+            - name: TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: spring-env
+                  key: TOKEN_SECRET
+          command: ["java"]
+          args:
+            - "-Dserver.port=8080"
+            - "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}"
+            - "-DRDS_USERNAME=${RDS_USERNAME}"
+            - "-DRDS_PW=${RDS_PW}"
+            - "-DADMIN_PASSWORD=${ADMIN_PASSWORD}"
+            - "-DMAIL_PW=${MAIL_PW}"
+            - "-DMAIL_USERNAME=${MAIL_USERNAME}"
+            - "-DTOKEN_SECRET=${TOKEN_SECRET}"
+            - "-DPROJECT_ID=${PROJECT_ID}"
+            - "-jar"
+            - "/app/backend-api-1.0.0.jar"
+      imagePullSecrets:
+        - name: docker-hub-secret

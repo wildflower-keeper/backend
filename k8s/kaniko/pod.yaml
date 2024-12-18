@@ -50,4 +50,4 @@ spec:
             path: config.json
     - name: workspace-volume
       hostpath:
-        path: /home/jenkins/agent/workspace/backend
+        path: /home/jenkins/agent/workspace

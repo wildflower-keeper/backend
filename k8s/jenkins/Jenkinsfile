@@ -26,7 +26,7 @@ pipeline {
                         sh """
                         /kaniko/executor \
                             --context /workspace \
-                            --dockerfile /workspace/workspace/backend/k8s/was/Dockerfile \
+                            --dockerfile /workspace/backend/k8s/was/Dockerfile \
                             --destination docker.io/jeongseulho/wildflower-gardening:${IMAGE_TAG} \
                         """
                     }

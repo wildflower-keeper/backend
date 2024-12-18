@@ -6,6 +6,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN ls -la
+
 RUN ./gradlew clean build --no-daemon
 
 FROM openjdk:17-jdk

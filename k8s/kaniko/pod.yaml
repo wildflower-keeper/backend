@@ -1,5 +1,7 @@
 apiVersion: v1
 kind: Pod
+metadata:
+  namespace: kisacloud2407
 spec:
   containers:
     - name: jnlp

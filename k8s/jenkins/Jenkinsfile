@@ -38,11 +38,11 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    kubernetesDeploy(
-                        configs: 'k8s/backend-api/deployment.yaml',
-                        kubeconfigId: 'kubeconfig',
-                        enableConfigSubstitution: true
-                    )
+                    withKubeConfig([credentialsId: 'kubeconfig', serverUrl: $KUBERNETES_SERVER_URL]) {
+                        sh """
+                        kubectl set image deployment/backend-api backend-api=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE}
+                        """
+                    }
                 }
             }
         }

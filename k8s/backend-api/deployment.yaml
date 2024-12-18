@@ -15,4 +15,4 @@ spec:
     spec:
       containers:
         - name: backend-api
-          image: ${IMAGE_NAME}:${IMAGE_TAG}
+          image: docker.io/jeongseulho/wildflower-gardening:latest

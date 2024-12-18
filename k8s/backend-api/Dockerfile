@@ -8,8 +8,6 @@ RUN ./gradlew clean build --no-daemon -x test
 
 FROM openjdk:17-jdk
 
-ENV SPRING_PROFILES_ACTIVE=prod
-
 LABEL creator="wjdtmfgh@gmail.com"
 
 WORKDIR /app

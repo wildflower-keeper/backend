@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend-api
-          image: docker.io/jeongseulho/wildflower-gardening:107
+          image: docker.io/jeongseulho/wildflower-gardening:108
           resources:
             requests:
               cpu: "2"
@@ -68,13 +68,13 @@ spec:
           args:
             - "-Dserver.port=8080"
             - "-Dspring.profiles.active=prod"
-            - "-DRDS_USERNAME=${RDS_USERNAME}"
-            - "-DRDS_PW=${RDS_PW}"
-            - "-DADMIN_PASSWORD=${ADMIN_PASSWORD}"
-            - "-DMAIL_PW=${MAIL_PW}"
-            - "-DMAIL_USERNAME=${MAIL_USERNAME}"
-            - "-DTOKEN_SECRET=${TOKEN_SECRET}"
-            - "-DPROJECT_ID=${PROJECT_ID}"
+            - "-DRDS_USERNAME=$(RDS_USERNAME)"
+            - "-DRDS_PW=$(RDS_PW)"
+            - "-DADMIN_PASSWORD=$(ADMIN_PASSWORD)"
+            - "-DMAIL_PW=$(MAIL_PW)"
+            - "-DMAIL_USERNAME=$(MAIL_USERNAME)"
+            - "-DTOKEN_SECRET=$(TOKEN_SECRET)"
+            - "-DPROJECT_ID=$(PROJECT_ID)"
             - "-jar"
             - "/app/backend-api-1.0.0.jar"
       imagePullSecrets:

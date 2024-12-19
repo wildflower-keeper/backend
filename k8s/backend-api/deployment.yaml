@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend-api
-          image: docker.io/jeongseulho/wildflower-gardening:108
+          image: docker.io/jeongseulho/wildflower-gardening:113
           resources:
             requests:
               cpu: "500m"

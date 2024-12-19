@@ -15,14 +15,14 @@ spec:
     spec:
       containers:
         - name: backend-api
-          image: docker.io/jeongseulho/wildflower-gardening:108
+          image: docker.io/jeongseulho/wildflower-gardening:109
           resources:
             requests:
               cpu: "2"
               memory: "2Gi"
             limits:
-              cpu: "4"
-              memory: "4Gi"
+              cpu: "3"
+              memory: "3Gi"
           env:
             - name: RDS_USERNAME
               valueFrom:

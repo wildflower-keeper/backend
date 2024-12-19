@@ -5,6 +5,8 @@ metadata:
   namespace: kisacloud2407
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: jenkins-server
@@ -22,11 +24,11 @@ spec:
           image: jenkins/jenkins:2.479.2
           resources:
             requests:
+              cpu: '250m'
+              memory: '256Mi'
+            limits:
               cpu: '500m'
               memory: '512Mi'
-            limits:
-              cpu: '1'
-              memory: '1Gi'
           ports:
             - name: httpport
               containerPort: 8080

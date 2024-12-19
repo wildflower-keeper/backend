@@ -18,11 +18,11 @@ spec:
           image: docker.io/jeongseulho/wildflower-gardening:109
           resources:
             requests:
-              cpu: "2"
-              memory: "2Gi"
+              cpu: "500m"
+              memory: "512Mi"
             limits:
-              cpu: "3"
-              memory: "3Gi"
+              cpu: "1"
+              memory: "1Gi"
           env:
             - name: RDS_USERNAME
               valueFrom:

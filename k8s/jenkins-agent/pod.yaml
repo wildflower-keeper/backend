@@ -24,7 +24,7 @@ spec:
           cpu: '1'
           memory: '1Gi'
         limits:
-          cpu: '3.5'
+          cpu: '3.3'
           memory: '3Gi'
       volumeMounts:
         - name: docker-config

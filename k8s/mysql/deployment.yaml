@@ -35,11 +35,11 @@ spec:
               mountPath: /var/lib/mysql
           resources:
             requests:
-              cpu: '250m'
-              memory: '256Mi'
+              cpu: "500m"
+              memory: "512Mi"
             limits:
-              cpu: '500m'
-              memory: '512Mi'
+              cpu: "1"
+              memory: "1Gi"
           args:
             - '--character-set-server=utf8mb4'
             - '--collation-server=utf8mb4_unicode_ci'

@@ -22,10 +22,12 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.dto.H
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.SleepoverCount;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.NumberPageResponse.PageInfoResponse;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.CreateNoticeRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.HomelessInfoPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.NoticePageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterAccountRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.*;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessFilterPagerProvider;
+import org.wildflowergardening.backend.api.wildflowergardening.application.pager.HomelessInfoFilterPageProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.application.pager.NoticeFilterPagerProvider;
 import org.wildflowergardening.backend.api.wildflowergardening.presentation.dto.request.VerificationCodeRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.util.PhoneNumberFormatter;
@@ -50,6 +52,7 @@ public class ShelterAdminAppService {
     private final ShelterPinService shelterPinService;
     private final HomelessFilterPagerProvider homelessFilterPagerProvider;
     private final NoticeFilterPagerProvider noticeFilterPagerProvider;
+    private final HomelessInfoFilterPageProvider homelessInfoFilterPageProvider;
     private final SleepoverService sleepoverService;
     private final HomelessQueryService homelessQueryService;
     private final LocationTrackingService locationTrackingService;
@@ -404,7 +407,11 @@ public class ShelterAdminAppService {
                 .build();
 
         return response;
+    }
 
+
+    public HomelessInfoPageResponse<Object> getHomelessInfoPage(HomelessInfoPageRequest pageRequest) {
+        return homelessInfoFilterPageProvider.from(pageRequest.getFilterType()).getPage(pageRequest);
     }
 
 

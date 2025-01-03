@@ -1,8 +1,12 @@
 package org.wildflowergardening.backend.api.wildflowergardening.application.dto.response;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Getter;
 
+import java.time.LocalDate;
+
+@Builder
+@Getter
 public class HomelessInfoOvernightStateData {
     private Long homelessId;
     private String name;

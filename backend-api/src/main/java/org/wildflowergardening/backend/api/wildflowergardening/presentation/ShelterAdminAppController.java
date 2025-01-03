@@ -606,7 +606,7 @@ public class ShelterAdminAppController {
             in = ParameterIn.HEADER,
             example = "session-token-example"
     ))
-    @GetMapping("/api/v2/shelter-admin/homeless/info")
+    @GetMapping("/api/v2/shelter-admin/homeless-info")
     @Operation(summary = "노숙인 목록 조회", description = "노숙인 상태에 따른 정보 조회")
     public ResponseEntity<HomelessInfoPageResponse<Object>> getNoticePage(
             @RequestParam(defaultValue = "OUT") @Parameter(description = "필터 유형", example = "NAME") HomelessInfoFilterType filterType,

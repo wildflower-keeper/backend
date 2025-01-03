@@ -125,4 +125,6 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
             + "AND s.deletedAt IS NULL ")
     Set<Long> findHomelessIdsByStartDate(@Param("targetDate") LocalDate targetDate);
 
+    List<Sleepover> findByHomelessIdIn(List<Long> homelessIds);
+
 }

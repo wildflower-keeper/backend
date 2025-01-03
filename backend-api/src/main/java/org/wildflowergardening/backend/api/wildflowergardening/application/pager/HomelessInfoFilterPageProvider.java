@@ -12,10 +12,12 @@ public class HomelessInfoFilterPageProvider {
     private final Map<HomelessInfoFilterType, HomelessInfoFilterPager<?>> filterPagers;
 
     public HomelessInfoFilterPageProvider(
-            HomelessInfoOutStateFilterPager outStateFilterPager
+            HomelessInfoOutStateFilterPager outStateFilterPager,
+            HomelessInfoOvernightFilterPager overnightFilterPager
     ) {
         this.filterPagers = Map.of(
-                HomelessInfoFilterType.OUT, outStateFilterPager
+                HomelessInfoFilterType.OUT, outStateFilterPager,
+                HomelessInfoFilterType.OVERNIGHT, overnightFilterPager
         );
     }
 

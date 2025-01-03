@@ -192,4 +192,13 @@ public class SleepoverService {
     public Set<Long> getHomelessIdsByStartDate(LocalDate targetDate) {
         return sleepoverRepository.findHomelessIdsByStartDate(targetDate);
     }
+
+    @Transactional(readOnly = true)
+    public Map<Long, Sleepover> getAll(List<Long> homelessIds) {
+        List<Sleepover> sleepoverList = sleepoverRepository.findByHomelessIdIn(homelessIds);
+        return sleepoverList.stream().collect(Collectors.toMap(
+                Sleepover::getHomelessId,
+                Function.identity()
+        ));
+    }
 }

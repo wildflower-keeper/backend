@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.HomelessInfoPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessInfoPageResponse;
-import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessInfoOvernightStateData;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.HomelessInfoPlannedOvernightStateData;
 import org.wildflowergardening.backend.core.wildflowergardening.application.HomelessQueryService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.LocationTrackingService;
 import org.wildflowergardening.backend.core.wildflowergardening.application.SleepoverService;
@@ -21,35 +21,37 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class HomelessInfoOvernightFilterPager implements HomelessInfoFilterPager<HomelessInfoOvernightStateData> {
-    private final LocationTrackingService locationTrackingService;
+public class HomelessInfoPlannedOvernightFilterPager implements HomelessInfoFilterPager<HomelessInfoPlannedOvernightStateData> {
+    private final HomelessQueryService homelessQueryService;
     private final SleepoverService sleepoverService;
+    private final LocationTrackingService locationTrackingService;
 
     @Override
-    public HomelessInfoPageResponse<HomelessInfoOvernightStateData> getPage(HomelessInfoPageRequest pageRequest) {
+    public HomelessInfoPageResponse<HomelessInfoPlannedOvernightStateData> getPage(HomelessInfoPageRequest pageRequest) {
+        Set<Long> candidateHomelessIds = homelessQueryService.getHomelessIdsByShelterId(pageRequest.getShelterId());
+        Set<Long> overnightHomelessIds = locationTrackingService.getHomelessIdsByInOutStatus(pageRequest.getShelterId(), InOutStatus.OVERNIGHT_STAY);
 
-        LocalDate now = LocalDate.now();
+        NumberPageResult<Sleepover> result = sleepoverService.getUpcomingSleepoverPage(candidateHomelessIds, overnightHomelessIds, LocalDate.now(), pageRequest.getPageNumber(), pageRequest.getPageSize());
 
-        //외박 중인 사람 골라오기
-        Set<Long> candidateHomelessIds = locationTrackingService.getHomelessIdsByInOutStatus(pageRequest.getShelterId(), InOutStatus.OVERNIGHT_STAY);
-        NumberPageResult<Sleepover> result = sleepoverService.getPage(pageRequest.getShelterId(), candidateHomelessIds, now,
-                pageRequest.getPageNumber(), pageRequest.getPageSize());
-        return HomelessInfoPageResponse.<HomelessInfoOvernightStateData>builder()
+        return HomelessInfoPageResponse.<HomelessInfoPlannedOvernightStateData>builder()
                 .data(
                         result.getItems().stream()
                                 .sorted(Comparator.comparing(Sleepover::getStartDate))
                                 .map(sleepover ->
-                                        HomelessInfoOvernightStateData.builder()
+                                        HomelessInfoPlannedOvernightStateData.builder()
                                                 .homelessId(sleepover.getHomelessId())
                                                 .name(sleepover.getHomelessName())
-                                                .returnDate(sleepover.getEndDate())
-                                                .returnDday((int) ChronoUnit.DAYS.between(LocalDate.now(), sleepover.getEndDate()))
-                                                .build())
+                                                .plannedDate(sleepover.getStartDate())
+                                                .plannedDday((int) ChronoUnit.DAYS.between(LocalDate.now(), sleepover.getStartDate()))
+                                                .build()
+                                )
                                 .collect(Collectors.toList())
                 )
                 .pagination(HomelessInfoPageResponse.PageInfoResponse.of(result.getPagination()))
-                .type("sleepover")
-                .summery(HomelessInfoPageResponse.SummeryResponse.builder().totalCount((long) candidateHomelessIds.size()).build())
+                .type("plannedOvernight")
+//                .summery(HomelessInfoPageResponse.SummeryResponse.builder().totalCount((long) result.getItems().size()).build())
+                .summery(HomelessInfoPageResponse.SummeryResponse.builder().totalCount((long) overnightHomelessIds.size()).build())
                 .build();
     }
+
 }

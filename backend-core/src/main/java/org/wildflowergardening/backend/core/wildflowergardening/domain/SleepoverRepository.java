@@ -70,9 +70,10 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
             + " where s.shelterId = :shelterId "
             + " and "
             + " s.startDate <= :targetDate and s.endDate > :targetDate "
+            + " and s.homelessId in :homelessIds"
             + " and s.deletedAt is null ")
     Page<Sleepover> findAllByShelterIdAndTargetDate(
-            @Param("shelterId") Long shelterId, @Param("targetDate") LocalDate targetDate,
+            @Param("shelterId") Long shelterId, @Param("homelessIds") Set<Long> homelessIds, @Param("targetDate") LocalDate targetDate,
             Pageable pageable
     );
 
@@ -125,6 +126,19 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
             + "AND s.deletedAt IS NULL ")
     Set<Long> findHomelessIdsByStartDate(@Param("targetDate") LocalDate targetDate);
 
-    List<Sleepover> findByHomelessIdIn(List<Long> homelessIds);
+    @Query("SELECT s FROM Sleepover s "
+            + "WHERE s.homelessId IN :homelessIds "
+            + "AND s.startDate BETWEEN :today AND :afterDay "
+            + "AND s.deletedAt IS NULL "
+            + "AND (s.homelessId NOT IN :overnightHomelessIds OR s.startDate > :today) "
+            + "ORDER BY s.startDate ASC")
+    Page<Sleepover> findUpcomingSleepoverByHomelessIds(
+            @Param("homelessIds") Set<Long> homelessIds,
+            @Param("overnightHomelessIds") Set<Long> overnightHomelessIds,
+            @Param("today") LocalDate today,
+            @Param("afterDay") LocalDate afterDay,
+            Pageable pageable
+    );
+
 
 }

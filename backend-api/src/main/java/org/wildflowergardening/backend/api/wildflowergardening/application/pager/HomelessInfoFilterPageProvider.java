@@ -13,11 +13,13 @@ public class HomelessInfoFilterPageProvider {
 
     public HomelessInfoFilterPageProvider(
             HomelessInfoOutStateFilterPager outStateFilterPager,
-            HomelessInfoOvernightFilterPager overnightFilterPager
+            HomelessInfoOvernightFilterPager overnightFilterPager,
+            HomelessInfoPlannedOvernightFilterPager plannedOvernightFilterPager
     ) {
         this.filterPagers = Map.of(
                 HomelessInfoFilterType.OUT, outStateFilterPager,
-                HomelessInfoFilterType.OVERNIGHT, overnightFilterPager
+                HomelessInfoFilterType.OVERNIGHT, overnightFilterPager,
+                HomelessInfoFilterType.PLANNED_OVERNIGHT, plannedOvernightFilterPager
         );
     }
 

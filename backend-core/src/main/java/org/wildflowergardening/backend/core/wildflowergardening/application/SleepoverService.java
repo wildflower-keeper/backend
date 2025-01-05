@@ -198,7 +198,6 @@ public class SleepoverService {
         PageRequest pageRequest = PageRequest.of(
                 pageNumber - 1, pageSize, Sort.by(Direction.DESC, "startDate")
         );
-
         Page<Sleepover> sleepoverPage = sleepoverRepository.findUpcomingSleepoverByHomelessIds(homelessIds, overnightHomelessIds, now,
                 now.plusDays(7), pageRequest);
         return NumberPageResult.<Sleepover>builder()

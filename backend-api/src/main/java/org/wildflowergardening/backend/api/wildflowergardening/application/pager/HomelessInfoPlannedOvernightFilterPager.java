@@ -28,7 +28,12 @@ public class HomelessInfoPlannedOvernightFilterPager implements HomelessInfoFilt
 
     @Override
     public HomelessInfoPageResponse<HomelessInfoPlannedOvernightStateData> getPage(HomelessInfoPageRequest pageRequest) {
-        Set<Long> candidateHomelessIds = homelessQueryService.getHomelessIdsByShelterId(pageRequest.getShelterId());
+//        Set<Long> candidateHomelessIds = homelessQueryService.getHomelessIdsByShelterId(pageRequest.getShelterId());
+        Set<Long> candidateHomelessIds = locationTrackingService.getHomelessIdsByInOutStatus(
+                pageRequest.getShelterId(),
+                Arrays.asList(InOutStatus.IN_SHELTER, InOutStatus.OUT_SHELTER)
+        );
+
         Set<Long> overnightHomelessIds = locationTrackingService.getHomelessIdsByInOutStatus(pageRequest.getShelterId(), InOutStatus.OVERNIGHT_STAY);
 
         NumberPageResult<Sleepover> result = sleepoverService.getUpcomingSleepoverPage(candidateHomelessIds, overnightHomelessIds, LocalDate.now(), pageRequest.getPageNumber(), pageRequest.getPageSize());
@@ -49,8 +54,8 @@ public class HomelessInfoPlannedOvernightFilterPager implements HomelessInfoFilt
                 )
                 .pagination(HomelessInfoPageResponse.PageInfoResponse.of(result.getPagination()))
                 .type("plannedOvernight")
-//                .summery(HomelessInfoPageResponse.SummeryResponse.builder().totalCount((long) result.getItems().size()).build())
-                .summery(HomelessInfoPageResponse.SummeryResponse.builder().totalCount((long) overnightHomelessIds.size()).build())
+                .summery(HomelessInfoPageResponse.SummeryResponse.builder().totalCount((long) result.getItems().size()).build())
+//                .summery(HomelessInfoPageResponse.SummeryResponse.builder().totalCount((long) overnightHomelessIds.size()).build())
                 .build();
     }
 

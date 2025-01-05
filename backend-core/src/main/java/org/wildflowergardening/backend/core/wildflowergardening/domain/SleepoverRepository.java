@@ -127,10 +127,10 @@ public interface SleepoverRepository extends JpaRepository<Sleepover, Long> {
     Set<Long> findHomelessIdsByStartDate(@Param("targetDate") LocalDate targetDate);
 
     @Query("SELECT s FROM Sleepover s "
-            + "WHERE s.homelessId IN :homelessIds "
-            + "AND s.startDate BETWEEN :today AND :afterDay "
-            + "AND s.deletedAt IS NULL "
-            + "AND (s.homelessId NOT IN :overnightHomelessIds OR s.startDate > :today) "
+            + "WHERE s.deletedAt IS NULL "
+            + "AND s.startDate <= :afterDay "
+            + "AND ((s.homelessId IN :overnightHomelessIds AND s.startDate > :today) "
+            + "     OR (s.homelessId IN :homelessIds AND s.startDate >= :today)) "
             + "ORDER BY s.startDate ASC")
     Page<Sleepover> findUpcomingSleepoverByHomelessIds(
             @Param("homelessIds") Set<Long> homelessIds,

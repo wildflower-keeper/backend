@@ -609,7 +609,7 @@ public class ShelterAdminAppController {
     @GetMapping("/api/v2/shelter-admin/homeless-info")
     @Operation(summary = "노숙인 목록 조회", description = "노숙인 상태에 따른 정보 조회")
     public ResponseEntity<HomelessInfoPageResponse<Object>> getNoticePage(
-            @RequestParam(defaultValue = "OUT") @Parameter(description = "필터 유형", example = "NAME") HomelessInfoFilterType filterType,
+            @RequestParam(defaultValue = "-") @Parameter(description = "필터 유형", example = "OUT") HomelessInfoFilterType filterType,
             @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
             @RequestParam(defaultValue = "10") @Parameter(description = "페이지 당 조회할 item 갯수", example = "10") int pageSize
     ) {

@@ -46,6 +46,7 @@ import org.wildflowergardening.backend.api.wildflowergardening.application.auth.
 import org.wildflowergardening.backend.api.wildflowergardening.application.auth.user.ShelterUserContext;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.CreateNoticeRequest;
+import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.HomelessInfoPageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.NoticePageRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.request.ShelterAccountRequest;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.response.*;
@@ -597,6 +598,31 @@ public class ShelterAdminAppController {
         ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
         NoticeItemResponse response = shelterAdminAppService.getOneNotice(noticeId, shelterContext.getShelterId());
         return ResponseEntity.ok(response);
+    }
+
+    @ShelterAuthorized
+    @Parameters(@Parameter(
+            name = ShelterAuthInterceptor.AUTH_HEADER_NAME,
+            in = ParameterIn.HEADER,
+            example = "session-token-example"
+    ))
+    @GetMapping("/api/v2/shelter-admin/homeless-info")
+    @Operation(summary = "노숙인 목록 조회", description = "노숙인 상태에 따른 정보 조회")
+    public ResponseEntity<HomelessInfoPageResponse<Object>> getNoticePage(
+            @RequestParam(defaultValue = "OUT") @Parameter(description = "필터 유형", example = "NAME") HomelessInfoFilterType filterType,
+            @RequestParam(defaultValue = "1") @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1") int pageNumber,
+            @RequestParam(defaultValue = "10") @Parameter(description = "페이지 당 조회할 item 갯수", example = "10") int pageSize
+    ) {
+        ShelterUserContext shelterContext = (ShelterUserContext) userContextHolder.getUserContext();
+        HomelessInfoPageRequest pageRequest = HomelessInfoPageRequest.builder()
+                .filterType(filterType)
+                .pageNumber(pageNumber)
+                .shelterId(shelterContext.getShelterId())
+                .pageSize(pageSize)
+                .build();
+
+
+        return ResponseEntity.ok(shelterAdminAppService.getHomelessInfoPage(pageRequest));
     }
 
 }

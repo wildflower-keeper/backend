@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
@@ -85,9 +86,7 @@ public class SleepoverService {
         );
     }
 
-    /*
-     외박신청 전체 목록 조회 (최신순)
-     */
+
     @Transactional(readOnly = true)
     public NumberPageResult<Sleepover> getPage(
             Long shelterId, int pageNumber, int pageSize
@@ -129,13 +128,13 @@ public class SleepoverService {
      */
     @Transactional(readOnly = true)
     public NumberPageResult<Sleepover> getPage(
-            Long shelterId, LocalDate sleepoverTargetDate, int pageNumber, int pageSize
+            Long shelterId, Set<Long> homelessIds, LocalDate sleepoverTargetDate, int pageNumber, int pageSize
     ) {
         PageRequest pageRequest = PageRequest.of(
                 pageNumber - 1, pageSize, Sort.by(Direction.DESC, "id")
         );
         Page<Sleepover> sleepoverPage = sleepoverRepository.findAllByShelterIdAndTargetDate(
-                shelterId, sleepoverTargetDate, pageRequest
+                shelterId, homelessIds, sleepoverTargetDate, pageRequest
         );
         return NumberPageResult.<Sleepover>builder()
                 .items(sleepoverPage.getContent())
@@ -192,4 +191,20 @@ public class SleepoverService {
     public Set<Long> getHomelessIdsByStartDate(LocalDate targetDate) {
         return sleepoverRepository.findHomelessIdsByStartDate(targetDate);
     }
+
+    @Transactional(readOnly = true)
+    public NumberPageResult<Sleepover> getUpcomingSleepoverPage(Set<Long> homelessIds, Set<Long> overnightHomelessIds, LocalDate now, int pageNumber, int pageSize) {
+
+        PageRequest pageRequest = PageRequest.of(
+                pageNumber - 1, pageSize, Sort.by(Direction.DESC, "startDate")
+        );
+        Page<Sleepover> sleepoverPage = sleepoverRepository.findUpcomingSleepoverByHomelessIds(homelessIds, overnightHomelessIds, now,
+                now.plusDays(7), pageRequest);
+        return NumberPageResult.<Sleepover>builder()
+                .items(sleepoverPage.getContent())
+                .pagination(PageInfoResult.of(sleepoverPage))
+                .build();
+
+    }
+
 }

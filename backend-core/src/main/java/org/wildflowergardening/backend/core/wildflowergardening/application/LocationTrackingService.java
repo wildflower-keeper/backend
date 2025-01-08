@@ -148,6 +148,11 @@ public class LocationTrackingService {
         return locationTrackingRepository.findHomelessIdByShelterIdAndInOutStatus(shelterId, status);
     }
 
+    @Transactional(readOnly = true)
+    public Set<Long> getHomelessIdsByInOutStatus(Long shelterId, List<InOutStatus> status) {
+        return locationTrackingRepository.findHomelessIdByShelterIdAndInOutStatus(shelterId, status);
+    }
+
     @Transactional
     public void deleteInoutStatus(Long homelessId, Long shelterId) {
         Optional<LocationTracking> locationTrackingOptional

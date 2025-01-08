@@ -108,4 +108,5 @@ public class HomelessQueryService {
     public List<String> getDeviceIdsByHomelessIds(Set<Long> homelessIds) {
         return homelessRepository.findDeviceIdsByIds(homelessIds);
     }
+
 }

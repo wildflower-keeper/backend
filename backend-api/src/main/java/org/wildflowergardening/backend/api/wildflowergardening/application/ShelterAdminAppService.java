@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.wildflowergardening.backend.api.kernel.application.exception.ForbiddenException;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.*;
 import org.wildflowergardening.backend.api.wildflowergardening.application.dto.HomelessCountResponse.EmergencyCount;
@@ -46,6 +47,7 @@ import org.wildflowergardening.backend.core.wildflowergardening.domain.auth.User
 @RequiredArgsConstructor
 public class ShelterAdminAppService {
 
+    private final AwsS3Service awsS3Service;
     private final SessionService sessionService;
     private final ShelterService shelterService;
     private final PasswordEncoder passwordEncoder;
@@ -414,5 +416,9 @@ public class ShelterAdminAppService {
         return homelessInfoFilterPageProvider.from(pageRequest.getFilterType()).getPage(pageRequest);
     }
 
-
+    public FileUploadResponse uploadFile(MultipartFile multipartFile) {
+        return FileUploadResponse.builder()
+                .imageUrl(awsS3Service.uploadImg(multipartFile))
+                .build();
+    }
 }

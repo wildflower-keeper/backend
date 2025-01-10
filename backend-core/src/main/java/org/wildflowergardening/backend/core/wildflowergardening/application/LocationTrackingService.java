@@ -150,7 +150,7 @@ public class LocationTrackingService {
 
     @Transactional(readOnly = true)
     public Set<Long> getHomelessIdsByInOutStatus(Long shelterId, List<InOutStatus> status) {
-        return locationTrackingRepository.findHomelessIdByShelterIdAndInOutStatus(shelterId, status);
+        return locationTrackingRepository.findHomelessIdByShelterIdAndInOutStatuses(shelterId, status);
     }
 
     @Transactional

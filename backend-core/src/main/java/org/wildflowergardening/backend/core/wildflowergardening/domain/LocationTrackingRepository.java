@@ -32,13 +32,12 @@ public interface LocationTrackingRepository extends JpaRepository<LocationTracki
 
     List<LocationTracking> findByHomelessIdInAndInOutStatusNot(Set<Long> homelessIds, InOutStatus status);
 
-    @Query("select l.homelessId from LocationTracking l where l.shelterId = :shelterId "
-            + " and l.inOutStatus = :status ")
+    @Query("select l.homelessId from LocationTracking l where l.shelterId = :shelterId and l.inOutStatus = :status")
     Set<Long> findHomelessIdByShelterIdAndInOutStatus(Long shelterId, InOutStatus status);
 
-    @Query("select l.homelessId from LocationTracking l where l.shelterId = :shelterId "
-            + " and l.inOutStatus in :status ")
-    Set<Long> findHomelessIdByShelterIdAndInOutStatus(Long shelterId, List<InOutStatus> status);
+    @Query("select l.homelessId from LocationTracking l where l.shelterId = :shelterId and l.inOutStatus in :statuses")
+    Set<Long> findHomelessIdByShelterIdAndInOutStatuses(Long shelterId, List<InOutStatus> statuses);
+
 
     Optional<LocationTracking> findByHomelessIdAndShelterId(Long homelessId, Long shelterId);
 

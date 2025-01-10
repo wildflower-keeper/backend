@@ -55,7 +55,7 @@ public class Sleepover {
   @Comment("노숙인 방번호")
   private String homelessRoom;
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   @Comment("노숙인 연락처")
   private String homelessPhoneNumber;
 

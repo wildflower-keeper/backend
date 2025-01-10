@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class HomelessInfoPlannedOvernightFilterPager implements HomelessInfoFilterPager<HomelessInfoPlannedOvernightStateData> {
-    private final HomelessQueryService homelessQueryService;
     private final SleepoverService sleepoverService;
     private final LocationTrackingService locationTrackingService;
 

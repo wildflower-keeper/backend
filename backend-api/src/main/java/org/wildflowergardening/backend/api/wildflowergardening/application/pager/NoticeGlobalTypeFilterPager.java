@@ -37,6 +37,7 @@ public class NoticeGlobalTypeFilterPager implements NoticeFilterPager {
                                         .createdAt(notice.getCreatedAt())
                                         .isSurvey(notice.getIsSurvey())
                                         .isGlobal(notice.getIsGlobal())
+                                        .imageUrl(notice.getImageUrl())
                                         .readCount(noticeRecipientService.getCountByNoticeIdAndReadStatus(notice.getId(), true))
                                         .totalCount(noticeRecipientService.getAllCountByNotice(notice.getId()))
                                         .build())

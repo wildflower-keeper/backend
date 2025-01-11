@@ -51,7 +51,6 @@ public class ApiExceptionHandler {
                 .description(e.getMessage())
                 .build();
         return ResponseEntity.badRequest()
-                .header("Access-Control-Allow-Origin", "*")
                 .body(errorResponse);
     }
 

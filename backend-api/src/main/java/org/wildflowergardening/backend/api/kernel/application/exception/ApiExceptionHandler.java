@@ -1,5 +1,6 @@
 package org.wildflowergardening.backend.api.kernel.application.exception;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -50,6 +51,7 @@ public class ApiExceptionHandler {
                 .description(e.getMessage())
                 .build();
         return ResponseEntity.badRequest()
+                .header("Access-Control-Allow-Origin", "*")
                 .body(errorResponse);
     }
 

@@ -31,7 +31,7 @@ public class ShelterAccountService {
 
     @Transactional(readOnly = true)
     public ShelterAccount getShelterAccountByEmail(String email) {
-        return shelterAccountRepository.findShelterAccountByEmail(email).orElseThrow(() -> new ApplicationLogicException(SHELTER_ACCOUNT_NOT_EXISTS));
+        return shelterAccountRepository.findShelterAccountByEmailAndDeletedAtIsNull(email).orElseThrow(() -> new ApplicationLogicException(SHELTER_ACCOUNT_NOT_EXISTS));
     }
 
     @Transactional
@@ -51,7 +51,7 @@ public class ShelterAccountService {
             throw new IllegalArgumentException("id = " + shelterAccountId + "인 관리자가 없습니다.");
         }
 
-        if(shelterAccount.get().getUserRole()==UserRole.SHELTER_ADMIN){
+        if (shelterAccount.get().getUserRole() == UserRole.SHELTER_ADMIN) {
             throw new ApplicationLogicException(ADMIN_ACCOUNT_CANNOT_BE_DELETED);
         }
 

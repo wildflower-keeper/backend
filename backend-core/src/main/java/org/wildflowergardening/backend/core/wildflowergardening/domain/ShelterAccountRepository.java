@@ -13,7 +13,7 @@ public interface ShelterAccountRepository extends JpaRepository<ShelterAccount, 
     Optional<ShelterAccount> findByEmailOrPhoneNumberAndDeletedAtIsNull(@Param("email") String email, @Param("phoneNumber") String phoneNumber);
 
 
-    Optional<ShelterAccount> findShelterAccountByEmail(String email);
+    Optional<ShelterAccount> findShelterAccountByEmailAndDeletedAtIsNull(String email);
 
     Optional<ShelterAccount> findShelterAccountByShelterIdAndIdAndDeletedAtIsNull(Long shelterId, Long id);
 

@@ -53,7 +53,6 @@ public class ShelterAdminAuthInterceptor implements HandlerInterceptor {
             return false;
         }
         Session session = sessionOptional.get();
-        session.setExpiredAt(LocalDateTime.now().plusMinutes(30));    // 세션 연장
 
         userContextHolder.setUserContext(ShelterUserContext.builder()
                 .role(session.getUserRole())

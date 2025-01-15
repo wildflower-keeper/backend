@@ -11,29 +11,29 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.wildflowergardening.backend.batch.tasklet.DeletedExpiredSessionTasklet;
+import org.wildflowergardening.backend.batch.tasklet.UndefinedToInShelterTasklet;
 
 @Configuration
 @EnableBatchProcessing(dataSourceRef = "batchDataSource")
 @RequiredArgsConstructor
-public class DeleteExpiredSessionJobConfig {
-
+public class UndefinedToInShelterJobConfig {
     private final JobRepository jobRepository;
     @Qualifier("batchTransactionManager")
     private final PlatformTransactionManager batchTransactionManager;
-    private final DeletedExpiredSessionTasklet deletedExpiredSessionTasklet;
+    private final UndefinedToInShelterTasklet undefinedToInShelterTasklet;
+
 
     @Bean
-    public Job deleteExpiredSessionJob() {
-        return new JobBuilder("deleteExpiredSessionJob", jobRepository)
-                .start(deleteExpiredSessionStep())
+    public Job undefinedToInShelterJob() {
+        return new JobBuilder("undefinedToInShelterJob", jobRepository)
+                .start(undefinedToInShelterStep())
                 .build();
     }
 
     @Bean
-    public Step deleteExpiredSessionStep() {
-        return new StepBuilder("deleteExpiredSessionStep", jobRepository)
-                .tasklet(deletedExpiredSessionTasklet, batchTransactionManager)
+    public Step undefinedToInShelterStep() {
+        return new StepBuilder("undefinedToInShelterStep", jobRepository)
+                .tasklet(undefinedToInShelterTasklet, batchTransactionManager)
                 .build();
     }
 }

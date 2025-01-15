@@ -7,8 +7,6 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.stereotype.Component;
 import org.wildflowergardening.backend.core.wildflowergardening.application.*;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.DailyHomelessCounts;
-import org.wildflowergardening.backend.core.wildflowergardening.domain.Homeless;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Shelter;
 import org.wildflowergardening.backend.core.wildflowergardening.domain.Sleepover;
 

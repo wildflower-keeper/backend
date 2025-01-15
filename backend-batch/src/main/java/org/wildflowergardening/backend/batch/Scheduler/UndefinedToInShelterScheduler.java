@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableScheduling
 @RequiredArgsConstructor
-public class UnreturnedOutingCheckScheduler {
+public class UndefinedToInShelterScheduler {
     private final JobLauncher jobLauncher;
-    private final Job unreturnedOutingCheckJob;
+    private final Job undefinedToInShelterJob;
 
-    @Scheduled(cron = "0 0 7 * * ?")  // 매일 아침 7시에 실행
+    @Scheduled(cron = "0 2 7,23 * * ?")
     public void runLocationStatusCheckJob() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
-        jobLauncher.run(unreturnedOutingCheckJob, jobParameters);
+        jobLauncher.run(undefinedToInShelterJob, jobParameters);
     }
 
 }

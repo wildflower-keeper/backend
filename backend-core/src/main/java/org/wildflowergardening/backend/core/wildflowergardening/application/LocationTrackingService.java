@@ -175,4 +175,10 @@ public class LocationTrackingService {
         return locationTrackingRepository.findHomelessIdsByStatus(statuses);
     }
 
+    @Transactional(readOnly = true)
+    public List<LocationTracking> getAllByInOutStatusIn24Hours(InOutStatus status) {
+        LocalDateTime targetDateTime = LocalDateTime.now().minusDays(1);
+        return locationTrackingRepository.findByInOutStatusAAndLastUpdatedAtIn24Hours(status, targetDateTime);
+    }
+
 }

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.wildflowergardening.backend.batch.tasklet.DailyCountTasklet;
 import org.wildflowergardening.backend.batch.tasklet.UnreturnedOutingCheckTasklet;
 
 @Configuration
